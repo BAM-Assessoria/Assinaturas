@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Editor de Assinatura - Bracel</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  body { margin:0; padding:30px; background:#f2f3f5; font-family:Arial,Helvetica,sans-serif; }
+  .panel { max-width:680px; margin:0 auto 24px; background:#fff; padding:20px 24px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,.08); }
+  .panel h2 { margin:0 0 14px; font-size:16px; color:#1a1a1a; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:10px 14px; }
+  .grid label { display:flex; flex-direction:column; font-size:12px; color:#555; gap:4px; }
+  .grid input { padding:7px 10px; border:1px solid #d0d4da; border-radius:4px; font-size:13px; font-family:inherit; }
+  .grid input:focus { outline:none; border-color:#E8621A; }
+  .full { grid-column:1/-1; }
+  .actions { margin-top:16px; display:flex; gap:10px; flex-wrap:wrap; }
+  .btn { padding:10px 18px; background:#E8621A; color:#fff; border:none; border-radius:4px; font-size:13px; font-weight:bold; cursor:pointer; font-family:inherit; }
+  .btn:hover { background:#c85218; }
+  .btn.secondary { background:#555; }
+  .btn.secondary:hover { background:#333; }
+</style>
+</head>
+<body>
+
+<div class="panel">
+  <h2>Editar dados da assinatura — Bracel</h2>
+  <div class="grid">
+    <label>Nome completo <input type="text" id="f-nome" value="Roberto Cremonezi"></label>
+    <label>Cargo (opcional) <input type="text" id="f-cargo" value=""></label>
+    <label>Celular / WhatsApp <input type="text" id="f-celular" value="(11) 94723-4650"></label>
+    <label>Telefone <input type="text" id="f-telefone" value="(11) 4156-2357"></label>
+    <label class="full">E-mail <input type="text" id="f-email" value="bpe.administrativo@bracel.com.br"></label>
+    <label class="full">Endereço <input type="text" id="f-endereco" value="Estrada Tenente Marques, 5.558"></label>
+  </div>
+  <div class="actions">
+    <button class="btn" onclick="downloadPNG()">Baixar como PNG</button>
+    <button class="btn secondary" onclick="copyHTML()">Copiar HTML</button>
+  </div>
+</div>
+
+<div id="signature-wrapper" style="max-width:620px;margin:0 auto;">
+<!-- ============================================================
+     ASSINATURA BRACEL
+     Largura: 460px | Area principal: 320px | Barra: 26px
+     Para duplicar: trocar logo, cor #E8621A e poligono SVG do fundo
+     ============================================================ -->
+<table id="signature" cellpadding="0" cellspacing="0" border="0" width="580"
+  style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;background:#F4F4F4;table-layout:fixed;">
+  <!-- Linha principal -->
+  <tr>
+    <td id="bg-td"
+        style="padding:0;background-repeat:no-repeat;background-size:580px 350px;background-position:top left;vertical-align:top;position:relative;">
+      <table cellpadding="0" cellspacing="0" border="0" width="580"
+             style="border-collapse:collapse;table-layout:fixed;">
+        <tr>
+          <!-- Coluna esquerda: nome, alinhado ao fundo -->
+          <td width="235" valign="bottom"
+              style="width:235px;padding:0 0 26px 18px;vertical-align:bottom;">
+            <div id="s-nome"
+                 style="font-size:19px;font-weight:900;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;line-height:1.25;white-space:nowrap;">Roberto Cremonezi</div>
+            <div id="s-cargo-wrap" style="display:none;margin-top:5px;">
+              <span id="s-cargo"
+                    style="font-size:16px;font-weight:bold;color:#E8621A;font-family:Arial,Helvetica,sans-serif;"></span>
+            </div>
+          </td>
+          <!-- Coluna direita: logo (absoluta) + contatos -->
+          <td width="345" valign="top"
+              style="width:345px;padding:140px 18px 16px 10px;vertical-align:top;">
+            <!-- Logo: posicao absoluta — altere left/top para reposicionar, width para tamanho -->
+            <img id="logo-bracel" src="LogoBracel.png" alt="Bracel"
+                 style="position:absolute;top:-52px;left:230px;border:0;width:380px;">
+            <table cellpadding="0" cellspacing="0" border="0"
+                   style="border-collapse:collapse;margin-left:75px;">
+              <tr>
+                <td style="padding:0 8px 8px 0;vertical-align:middle;line-height:0;">
+                  <img id="icon-celular" src="" width="13" height="13" alt="" style="display:block;border:0;">
+                </td>
+                <td id="s-celular"
+                    style="font-size:12px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:10px;vertical-align:middle;white-space:nowrap;">(11) 94723-4650</td>
+              </tr>
+              <tr>
+                <td style="padding:0 8px 8px 0;vertical-align:middle;line-height:0;">
+                  <img id="icon-telefone" src="" width="13" height="13" alt="" style="display:block;border:0;">
+                </td>
+                <td id="s-telefone"
+                    style="font-size:12px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:8px;vertical-align:middle;">(11) 4156-2357</td>
+              </tr>
+              <tr>
+                <td style="padding:0 8px 8px 0;vertical-align:top;padding-top:1px;line-height:0;">
+                  <img id="icon-email" src="" width="13" height="13" alt="" style="display:block;border:0;">
+                </td>
+                <td id="s-email"
+                    style="font-size:12px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:8px;vertical-align:top;max-width:250px;word-break:break-word;line-height:1.45;">bpe.administrativo@bracel.com.br</td>
+              </tr>
+              <tr>
+                <td style="padding:0 8px 0 0;vertical-align:top;padding-top:2px;line-height:0;">
+                  <img id="icon-endereco" src="" width="13" height="13" alt="" style="display:block;border:0;">
+                </td>
+                <td id="s-endereco"
+                    style="font-size:12px;color:#333333;font-family:Arial,Helvetica,sans-serif;vertical-align:top;max-width:250px;word-break:break-word;line-height:1.45;">Estrada Tenente Marques, 5.558</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <!-- Linha invisivel para fixar altura da area principal -->
+        <tr><td colspan="2" height="1" style="height:1px;font-size:0;line-height:0;"></td></tr>
+      </table>
+    </td>
+  </tr>
+  <!-- Barra laranja -->
+  <tr>
+    <td bgcolor="#EB7927" height="26"
+        style="background-color:#EB7927;height:26px;font-size:0;line-height:0;">&nbsp;</td>
+  </tr>
+</table>
+</div>
+
+<script>
+// Cria data URI de icone SVG a partir de string SVG (somente ASCII)
+function mkIcon(s) {
+  return 'data:image/svg+xml;base64,' + btoa(s);
+}
+
+// Icones em SVG inline (cinza neutro #777)
+var ICONS = {
+  celular: mkIcon(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="#777" stroke-width="1.3">' +
+    '<rect x="3.5" y="0.5" width="7" height="13" rx="1.2"/>' +
+    '<line x1="5.5" y1="2.5" x2="8.5" y2="2.5" stroke-linecap="round" stroke-width="1"/>' +
+    '<circle cx="7" cy="11.5" r="0.85" fill="#777" stroke="none"/>' +
+    '</svg>'
+  ),
+  telefone: mkIcon(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 14 14">' +
+    '<path d="M3.2 2C2.6 2 2 2.6 2 3.3C2 5.8 4.5 9.3 6.5 11.2C8.5 13.1 12 14 12.7 14C13.4 14 14 13.4 14 12.8L12.8 11.2L11.2 12.2C10.6 12.2 9 11.2 8 10.1C7 9 6 7.4 6 6.8L7.6 5.2L5.8 2Z" fill="#777"/>' +
+    '</svg>'
+  ),
+  email: mkIcon(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="#777" stroke-width="1.3">' +
+    '<rect x="0.5" y="2.5" width="13" height="9.5" rx="0.5"/>' +
+    '<polyline points="0.5,2.5 7,8.5 13.5,2.5"/>' +
+    '</svg>'
+  ),
+  endereco: mkIcon(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 14 14">' +
+    '<path d="M7 0.5C4.5 0.5 2.5 2.6 2.5 5.2C2.5 8.8 7 13.8 7 13.8C7 13.8 11.5 8.8 11.5 5.2C11.5 2.6 9.5 0.5 7 0.5Z" fill="#777"/>' +
+    '<circle cx="7" cy="5.2" r="1.7" fill="white"/>' +
+    '</svg>'
+  )
+};
+
+// Fundo SVG: poligono cinza (superior/esquerdo) + branco (inferior/direito)
+// Diagonal: de (370,0) no topo ate (162,320) na base
+var BG = mkIcon(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="580" height="350">' +
+  '<rect width="580" height="350" fill="#F4F4F4"/>' +
+  '<polygon points="0,0 540,0 60,370 0,320" fill="#DBDBDB"/>' +
+  '</svg>'
+);
+
+// Aplica fundo e icones ao carregar
+var bgTd = document.getElementById('bg-td');
+bgTd.style.backgroundImage = 'url(' + BG + ')';
+bgTd.style.backgroundSize  = '580px 350px';
+
+document.getElementById('icon-celular').src   = ICONS.celular;
+document.getElementById('icon-telefone').src  = ICONS.telefone;
+document.getElementById('icon-email').src     = ICONS.email;
+document.getElementById('icon-endereco').src  = ICONS.endereco;
+
+// Atualiza preview em tempo real
+function update() {
+  document.getElementById('s-nome').textContent     = document.getElementById('f-nome').value;
+  var cargo = document.getElementById('f-cargo').value.trim();
+  document.getElementById('s-cargo').textContent    = cargo;
+  document.getElementById('s-cargo-wrap').style.display = cargo ? '' : 'none';
+  document.getElementById('s-celular').textContent  = document.getElementById('f-celular').value;
+  document.getElementById('s-telefone').textContent = document.getElementById('f-telefone').value;
+  document.getElementById('s-email').textContent    = document.getElementById('f-email').value;
+  document.getElementById('s-endereco').textContent = document.getElementById('f-endereco').value;
+}
+['f-nome','f-cargo','f-celular','f-telefone','f-email','f-endereco'].forEach(function(id) {
+  document.getElementById(id).addEventListener('input', update);
+});
+
+// Exporta PNG (somente a assinatura)
+function downloadPNG() {
+  html2canvas(document.getElementById('signature'), {scale:2, backgroundColor:null, useCORS:true}).then(function(canvas) {
+    var link = document.createElement('a');
+    var nome = document.getElementById('f-nome').value.replace(/[^a-z0-9]+/gi, '_').toLowerCase() || 'assinatura';
+    link.download = 'assinatura_' + nome + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  });
+}
+
+// Copia HTML da assinatura (sem o painel de edicao)
+function copyHTML() {
+  var html = document.getElementById('signature').outerHTML;
+  navigator.clipboard.writeText(html).then(
+    function() { alert('HTML da assinatura copiado!'); },
+    function() {
+      var ta = document.createElement('textarea');
+      ta.value = html;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      alert('HTML copiado!');
+    }
+  );
+}
+</script>
+</body>
+</html>

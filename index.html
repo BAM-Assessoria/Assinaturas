@@ -2,54 +2,265 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Assinaturas de E-mail — BAM Assessoria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #f2f3f5; font-family: Arial, Helvetica, sans-serif; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; }
-  h1 { font-size: 20px; color: #1a1a1a; margin-bottom: 8px; }
-  p { font-size: 13px; color: #777; margin-bottom: 36px; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; width: 100%; max-width: 900px; }
-  .card { background: #fff; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,.08); padding: 28px 24px; text-decoration: none; color: inherit; transition: transform .15s, box-shadow .15s; display: flex; flex-direction: column; gap: 10px; }
-  .card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,.12); }
-  .card-dot { width: 14px; height: 14px; border-radius: 50%; }
-  .card-name { font-size: 22px; font-weight: 800; }
-  .card-desc { font-size: 12px; color: #888; }
-  .card-link { font-size: 12px; font-weight: bold; margin-top: 6px; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #f5f7fb;
+    font-family: 'Inter', system-ui, -apple-system, Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    width: 100%;
+    max-width: 960px;
+    padding: 72px 24px 48px;
+    text-align: center;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 999px;
+    padding: 6px 16px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #64748b;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.05);
+  }
+
+  .hero-badge-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 0 2.5px rgba(34,197,94,.22);
+    flex-shrink: 0;
+  }
+
+  .hero h1 {
+    font-size: clamp(26px, 4vw, 40px);
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.18;
+    letter-spacing: -0.025em;
+    margin-bottom: 16px;
+  }
+
+  .hero p {
+    font-size: 15.5px;
+    color: #64748b;
+    line-height: 1.65;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  /* ── Grid de cards ── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 20px;
+    width: 100%;
+    max-width: 960px;
+    padding: 0 24px;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid rgba(15,23,42,.07);
+    box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 4px 18px rgba(0,0,0,.05);
+    padding: 28px 24px 24px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: transform .22s cubic-bezier(.4,0,.2,1), box-shadow .22s cubic-bezier(.4,0,.2,1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--accent);
+    border-radius: 16px 16px 0 0;
+    opacity: 0;
+    transition: opacity .22s;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,.06), 0 16px 40px rgba(0,0,0,.1);
+  }
+
+  .card:hover::after {
+    opacity: 1;
+  }
+
+  .card-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
+    background: var(--accent-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2px;
+    flex-shrink: 0;
+  }
+
+  .card-name {
+    font-size: 20px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.015em;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    color: #94a3b8;
+    line-height: 1.5;
+  }
+
+  .card-link {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: gap .15s;
+  }
+
+  .card:hover .card-link {
+    gap: 8px;
+  }
+
+  /* ── Footer ── */
+  footer {
+    width: 100%;
+    margin-top: auto;
+    padding: 40px 24px 32px;
+    text-align: center;
+    border-top: 1px solid rgba(0,0,0,.06);
+    margin-top: 64px;
+  }
+
+  footer span {
+    font-size: 12px;
+    color: #94a3b8;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
+  footer strong {
+    color: #64748b;
+    font-weight: 700;
+  }
+
+  /* ── Responsividade ── */
+  @media (max-width: 640px) {
+    .hero { padding: 52px 20px 36px; }
+    .grid { grid-template-columns: 1fr 1fr; gap: 14px; padding: 0 20px; }
+    .card { padding: 22px 18px 18px; }
+    .card-name { font-size: 18px; }
+  }
+
+  @media (max-width: 380px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+
+  @media (min-width: 1200px) {
+    .grid { grid-template-columns: repeat(4, 1fr); }
+  }
 </style>
 </head>
 <body>
-  <h1>Assinaturas de E-mail</h1>
-  <p>Selecione a empresa para editar e baixar a assinatura.</p>
+
+  <section class="hero">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      BAM Assessoria
+    </div>
+    <h1>Gerador de Assinaturas<br>Corporativas</h1>
+    <p>Selecione a empresa abaixo para personalizar e exportar a assinatura de e-mail.</p>
+  </section>
+
   <div class="grid">
 
-    <a class="card" href="index-bracel.html">
-      <div class="card-dot" style="background:#EB7927;"></div>
-      <div class="card-name" style="color:#1a1a1a;">Bracel</div>
-      <div class="card-desc">Editor de assinatura Bracel</div>
-      <div class="card-link" style="color:#EB7927;">Abrir editor →</div>
+    <a class="card" href="index-bracel.html" style="--accent:#EB7927; --accent-bg:#fff4eb;">
+      <div class="card-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="20" height="20" rx="6" fill="#EB7927" fill-opacity=".14"/>
+          <path d="M7 10h6M10 7v6" stroke="#EB7927" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="card-name">Bracel</div>
+      <div class="card-desc">Editor de assinatura corporativa</div>
+      <div class="card-link">Abrir editor →</div>
     </a>
 
-    <a class="card" href="index-sembra.html">
-      <div class="card-dot" style="background:#183215;"></div>
-      <div class="card-name" style="color:#183215;">Sembra</div>
-      <div class="card-desc">Editor de assinatura Sembra</div>
-      <div class="card-link" style="color:#183215;">Abrir editor →</div>
+    <a class="card" href="index-sembra.html" style="--accent:#183215; --accent-bg:#eef4ee;">
+      <div class="card-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="20" height="20" rx="6" fill="#183215" fill-opacity=".12"/>
+          <path d="M7 10h6M10 7v6" stroke="#183215" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="card-name">Sembra</div>
+      <div class="card-desc">Editor de assinatura corporativa</div>
+      <div class="card-link">Abrir editor →</div>
     </a>
 
-    <a class="card" href="index-solibem.html">
-      <div class="card-dot" style="background:#1e4a1c;"></div>
-      <div class="card-name" style="color:#1e4a1c;">Solibem</div>
-      <div class="card-desc">Editor de assinatura Solibem</div>
-      <div class="card-link" style="color:#1e4a1c;">Abrir editor →</div>
+    <a class="card" href="index-solibem.html" style="--accent:#1e4a1c; --accent-bg:#edf5ed;">
+      <div class="card-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="20" height="20" rx="6" fill="#1e4a1c" fill-opacity=".12"/>
+          <path d="M7 10h6M10 7v6" stroke="#1e4a1c" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="card-name">Solibem</div>
+      <div class="card-desc">Editor de assinatura corporativa</div>
+      <div class="card-link">Abrir editor →</div>
     </a>
 
-    <a class="card" href="index-simel.html">
-      <div class="card-dot" style="background:#183215;"></div>
-      <div class="card-name" style="color:#183215;">Simel</div>
-      <div class="card-desc">Editor de assinatura Simel</div>
-      <div class="card-link" style="color:#183215;">Abrir editor →</div>
+    <a class="card" href="index-simel.html" style="--accent:#183215; --accent-bg:#eef4ee;">
+      <div class="card-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="20" height="20" rx="6" fill="#183215" fill-opacity=".12"/>
+          <path d="M7 10h6M10 7v6" stroke="#183215" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="card-name">Simel</div>
+      <div class="card-desc">Editor de assinatura corporativa</div>
+      <div class="card-link">Abrir editor →</div>
     </a>
 
   </div>
+
+  <footer>
+    <span>Desenvolvido por <strong>BAM</strong></span>
+  </footer>
+
 </body>
 </html>

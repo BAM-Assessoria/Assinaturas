@@ -2,28 +2,197 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Editor de Assinatura - Solibem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
-  body { margin:0; padding:30px; background:#f2f3f5; font-family:Arial,Helvetica,sans-serif; }
-  .panel { max-width:680px; margin:0 auto 24px; background:#fff; padding:20px 24px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,.08); }
-  .panel h2 { margin:0 0 14px; font-size:16px; color:#1a1a1a; }
-  .grid { display:grid; grid-template-columns:1fr 1fr; gap:10px 14px; }
-  .grid label { display:flex; flex-direction:column; font-size:12px; color:#555; gap:4px; }
-  .grid input { padding:7px 10px; border:1px solid #d0d4da; border-radius:4px; font-size:13px; font-family:inherit; }
-  .grid input:focus { outline:none; border-color:#1e4a1c; }
-  .full { grid-column:1/-1; }
-  .actions { margin-top:16px; display:flex; gap:10px; flex-wrap:wrap; }
-  .btn { padding:10px 18px; background:#1e4a1c; color:#fff; border:none; border-radius:4px; font-size:13px; font-weight:bold; cursor:pointer; font-family:inherit; }
-  .btn:hover { background:#0e1f0c; }
-  .btn.secondary { background:#555; }
-  .btn.secondary:hover { background:#333; }
+  :root { --brand:#1e4a1c; --brand-hover:#133010; --brand-focus:rgba(30,74,28,.12); }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #f5f7fb;
+    font-family: 'Inter', system-ui, -apple-system, Arial, sans-serif;
+    min-height: 100vh;
+    color: #0f172a;
+  }
+
+  .page-header {
+    background: #fff;
+    border-bottom: 1px solid rgba(0,0,0,.07);
+    padding: 0 24px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 1px 3px rgba(0,0,0,.05);
+  }
+
+  .header-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #64748b;
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 8px;
+    transition: background .15s, color .15s;
+  }
+  .header-back:hover { background: #f1f5f9; color: #0f172a; }
+  .header-back svg { width: 14px; height: 14px; }
+
+  .header-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: -0.01em;
+  }
+
+  .header-spacer { width: 90px; }
+
+  .main {
+    max-width: 740px;
+    margin: 32px auto 0;
+    padding: 0 20px 60px;
+  }
+
+  .panel {
+    background: #fff;
+    padding: 28px 28px 24px;
+    border-radius: 16px;
+    border: 1px solid rgba(0,0,0,.07);
+    box-shadow: 0 1px 3px rgba(0,0,0,.04), 0 4px 20px rgba(0,0,0,.05);
+    margin-bottom: 20px;
+  }
+
+  .panel-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 20px;
+    letter-spacing: -0.01em;
+  }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 16px; }
+
+  .grid label {
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+    font-weight: 600;
+    color: #475569;
+    gap: 6px;
+    letter-spacing: 0.01em;
+  }
+
+  .grid input {
+    padding: 9px 12px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-family: inherit;
+    color: #0f172a;
+    background: #fff;
+    transition: border-color .15s, box-shadow .15s;
+    outline: none;
+  }
+  .grid input:hover { border-color: #cbd5e1; }
+  .grid input:focus { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-focus); }
+
+  .full { grid-column: 1 / -1; }
+
+  .actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    padding: 10px 20px;
+    background: var(--brand);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background .15s, transform .1s, box-shadow .15s;
+    box-shadow: 0 1px 3px rgba(0,0,0,.15);
+    letter-spacing: 0.01em;
+  }
+  .btn:hover { background: var(--brand-hover); transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,.2); }
+  .btn:active { transform: translateY(0); }
+
+  .btn.secondary {
+    background: #f1f5f9;
+    color: #475569;
+    box-shadow: none;
+    border: 1.5px solid #e2e8f0;
+  }
+  .btn.secondary:hover { background: #e2e8f0; color: #0f172a; box-shadow: none; transform: translateY(-1px); }
+
+  .preview-panel {
+    background: transparent;
+    padding: 0;
+  }
+
+  .preview-label {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 16px;
+  }
+
+  #signature-wrapper {
+    max-width: 620px;
+    margin: 0 auto;
+  }
+
+  .page-footer {
+    text-align: center;
+    padding: 36px 0 0;
+    font-size: 12px;
+    color: #94a3b8;
+    font-weight: 500;
+  }
+  .page-footer strong { color: #64748b; font-weight: 700; }
+
+  @media (max-width: 600px) {
+    .main { padding: 0 16px 48px; margin-top: 24px; }
+    .panel, .preview-panel { padding: 20px 18px; }
+    .grid { grid-template-columns: 1fr; }
+    .header-spacer { display: none; }
+    #signature-wrapper { overflow-x: auto; }
+  }
 </style>
 </head>
 <body>
 
+<header class="page-header">
+  <a class="header-back" href="index.html">
+    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 2L4 7l5 5"/>
+    </svg>
+    Voltar
+  </a>
+  <span class="header-title">Editor — Solibem</span>
+  <span class="header-spacer"></span>
+</header>
+
+<div class="main">
 <div class="panel">
-  <h2>Editar dados da assinatura — Solibem</h2>
+  <div class="panel-title">Editar dados da assinatura — Solibem</div>
   <div class="grid">
     <label>Nome completo <input type="text" id="f-nome" value="Roberto Cremonezi"></label>
     <label>Cargo (opcional) <input type="text" id="f-cargo" value=""></label>
@@ -38,6 +207,8 @@
   </div>
 </div>
 
+<div class="preview-panel">
+  <div class="preview-label">Pré-visualização</div>
 <div id="signature-wrapper" style="max-width:620px;margin:0 auto;">
 <!-- ============================================================
      ASSINATURA SOLIBEM
@@ -113,6 +284,12 @@
   </tr>
 </table>
 </div>
+</div><!-- /preview-panel -->
+
+<div class="page-footer">
+  <span>Desenvolvido por <strong>BAM</strong></span>
+</div>
+</div><!-- /main -->
 
 <script>
 function mkIcon(s) {

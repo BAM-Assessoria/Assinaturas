@@ -353,6 +353,63 @@ function update() {
   document.getElementById(id).addEventListener('input', update);
 });
 
+// Validação de telefone: apenas dígitos e caracteres de formatação
+['f-celular','f-telefone'].forEach(function(id){
+  var el = document.getElementById(id);
+  if(!el) return;
+  el.addEventListener('input', function(){
+    var start = this.selectionStart;
+    var orig  = this.value;
+    var clean = orig.replace(/[^0-9 ()\-+\/]/g,'');
+    if(clean !== orig){
+      var diff = orig.length - clean.length;
+      this.value = clean;
+      this.setSelectionRange(Math.max(0,start-diff), Math.max(0,start-diff));
+    }
+  });
+});
+
+// Autocomplete de domínio de e-mail
+(function(){
+  var DOMAINS = ['bracel.com.br','sembra.com.br','solibem.com.br','simel.com.br','saltum.com.br'];
+  var input = document.getElementById('f-email');
+  if(!input) return;
+  var box = document.createElement('ul');
+  box.style.cssText = 'position:fixed;z-index:9999;background:#fff;border:1.5px solid #e2e8f0;border-radius:8px;margin:0;padding:4px 0;list-style:none;box-shadow:0 4px 16px rgba(0,0,0,.12);display:none;';
+  document.body.appendChild(box);
+  function pos(){ var r=input.getBoundingClientRect(); box.style.top=(r.bottom+4)+'px'; box.style.left=r.left+'px'; box.style.minWidth=r.width+'px'; }
+  function show(){
+    var val=input.value, at=val.lastIndexOf('@');
+    if(at===-1){box.style.display='none';return;}
+    var pre=val.slice(0,at), after=val.slice(at+1).toLowerCase();
+    var hits=DOMAINS.filter(function(d){return d.indexOf(after)===0;});
+    if(!hits.length){box.style.display='none';return;}
+    box.innerHTML='';
+    hits.forEach(function(d){
+      var li=document.createElement('li');
+      li.textContent=pre+'@'+d;
+      li.tabIndex=0;
+      li.style.cssText='padding:7px 14px;cursor:pointer;font-size:13px;color:#0f172a;white-space:nowrap;';
+      function pick(e){e.preventDefault();input.value=pre+'@'+d;input.dispatchEvent(new Event('input'));box.style.display='none';input.focus();}
+      li.addEventListener('mousedown',pick);
+      li.addEventListener('keydown',function(e){if(e.key==='Enter')pick(e);if(e.key==='Escape'){box.style.display='none';input.focus();}});
+      li.addEventListener('mouseover',function(){this.style.background='#f1f5f9';});
+      li.addEventListener('mouseout',function(){this.style.background='';});
+      box.appendChild(li);
+    });
+    pos(); box.style.display='block';
+  }
+  input.addEventListener('input',show);
+  input.addEventListener('focus',show);
+  input.addEventListener('keydown',function(e){
+    if(e.key==='Escape') box.style.display='none';
+    if(e.key==='ArrowDown'&&box.style.display!=='none'){e.preventDefault();var f=box.querySelector('li');if(f)f.focus();}
+  });
+  document.addEventListener('click',function(e){if(e.target!==input&&!box.contains(e.target))box.style.display='none';});
+  window.addEventListener('scroll',function(){if(box.style.display!=='none')pos();},true);
+  window.addEventListener('resize',function(){if(box.style.display!=='none')pos();});
+})();
+
 function downloadPNG() {
   html2canvas(document.getElementById('signature'), {scale:2, backgroundColor:null, useCORS:true}).then(function(canvas) {
     var link = document.createElement('a');

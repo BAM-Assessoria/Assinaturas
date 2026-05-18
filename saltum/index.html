@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Editor de Assinatura - Bracel</title>
+<title>Editor de Assinatura - Saltum</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
-  :root { --brand:#E8621A; --brand-hover:#c85218; --brand-focus:rgba(232,98,26,.15); }
+  :root { --brand:#183215; --brand-hover:#0d1e0c; --brand-focus:rgba(24,50,21,.12); }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
@@ -98,6 +98,7 @@
     border-radius: 8px;
     font-size: 13.5px;
     font-family: inherit;
+    font-family: inherit;
     color: #0f172a;
     background: #fff;
     transition: border-color .15s, box-shadow .15s;
@@ -180,26 +181,26 @@
 <body>
 
 <header class="page-header">
-  <a class="header-back" href="index.html">
+  <a class="header-back" href="../index.html">
     <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M9 2L4 7l5 5"/>
     </svg>
     Voltar
   </a>
-  <span class="header-title">Editor — Bracel</span>
+  <span class="header-title">Editor — Saltum</span>
   <span class="header-spacer"></span>
 </header>
 
 <div class="main">
 <div class="panel">
-  <div class="panel-title">Editar dados da assinatura — Bracel</div>
+  <div class="panel-title">Editar dados da assinatura — Saltum</div>
   <div class="grid">
-    <label>Nome completo <input type="text" id="f-nome" value="Roberto Cremonezi"></label>
+    <label>Nome completo <input type="text" id="f-nome" value="Nome da pessoa"></label>
     <label>Cargo (opcional) <input type="text" id="f-cargo" value=""></label>
-    <label>Celular / WhatsApp <input type="text" id="f-celular" value="(11) 94723-4650"></label>
-    <label>Telefone <input type="text" id="f-telefone" value="(11) 4156-2357"></label>
-    <label class="full">E-mail <input type="text" id="f-email" value="bpe.administrativo@bracel.com.br"></label>
-    <label class="full">Endereço <input type="text" id="f-endereco" value="Estrada Tenente Marques, 5.558"></label>
+    <label>Celular / WhatsApp <input type="text" id="f-celular" value=""></label>
+    <label>Telefone <input type="text" id="f-telefone" value="11 3831-2211"></label>
+    <label class="full">E-mail <input type="text" id="f-email" value="bracel@bracel.com.br"></label>
+    <label class="full">Endereço <input type="text" id="f-endereco" value="Rua Tabapuã, 145 - 8 andar"></label>
   </div>
   <div class="actions">
     <button class="btn" onclick="downloadPNG()">Baixar como PNG</button>
@@ -211,12 +212,10 @@
   <div class="preview-label">Pré-visualização</div>
 <div id="signature-wrapper" style="max-width:620px;margin:0 auto;">
 <!-- ============================================================
-     ASSINATURA BRACEL
-     Largura: 460px | Area principal: 320px | Barra: 26px
-     Para duplicar: trocar logo, cor #E8621A e poligono SVG do fundo
+     ASSINATURA SALTUM
      ============================================================ -->
 <table id="signature" cellpadding="0" cellspacing="0" border="0" width="580"
-  style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;background:#F4F4F4;table-layout:fixed;">
+  style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;background:#DBDBDB;table-layout:fixed;">
   <!-- Linha principal -->
   <tr>
     <td id="bg-td"
@@ -228,47 +227,47 @@
           <td width="235" valign="bottom"
               style="width:235px;padding:0 0 26px 18px;vertical-align:bottom;">
             <div id="s-nome"
-                 style="font-size:19px;font-weight:900;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;line-height:1.25;white-space:nowrap;">Roberto Cremonezi</div>
+                 style="font-size:19px;font-weight:900;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;line-height:1.25;white-space:nowrap;">Nome da pessoa</div>
             <div id="s-cargo-wrap" style="display:none;margin-top:5px;">
               <span id="s-cargo"
-                    style="font-size:16px;font-weight:bold;color:#E8621A;font-family:Arial,Helvetica,sans-serif;"></span>
+                    style="font-size:16px;font-weight:bold;color:#183215;font-family:Arial,Helvetica,sans-serif;"></span>
             </div>
           </td>
-          <!-- Coluna direita: logo (absoluta) + contatos -->
+          <!-- Coluna direita: texto Saltum (absoluto) + contatos -->
           <td width="345" valign="top"
               style="width:345px;padding:140px 18px 16px 10px;vertical-align:top;">
-            <!-- Logo: posicao absoluta — altere left/top para reposicionar, width para tamanho -->
-            <img id="logo-bracel" src="LogoBracel.png" alt="Bracel"
-                 style="position:absolute;top:-52px;left:230px;border:0;width:380px;">
+            <!-- Texto Saltum -->
+            <div id="logo-saltum"
+                 style="position:absolute;top:15px;right:25px;color:#183215;font-weight:800;font-size:47px;font-family:'Avenir Next World','Avenir Next','Avenir',sans-serif;line-height:1;letter-spacing:-1px;">Saltum</div>
             <table cellpadding="0" cellspacing="0" border="0"
-                   style="border-collapse:collapse;margin-left:75px;">
+                   style="border-collapse:collapse;margin-left:90px;">
               <tr>
                 <td style="padding:0 8px 8px 0;vertical-align:middle;line-height:0;">
                   <img id="icon-celular" src="" width="13" height="13" alt="" style="display:block;border:0;">
                 </td>
                 <td id="s-celular"
-                    style="font-size:12px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:10px;vertical-align:middle;white-space:nowrap;">(11) 94723-4650</td>
+                    style="font-size:12px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:10px;vertical-align:middle;white-space:nowrap;"></td>
               </tr>
               <tr>
                 <td style="padding:0 8px 8px 0;vertical-align:middle;line-height:0;">
                   <img id="icon-telefone" src="" width="13" height="13" alt="" style="display:block;border:0;">
                 </td>
                 <td id="s-telefone"
-                    style="font-size:12px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:8px;vertical-align:middle;">(11) 4156-2357</td>
+                    style="font-size:12px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:8px;vertical-align:middle;">11 3831-2211</td>
               </tr>
               <tr>
                 <td style="padding:0 8px 8px 0;vertical-align:top;padding-top:1px;line-height:0;">
                   <img id="icon-email" src="" width="13" height="13" alt="" style="display:block;border:0;">
                 </td>
                 <td id="s-email"
-                    style="font-size:12px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:8px;vertical-align:top;max-width:250px;word-break:break-word;line-height:1.45;">bpe.administrativo@bracel.com.br</td>
+                    style="font-size:12px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:8px;vertical-align:top;max-width:250px;word-break:break-word;line-height:1.45;">bracel@bracel.com.br</td>
               </tr>
               <tr>
                 <td style="padding:0 8px 0 0;vertical-align:top;padding-top:2px;line-height:0;">
                   <img id="icon-endereco" src="" width="13" height="13" alt="" style="display:block;border:0;">
                 </td>
                 <td id="s-endereco"
-                    style="font-size:12px;color:#333333;font-family:Arial,Helvetica,sans-serif;vertical-align:top;max-width:250px;word-break:break-word;line-height:1.45;">Estrada Tenente Marques, 5.558</td>
+                    style="font-size:12px;color:#333333;font-family:Arial,Helvetica,sans-serif;vertical-align:top;max-width:250px;word-break:break-word;line-height:1.45;">Rua Tabapuã, 145 - 8 andar</td>
               </tr>
             </table>
           </td>
@@ -278,10 +277,10 @@
       </table>
     </td>
   </tr>
-  <!-- Barra laranja -->
+  <!-- Barra verde Saltum -->
   <tr>
-    <td bgcolor="#EB7927" height="26"
-        style="background-color:#EB7927;height:26px;font-size:0;line-height:0;">&nbsp;</td>
+    <td bgcolor="#183215" height="21"
+        style="background-color:#183215;height:21px;font-size:0;line-height:0;">&nbsp;</td>
   </tr>
 </table>
 </div>
@@ -293,12 +292,10 @@
 </div><!-- /main -->
 
 <script>
-// Cria data URI de icone SVG a partir de string SVG (somente ASCII)
 function mkIcon(s) {
   return 'data:image/svg+xml;base64,' + btoa(s);
 }
 
-// Icones em SVG inline (cinza neutro #777)
 var ICONS = {
   celular: mkIcon(
     '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="#777" stroke-width="1.3">' +
@@ -326,16 +323,13 @@ var ICONS = {
   )
 };
 
-// Fundo SVG: poligono cinza (superior/esquerdo) + branco (inferior/direito)
-// Diagonal: de (370,0) no topo ate (162,320) na base
 var BG = mkIcon(
   '<svg xmlns="http://www.w3.org/2000/svg" width="580" height="350">' +
-  '<rect width="580" height="350" fill="#F4F4F4"/>' +
-  '<polygon points="0,0 540,0 60,370 0,320" fill="#DBDBDB"/>' +
+  '<rect width="580" height="350" fill="#DBDBDB"/>' +
+  '<polygon points="0,0 540,0 60,370 0,320" fill="#FFFFFF"/>' +
   '</svg>'
 );
 
-// Aplica fundo e icones ao carregar
 var bgTd = document.getElementById('bg-td');
 bgTd.style.backgroundImage = 'url(' + BG + ')';
 bgTd.style.backgroundSize  = '580px 350px';
@@ -345,7 +339,6 @@ document.getElementById('icon-telefone').src  = ICONS.telefone;
 document.getElementById('icon-email').src     = ICONS.email;
 document.getElementById('icon-endereco').src  = ICONS.endereco;
 
-// Atualiza preview em tempo real
 function update() {
   document.getElementById('s-nome').textContent     = document.getElementById('f-nome').value;
   var cargo = document.getElementById('f-cargo').value.trim();
@@ -417,7 +410,6 @@ function update() {
   window.addEventListener('resize',function(){if(box.style.display!=='none')pos();});
 })();
 
-// Exporta PNG (somente a assinatura)
 function downloadPNG() {
   html2canvas(document.getElementById('signature'), {scale:2, backgroundColor:null, useCORS:true}).then(function(canvas) {
     var link = document.createElement('a');
@@ -428,7 +420,6 @@ function downloadPNG() {
   });
 }
 
-// Copia HTML da assinatura (sem o painel de edicao)
 function copyHTML() {
   var html = document.getElementById('signature').outerHTML;
   navigator.clipboard.writeText(html).then(

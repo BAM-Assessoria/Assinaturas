@@ -219,73 +219,46 @@
      Largura: 460px | Area principal: 320px | Barra: 26px
      Para duplicar: trocar logo, cor #E8621A e poligono SVG do fundo
      ============================================================ -->
-<table id="signature" cellpadding="0" cellspacing="0" border="0" width="580"
+<table id="signature" cellpadding="0" cellspacing="0" border="0" width="500"
   style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;background:#F4F4F4;table-layout:fixed;">
-  <!-- Linha principal -->
   <tr>
     <td id="bg-td"
-        style="padding:0;background-repeat:no-repeat;background-size:580px 350px;background-position:top left;vertical-align:top;position:relative;">
-      <table cellpadding="0" cellspacing="0" border="0" width="580"
+        style="padding:0;background-repeat:no-repeat;background-position:top left;vertical-align:top;">
+      <table cellpadding="0" cellspacing="0" border="0" width="500"
              style="border-collapse:collapse;table-layout:fixed;">
         <tr>
-          <!-- Coluna esquerda: nome, alinhado ao fundo -->
-          <td width="235" valign="bottom"
-              style="width:235px;padding:0 0 26px 18px;vertical-align:bottom;">
+          <td width="185" rowspan="2" valign="bottom"
+              style="width:185px;padding:0 0 18px 16px;vertical-align:bottom;">
             <div id="s-nome"
-                 style="font-size:19px;font-weight:900;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;line-height:1.25;white-space:nowrap;">Roberto Cremonezi</div>
-            <div id="s-cargo-wrap" style="display:none;margin-top:5px;">
+                 style="font-size:16px;font-weight:900;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;line-height:1.2;white-space:nowrap;"></div>
+            <div id="s-cargo-wrap" style="display:none;margin-top:4px;">
               <span id="s-cargo"
-                    style="font-size:16px;font-weight:bold;color:#E8621A;font-family:Arial,Helvetica,sans-serif;"></span>
+                    style="font-size:12px;font-weight:bold;color:#E8621A;font-family:Arial,Helvetica,sans-serif;"></span>
             </div>
           </td>
-          <!-- Coluna direita: logo (absoluta) + contatos -->
-          <td width="345" valign="top"
-              style="width:345px;padding:140px 18px 16px 10px;vertical-align:top;">
-            <!-- Logo: posicao absoluta — altere left/top para reposicionar, width para tamanho -->
-            <img id="logo-bracel" src="LogoBracel.png" alt="Bracel"
-                 style="position:absolute;top:-52px;left:230px;border:0;width:380px;">
-            <table cellpadding="0" cellspacing="0" border="0"
-                   style="border-collapse:collapse;margin-left:75px;">
-              <tr>
-                <td style="padding:0 8px 8px 0;vertical-align:middle;line-height:0;">
-                  <img id="icon-celular" src="" width="13" height="13" alt="" style="display:block;border:0;">
-                </td>
-                <td id="s-celular"
-                    style="font-size:12px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:10px;vertical-align:middle;white-space:nowrap;">(11) 94723-4650</td>
-              </tr>
-              <tr>
-                <td style="padding:0 8px 8px 0;vertical-align:middle;line-height:0;">
-                  <img id="icon-telefone" src="" width="13" height="13" alt="" style="display:block;border:0;">
-                </td>
-                <td id="s-telefone"
-                    style="font-size:12px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:8px;vertical-align:middle;">(11) 4156-2357</td>
-              </tr>
-              <tr>
-                <td style="padding:0 8px 8px 0;vertical-align:top;padding-top:1px;line-height:0;">
-                  <img id="icon-email" src="" width="13" height="13" alt="" style="display:block;border:0;">
-                </td>
-                <td id="s-email"
-                    style="font-size:12px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:8px;vertical-align:top;max-width:250px;word-break:break-word;line-height:1.45;">bpe.administrativo@bracel.com.br</td>
-              </tr>
-              <tr>
-                <td style="padding:0 8px 0 0;vertical-align:top;padding-top:2px;line-height:0;">
-                  <img id="icon-endereco" src="" width="13" height="13" alt="" style="display:block;border:0;">
-                </td>
-                <td id="s-endereco"
-                    style="font-size:12px;color:#333333;font-family:Arial,Helvetica,sans-serif;vertical-align:top;max-width:250px;word-break:break-word;line-height:1.45;">Estrada Tenente Marques, 5.558</td>
-              </tr>
+          <td width="315" align="right" valign="top"
+              style="width:315px;padding:14px 18px 0 0;vertical-align:top;text-align:right;">
+            <img id="logo-bracel" src="LogoBracel.png" alt="Bracel" width="200" style="display:block;margin-left:auto;border:0;width:200px;">
+          </td>
+        </tr>
+        <tr>
+          <td valign="bottom"
+              style="padding:0 18px 18px 0;vertical-align:bottom;">
+            <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin-left:40px;">
+              <tr><td style="padding:0 7px 7px 0;vertical-align:middle;line-height:0;"><img id="icon-celular" src="" width="12" height="12" alt="" style="display:block;border:0;"></td><td id="s-celular" style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:7px;vertical-align:middle;white-space:nowrap;"></td></tr>
+              <tr><td style="padding:0 7px 7px 0;vertical-align:middle;line-height:0;"><img id="icon-telefone" src="" width="12" height="12" alt="" style="display:block;border:0;"></td><td id="s-telefone" style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:7px;vertical-align:middle;white-space:nowrap;"></td></tr>
+              <tr><td style="padding:0 7px 7px 0;vertical-align:top;padding-top:1px;line-height:0;"><img id="icon-email" src="" width="12" height="12" alt="" style="display:block;border:0;"></td><td id="s-email" style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:7px;vertical-align:top;max-width:220px;word-break:break-word;line-height:1.4;"></td></tr>
+              <tr><td style="padding:0 7px 0 0;vertical-align:top;padding-top:2px;line-height:0;"><img id="icon-endereco" src="" width="12" height="12" alt="" style="display:block;border:0;"></td><td id="s-endereco" style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;vertical-align:top;max-width:220px;word-break:break-word;line-height:1.4;"></td></tr>
             </table>
           </td>
         </tr>
-        <!-- Linha invisivel para fixar altura da area principal -->
         <tr><td colspan="2" height="1" style="height:1px;font-size:0;line-height:0;"></td></tr>
       </table>
     </td>
   </tr>
-  <!-- Barra laranja -->
   <tr>
-    <td bgcolor="#EB7927" height="26"
-        style="background-color:#EB7927;height:26px;font-size:0;line-height:0;">&nbsp;</td>
+    <td bgcolor="#EB7927" height="12"
+        style="background-color:#EB7927;height:12px;font-size:0;line-height:0;">&nbsp;</td>
   </tr>
 </table>
 </div>
@@ -333,7 +306,7 @@ var ICONS = {
 // Fundo SVG: poligono cinza (superior/esquerdo) + branco (inferior/direito)
 // Diagonal: de (370,0) no topo ate (162,320) na base
 var BG = mkIcon(
-  '<svg xmlns="http://www.w3.org/2000/svg" width="580" height="350">' +
+  '<svg xmlns="http://www.w3.org/2000/svg" width="500" height="160"><rect width="500" height="160" fill="#F4F4F4"/><polygon points="0,0 465,0 52,169 0,146" fill="#DBDBDB"/></svg>' +
   '<rect width="580" height="350" fill="#F4F4F4"/>' +
   '<polygon points="0,0 540,0 60,370 0,320" fill="#DBDBDB"/>' +
   '</svg>'
@@ -342,7 +315,7 @@ var BG = mkIcon(
 // Aplica fundo e icones ao carregar
 var bgTd = document.getElementById('bg-td');
 bgTd.style.backgroundImage = 'url(' + BG + ')';
-bgTd.style.backgroundSize  = '580px 350px';
+bgTd.style.backgroundSize  = '500px 160px';
 
 document.getElementById('icon-celular').src   = ICONS.celular;
 document.getElementById('icon-telefone').src  = ICONS.telefone;
@@ -425,7 +398,7 @@ function fmtPhone(v){
 })();
 
 // Exporta PNG (somente a assinatura)
-function scaleSignature(){var wrap=document.getElementById('signature-wrapper');var sig=document.getElementById('signature');if(!sig||!wrap)return;var w=wrap.getBoundingClientRect().width;var sw=parseInt(sig.getAttribute('width'))||580;if(w<sw){var s=w/sw;sig.style.transform='scale('+s+')';sig.style.transformOrigin='top left';wrap.style.height=Math.ceil(sig.offsetHeight*s)+'px';}else{sig.style.transform='';sig.style.transformOrigin='';wrap.style.height='';}}window.addEventListener('resize',scaleSignature);
+function scaleSignature(){var wrap=document.getElementById('signature-wrapper');var sig=document.getElementById('signature');if(!sig||!wrap)return;var w=wrap.getBoundingClientRect().width;var sw=parseInt(sig.getAttribute('width'))||500;if(w<sw){var s=w/sw;sig.style.transform='scale('+s+')';sig.style.transformOrigin='top left';wrap.style.height=Math.ceil(sig.offsetHeight*s)+'px';}else{sig.style.transform='';sig.style.transformOrigin='';wrap.style.height='';}}window.addEventListener('resize',scaleSignature);
 
 function downloadPNG() {
   html2canvas(document.getElementById('signature'), {scale:2, backgroundColor:null, useCORS:true}).then(function(canvas) {

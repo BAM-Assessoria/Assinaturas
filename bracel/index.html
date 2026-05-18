@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -196,9 +196,9 @@
   <div class="grid">
     <label>Nome completo <input type="text" id="f-nome" value="Roberto Cremonezi"></label>
     <label>Cargo (opcional) <input type="text" id="f-cargo" value=""></label>
-    <label>Celular / WhatsApp <input type="text" id="f-celular" value="(11) 94723-4650"></label>
-    <label>Telefone <input type="text" id="f-telefone" value="(11) 4156-2357"></label>
-    <label class="full">E-mail <input type="text" id="f-email" value="bpe.administrativo@bracel.com.br"></label>
+    <label>Celular / WhatsApp <input type="text" id="f-celular" value=""></label>
+    <label>Telefone <input type="text" id="f-telefone" value=""></label>
+    <label class="full">E-mail <input type="text" id="f-email" value=""></label>
     <label class="full">Endereço <input type="text" id="f-endereco" value="Estrada Tenente Marques, 5.558"></label>
   </div>
   <div class="actions">
@@ -344,6 +344,7 @@ document.getElementById('icon-celular').src   = ICONS.celular;
 document.getElementById('icon-telefone').src  = ICONS.telefone;
 document.getElementById('icon-email').src     = ICONS.email;
 document.getElementById('icon-endereco').src  = ICONS.endereco;
+update();
 
 // Atualiza preview em tempo real
 function update() {
@@ -360,19 +361,21 @@ function update() {
   document.getElementById(id).addEventListener('input', update);
 });
 
-// Validação de telefone: apenas dígitos e caracteres de formatação
+// Formatação automática de telefone brasileiro
+function fmtPhone(v){
+  var d=v.replace(/\D/g,'').slice(0,11);
+  if(!d.length) return '';
+  if(d.length<=2) return '('+d;
+  if(d.length<=6) return '('+d.slice(0,2)+') '+d.slice(2);
+  if(d.length<=10) return '('+d.slice(0,2)+') '+d.slice(2,6)+'-'+d.slice(6);
+  return '('+d.slice(0,2)+') '+d.slice(2,7)+'-'+d.slice(7);
+}
 ['f-celular','f-telefone'].forEach(function(id){
-  var el = document.getElementById(id);
+  var el=document.getElementById(id);
   if(!el) return;
-  el.addEventListener('input', function(){
-    var start = this.selectionStart;
-    var orig  = this.value;
-    var clean = orig.replace(/[^0-9 ()\-+\/]/g,'');
-    if(clean !== orig){
-      var diff = orig.length - clean.length;
-      this.value = clean;
-      this.setSelectionRange(Math.max(0,start-diff), Math.max(0,start-diff));
-    }
+  el.addEventListener('input',function(){
+    var formatted=fmtPhone(this.value);
+    if(formatted!==this.value) this.value=formatted;
   });
 });
 

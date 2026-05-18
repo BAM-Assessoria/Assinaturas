@@ -417,10 +417,11 @@ async function copyHTML() {
   var emailVal = (document.getElementById('f-email').value    || '').trim();
   var endereco = (document.getElementById('f-endereco').value || '').trim();
 
-  var iCelular  = document.getElementById('icon-celular').src;
-  var iTelefone = document.getElementById('icon-telefone').src;
-  var iEmail    = document.getElementById('icon-email').src;
-  var iEndereco = document.getElementById('icon-endereco').src;
+  var BASE = 'https://bam-assessoria.github.io/Assinaturas/';
+  var iCelular  = BASE + 'icons/celular.svg';
+  var iTelefone = BASE + 'icons/telefone.svg';
+  var iEmail    = BASE + 'icons/email.svg';
+  var iEndereco = BASE + 'icons/endereco.svg';
 
   var logoUrl = 'https://bam-assessoria.github.io/Assinaturas/LogoBracel.png';
 

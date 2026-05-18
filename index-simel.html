@@ -406,10 +406,11 @@ async function copyHTML() {
   var telefone = (document.getElementById('f-telefone').value || '').trim();
   var emailVal = (document.getElementById('f-email').value    || '').trim();
   var endereco = (document.getElementById('f-endereco').value || '').trim();
-  var iCelular  = document.getElementById('icon-celular').src;
-  var iTelefone = document.getElementById('icon-telefone').src;
-  var iEmail    = document.getElementById('icon-email').src;
-  var iEndereco = document.getElementById('icon-endereco').src;
+  var BASE = 'https://bam-assessoria.github.io/Assinaturas/';
+  var iCelular  = BASE + 'icons/celular.svg';
+  var iTelefone = BASE + 'icons/telefone.svg';
+  var iEmail    = BASE + 'icons/email.svg';
+  var iEndereco = BASE + 'icons/endereco.svg';
   function row(icon, content) {
     if (!content) return '';
     return '<tr><td style="padding:0 8px 5px 0;vertical-align:middle;line-height:0;">'

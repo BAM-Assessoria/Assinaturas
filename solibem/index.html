@@ -169,11 +169,15 @@
   .page-footer strong { color: #64748b; font-weight: 700; }
 
   @media (max-width: 600px) {
-    .main { padding: 0 16px 48px; margin-top: 24px; }
-    .panel, .preview-panel { padding: 20px 18px; }
-    .grid { grid-template-columns: 1fr; }
+    .main { padding: 0 12px 48px; margin-top: 16px; }
+    .panel { padding: 20px 16px 18px; border-radius: 12px; }
+    .preview-panel { padding: 0; }
+    .grid { grid-template-columns: 1fr; gap: 12px; }
+    .grid input { min-height: 44px; font-size: 16px; }
     .header-spacer { display: none; }
-    #signature-wrapper { overflow-x: auto; }
+    .btn { width: 100%; justify-content: center; padding: 13px 20px; font-size: 15px; min-height: 44px; }
+    .actions { gap: 8px; }
+    #signature-wrapper { overflow: hidden; }
   }
 </style>
 </head>
@@ -339,6 +343,7 @@ document.getElementById('icon-telefone').src  = ICONS.telefone;
 document.getElementById('icon-email').src     = ICONS.email;
 document.getElementById('icon-endereco').src  = ICONS.endereco;
 update();
+scaleSignature();
 
 function update() {
   document.getElementById('s-nome').textContent     = document.getElementById('f-nome').value;
@@ -413,6 +418,8 @@ function fmtPhone(v){
   window.addEventListener('resize',function(){if(box.style.display!=='none')pos();});
 })();
 
+function scaleSignature(){var wrap=document.getElementById('signature-wrapper');var sig=document.getElementById('signature');if(!sig||!wrap)return;var w=wrap.getBoundingClientRect().width;var sw=parseInt(sig.getAttribute('width'))||580;if(w<sw){var s=w/sw;sig.style.transform='scale('+s+')';sig.style.transformOrigin='top left';wrap.style.height=Math.ceil(sig.offsetHeight*s)+'px';}else{sig.style.transform='';sig.style.transformOrigin='';wrap.style.height='';}}window.addEventListener('resize',scaleSignature);
+
 function downloadPNG() {
   html2canvas(document.getElementById('signature'), {scale:2, backgroundColor:null, useCORS:true}).then(function(canvas) {
     var link = document.createElement('a');
@@ -423,20 +430,25 @@ function downloadPNG() {
   });
 }
 
-function copyHTML() {
-  var html = document.getElementById('signature').outerHTML;
-  navigator.clipboard.writeText(html).then(
-    function() { alert('HTML da assinatura copiado!'); },
-    function() {
+async function copyHTML() {
+  var sig = document.getElementById('signature');
+  var clone = sig.cloneNode(true);
+  clone.style.transform = '';
+  clone.style.transformOrigin = '';
+  var html = clone.outerHTML;
+  try {
+    await navigator.clipboard.write([
+      new ClipboardItem({ 'text/html': new Blob([html], { type: 'text/html' }) })
+    ]);
+    alert('Assinatura copiada! Cole diretamente no Gmail ou Outlook.');
+  } catch(e) {
+    try { await navigator.clipboard.writeText(html); } catch(e2) {
       var ta = document.createElement('textarea');
-      ta.value = html;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand('copy');
-      document.body.removeChild(ta);
-      alert('HTML copiado!');
+      ta.value = html; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
     }
-  );
+    alert('Assinatura copiada (modo texto).');
+  }
 }
 </script>
 </body>

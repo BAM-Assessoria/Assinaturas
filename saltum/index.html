@@ -400,23 +400,54 @@ function downloadPNG() {
 }
 
 async function copyHTML() {
-  var sig = document.getElementById('signature');
-  var clone = sig.cloneNode(true);
-  clone.style.transform = '';
-  clone.style.transformOrigin = '';
-  var html = clone.outerHTML;
+  var nome     = (document.getElementById('f-nome').value     || '').trim();
+  var cargo    = (document.getElementById('f-cargo').value    || '').trim();
+  var celular  = (document.getElementById('f-celular').value  || '').trim();
+  var telefone = (document.getElementById('f-telefone').value || '').trim();
+  var emailVal = (document.getElementById('f-email').value    || '').trim();
+  var endereco = (document.getElementById('f-endereco').value || '').trim();
+  var iCelular  = document.getElementById('icon-celular').src;
+  var iTelefone = document.getElementById('icon-telefone').src;
+  var iEmail    = document.getElementById('icon-email').src;
+  var iEndereco = document.getElementById('icon-endereco').src;
+  function row(icon, content) {
+    if (!content) return '';
+    return '<tr><td style="padding:0 8px 5px 0;vertical-align:middle;line-height:0;">'
+      + '<img src="' + icon + '" width="13" height="13" alt="" style="display:block;border:0;"></td>'
+      + '<td style="font-size:12px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:5px;vertical-align:middle;">'
+      + content + '</td></tr>';
+  }
+  var cargoHtml = cargo ? '<p style="margin:4px 0 0 0;padding:0;font-size:13px;font-weight:bold;color:#183215;font-family:Arial,Helvetica,sans-serif;">' + cargo + '</p>' : '';
+  var emailHtml = emailVal ? '<a href="mailto:' + emailVal + '" style="color:#333333;text-decoration:none;">' + emailVal + '</a>' : '';
+  var html =
+    '<table cellpadding="0" cellspacing="0" border="0" width="500" bgcolor="#DBDBDB"'
+    + ' style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;background-color:#DBDBDB;width:500px;">'
+    + '<tr><td style="padding:0;">'
+    + '<table cellpadding="0" cellspacing="0" border="0" width="500" style="border-collapse:collapse;width:500px;">'
+    + '<tr>'
+    + '<td width="190" rowspan="2" valign="bottom" style="width:190px;padding:0 0 18px 24px;vertical-align:bottom;">'
+    + '<p style="margin:0;padding:0;font-size:16px;font-weight:900;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;line-height:1.25;">' + nome + '</p>'
+    + cargoHtml + '</td>'
+    + '<td width="310" align="right" valign="top" style="width:310px;padding:10px 14px 0 0;vertical-align:top;text-align:right;">'
+    + '<p style="margin:0;padding:0;font-size:28px;font-weight:800;color:#183215;font-family:Arial,Helvetica,sans-serif;line-height:1;">Saltum</p>'
+    + '</td></tr>'
+    + '<tr><td valign="bottom" style="padding:0 14px 18px 0;vertical-align:bottom;text-align:right;">'
+    + '<table cellpadding="0" cellspacing="0" border="0" align="right" style="border-collapse:collapse;">'
+    + row(iCelular, celular) + row(iTelefone, telefone) + row(iEmail, emailHtml) + row(iEndereco, endereco)
+    + '</table></td></tr>'
+    + '</table></td></tr>'
+    + '<tr><td bgcolor="#183215" height="18" style="background-color:#183215;height:18px;font-size:0;line-height:0;">&nbsp;</td></tr>'
+    + '</table>';
   try {
-    await navigator.clipboard.write([
-      new ClipboardItem({ 'text/html': new Blob([html], { type: 'text/html' }) })
-    ]);
-    alert('Assinatura copiada! Cole diretamente no Gmail ou Outlook.');
+    await navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob([html], { type: 'text/html' }) })]);
+    alert('Assinatura copiada! Cole no Gmail > Configuracoes > Assinatura.');
   } catch(e) {
     try { await navigator.clipboard.writeText(html); } catch(e2) {
       var ta = document.createElement('textarea');
       ta.value = html; document.body.appendChild(ta); ta.select();
       document.execCommand('copy'); document.body.removeChild(ta);
     }
-    alert('Assinatura copiada (modo texto).');
+    alert('Assinatura copiada.');
   }
 }
 </script>

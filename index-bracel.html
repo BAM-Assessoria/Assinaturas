@@ -544,23 +544,87 @@ async function copyHTML(mode) {
     //   ↑ coincide exatamente com a borda esquerda da col2 (onde começa
     //     a diagonal da imagem do meio). Vale para QUALQUER col1 ≥ 180px.
     //
-    // O spacer invisível na primeira linha (col1=180, col2=340) garante
-    // os mínimos sem impedir col1 de crescer quando o nome for maior.
+    // SPACER IMAGE (GIF transparente 1x1): OWA ignora width em <div> e
+    // min-width em CSS, mas SEMPRE respeita o atributo width="" em <img>.
+    // Usamos GIF transparente esticado para travar as larguras mínimas.
     // ============================================================
+    // GIF transparente 1x1 inline (data URI) — funciona em qualquer cliente
+    var SPACER = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
     html = '<table cellpadding="0" cellspacing="0" border="0"'
       + ' style="border-collapse:collapse;border-spacing:0;font-family:Arial,Helvetica,sans-serif;'
       + 'mso-table-lspace:0pt;mso-table-rspace:0pt;">'
-      // Linha 0: spacers invisíveis que TRAVAM as larguras mínimas das colunas
+      // Linha 0: spacers IMG (a forma mais confiavel de travar larguras no OWA)
       + '<tr style="line-height:0;font-size:0;mso-line-height-rule:exactly;">'
-      + '<td width="180" height="1"'
-      + ' style="width:180px;min-width:180px;height:1px;line-height:0;font-size:0;padding:0;">'
-      + '<div style="width:180px;height:1px;line-height:0;font-size:0;">&nbsp;</div>'
+      + '<td height="1" style="height:1px;line-height:0;font-size:0;padding:0;">'
+      + '<img src="' + SPACER + '" width="180" height="1" alt="" border="0"'
+      + ' style="display:block;border:0;width:180px;height:1px;">'
       + '</td>'
-      + '<td width="340" height="1"'
-      + ' style="width:340px;min-width:340px;height:1px;line-height:0;font-size:0;padding:0;">'
-      + '<div style="width:340px;height:1px;line-height:0;font-size:0;">&nbsp;</div>'
+      + '<td height="1" style="height:1px;line-height:0;font-size:0;padding:0;">'
+      + '<img src="' + SPACER + '" width="340" height="1" alt="" border="0"'
+      + ' style="display:block;border:0;width:340px;height:1px;">'
       + '</td>'
       + '</tr>'
+      // Linha 1: imagem superior 520x180, colspan=2, ancorada à direita
+      + '<tr>'
+      + '<td colspan="2" height="180" bgcolor="#F4F4F4" align="right"'
+      + ' style="height:180px;padding:0;line-height:0;font-size:0;'
+      + 'background-color:#F4F4F4;text-align:right;">'
+      + '<img src="' + bgTopUrl + '" width="520" height="180" alt="Bracel" border="0"'
+      + ' style="display:inline-block;border:0;width:520px;height:180px;vertical-align:top;">'
+      + '</td>'
+      + '</tr>'
+      // Linha 2: col1 (nome, AUTO) | col2 (340 fixo = diagonal 160 + contatos 180)
+      + '<tr>'
+      + '<td height="160" bgcolor="#F4F4F4" valign="middle"'
+      + ' style="height:160px;padding:0 0 0 10px;vertical-align:middle;'
+      + 'background-color:#F4F4F4;white-space:nowrap;">'
+      + '<p style="margin:0;padding:0;font-size:16px;font-weight:900;color:#1a1a1a;'
+      + 'font-family:Arial,Helvetica,sans-serif;line-height:1.25;white-space:nowrap;">' + nome + '</p>'
+      + cargoHtml
+      + '</td>'
+      + '<td width="340" height="160" bgcolor="#DBDBDB"'
+      + ' style="width:340px;height:160px;padding:0;background-color:#DBDBDB;vertical-align:top;">'
+      // Sub-tabela travada em 340 com table-layout:fixed para col2/col3 não cederem
+      + '<table cellpadding="0" cellspacing="0" border="0" width="340"'
+      + ' style="border-collapse:collapse;border-spacing:0;width:340px;table-layout:fixed;'
+      + 'mso-table-lspace:0pt;mso-table-rspace:0pt;">'
+      // Spacer row interna: garante 160+180 mesmo se OWA mexer
+      + '<tr style="line-height:0;font-size:0;mso-line-height-rule:exactly;">'
+      + '<td height="1" style="height:1px;line-height:0;font-size:0;padding:0;">'
+      + '<img src="' + SPACER + '" width="160" height="1" alt="" border="0"'
+      + ' style="display:block;border:0;width:160px;height:1px;">'
+      + '</td>'
+      + '<td height="1" style="height:1px;line-height:0;font-size:0;padding:0;">'
+      + '<img src="' + SPACER + '" width="180" height="1" alt="" border="0"'
+      + ' style="display:block;border:0;width:180px;height:1px;">'
+      + '</td>'
+      + '</tr>'
+      + '<tr>'
+      + '<td width="160" height="160" bgcolor="#DBDBDB" valign="top"'
+      + ' style="width:160px;height:160px;padding:0;line-height:0;font-size:0;'
+      + 'vertical-align:top;background-color:#DBDBDB;overflow:hidden;">'
+      + '<img src="' + bgMidUrl + '" width="160" height="160" alt="" border="0"'
+      + ' style="display:block;border:0;width:auto;height:100%;vertical-align:top;">'
+      + '</td>'
+      + '<td width="180" height="160" bgcolor="#DBDBDB" valign="middle" align="right"'
+      + ' style="width:180px;height:160px;padding:6px 10px 6px 0;vertical-align:middle;'
+      + 'background-color:#DBDBDB;">'
+      + '<table cellpadding="0" cellspacing="0" border="0" align="right"'
+      + ' style="border-collapse:collapse;">'
+      + rowOwa(iCelular,  celular)
+      + rowOwa(iTelefone, telefone)
+      + rowOwa(iEmail,    emailHtml)
+      + rowOwa(iEndereco, endereco)
+      + '</table>'
+      + '</td>'
+      + '</tr>'
+      + '</table>'
+      + '</td>'
+      + '</tr>'
+      // Linha 3: barra laranja inferior
+      + '<tr><td colspan="2" bgcolor="#EB7927" height="14"'
+      + ' style="background-color:#EB7927;height:14px;font-size:0;line-height:0;">&nbsp;</td></tr>'
+      + '</table>';
       // Linha 1: imagem superior 520x180, colspan=2, ancorada à direita
       + '<tr>'
       + '<td colspan="2" height="180" bgcolor="#F4F4F4" align="right"'

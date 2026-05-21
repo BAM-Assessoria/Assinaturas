@@ -420,6 +420,7 @@ async function copyHTML(forOutlook) {
 
   var BASE      = 'https://bam-assessoria.github.io/Assinaturas/';
   var bgUrl     = BASE + 'bg/bracel.svg';
+  var bgPngUrl  = BASE + 'bg/bracel.png';
   var logoUrl   = BASE + 'bracel_logo.png';
   var iCelular  = BASE + 'icons/celular.png';
   var iTelefone = BASE + 'icons/telefone.png';
@@ -471,28 +472,40 @@ async function copyHTML(forOutlook) {
     //   coluna esquerda (nome/cargo) + celula logo-topo = #F4F4F4 (cinza claro)
     //   celula contatos-baixo        = #DBDBDB (cinza escuro)
     // Isso simula a divisão diagonal do design original sem CSS que o Outlook descarta.
+    // background HTML attribute: suportado pelo Outlook Desktop (Word engine)
+    // bgcolor="#F4F4F4": fallback para clientes que nao suportam background attr
+    // Celulas internas sem bgcolor para serem transparentes e mostrar o background diagonal
     html = '<table cellpadding="0" cellspacing="0" border="0" width="520"'
       + ' style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;width:520px;">'
 
-      // Linha 1: Nome/Cargo (rowspan=2, cinza claro) | Logo (cinza claro)
+      // Celula unica de fundo: diagonal via background attr + bgcolor fallback
       + '<tr>'
-      + '<td width="200" bgcolor="#F4F4F4" rowspan="2" valign="bottom"'
-      + ' style="width:200px;padding:0 0 22px 26px;vertical-align:bottom;background-color:#F4F4F4;">'
+      + '<td width="520" background="' + bgPngUrl + '" bgcolor="#F4F4F4"'
+      + ' style="width:520px;background-color:#F4F4F4;">'
+
+      // Tabela interna de layout — celulas transparentes
+      + '<table cellpadding="0" cellspacing="0" border="0" width="520"'
+      + ' style="border-collapse:collapse;width:520px;">'
+
+      // Linha 1: Nome/Cargo (rowspan=2) | Logo
+      + '<tr>'
+      + '<td width="200" rowspan="2" valign="bottom"'
+      + ' style="width:200px;padding:0 0 22px 26px;vertical-align:bottom;">'
       + '<p style="margin:0;padding:0;font-size:16px;font-weight:900;color:#1a1a1a;'
       + 'font-family:Arial,Helvetica,sans-serif;line-height:1.25;">' + nome + '</p>'
       + cargoHtml
       + '</td>'
-      + '<td width="320" bgcolor="#F4F4F4" valign="top" align="right"'
-      + ' style="width:320px;padding:22px 14px 12px 0;vertical-align:top;text-align:right;background-color:#F4F4F4;">'
+      + '<td width="320" align="right" valign="top"'
+      + ' style="width:320px;padding:22px 14px 12px 0;vertical-align:top;text-align:right;">'
       + '<img src="' + logoUrl + '" alt="Bracel" width="280" height="81" border="0"'
       + ' style="display:block;border:0;width:280px;height:81px;" align="right">'
       + '</td>'
       + '</tr>'
 
-      // Linha 2: Contatos (cinza escuro — simula area diagonal do design original)
+      // Linha 2: Contatos (celula transparente — diagonal do background aparece)
       + '<tr>'
-      + '<td width="320" bgcolor="#DBDBDB" valign="bottom" align="right"'
-      + ' style="width:320px;padding:8px 14px 22px 0;vertical-align:bottom;background-color:#DBDBDB;">'
+      + '<td width="320" align="right" valign="bottom"'
+      + ' style="width:320px;padding:8px 14px 22px 0;vertical-align:bottom;">'
       + '<table cellpadding="0" cellspacing="0" border="0" align="right"'
       + ' style="border-collapse:collapse;">'
       + rowOl(iCelular,  celular)
@@ -503,12 +516,15 @@ async function copyHTML(forOutlook) {
       + '</td>'
       + '</tr>'
 
-      // Spacer (mesma cor do bloco de contatos para fechar limpo)
-      + '<tr><td colspan="2" height="4" bgcolor="#DBDBDB"'
-      + ' style="height:4px;font-size:0;line-height:0;background-color:#DBDBDB;"></td></tr>'
+      // Spacer
+      + '<tr><td colspan="2" height="4" style="height:4px;font-size:0;line-height:0;"></td></tr>'
+
+      + '</table>'  // tabela interna
+      + '</td>'     // td de fundo
+      + '</tr>'     // linha de conteudo
 
       // Barra laranja
-      + '<tr><td colspan="2" bgcolor="#EB7927" height="14"'
+      + '<tr><td bgcolor="#EB7927" height="14"'
       + ' style="background-color:#EB7927;height:14px;font-size:0;line-height:0;">&nbsp;</td></tr>'
 
       + '</table>';

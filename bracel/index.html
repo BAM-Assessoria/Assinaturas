@@ -516,32 +516,31 @@ async function copyHTML(mode) {
   } else if (mode === 'owa') {
     // === VERSÃO OUTLOOK WEB (OWA) — Opção A: 2 imagens com diagonal contínua ===
     // OWA remove background-image/attr ao salvar; usamos PNGs <img> + bgcolor solido.
-    // Largura dinâmica: col1 cresce com o nome. Imagem do topo 520x100 fixa, ancorada à direita.
-    // Geometria: col3=192 e middle=240x125 obrigatórios para a diagonal alinhar (slope -0.521).
-    // Total mínimo = 632 (col1=200). Se nome maior, col1 cresce e total cresce.
+    // Largura dinâmica: col1 cresce com o nome. Imagem do topo 520x90 fixa, ancorada à direita.
+    // Geometria: col3=160 e middle=160x90 (slope -0.5625). Col1=200, total mínimo=520.
     html = '<table cellpadding="0" cellspacing="0" border="0"'
       + ' style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;">'
       + '<tr>'
-      + '<td colspan="3" height="100" bgcolor="#F4F4F4" align="right"'
-      + ' style="height:100px;padding:0;line-height:0;font-size:0;background-color:#F4F4F4;text-align:right;">'
-      + '<img src="' + bgTopUrl + '" width="520" height="100" alt="Bracel" border="0"'
-      + ' style="border:0;width:520px;height:100px;vertical-align:top;">'
+      + '<td colspan="3" height="90" bgcolor="#F4F4F4" align="right"'
+      + ' style="height:90px;padding:0;line-height:0;font-size:0;background-color:#F4F4F4;text-align:right;">'
+      + '<img src="' + bgTopUrl + '" width="520" height="90" alt="Bracel" border="0"'
+      + ' style="border:0;width:520px;height:90px;vertical-align:top;">'
       + '</td>'
       + '</tr>'
       + '<tr>'
-      + '<td width="200" height="125" bgcolor="#F4F4F4" valign="bottom"'
-      + ' style="height:125px;padding:0 0 18px 26px;vertical-align:bottom;background-color:#F4F4F4;white-space:nowrap;">'
+      + '<td width="200" height="90" bgcolor="#F4F4F4" valign="bottom"'
+      + ' style="height:90px;padding:0 0 14px 26px;vertical-align:bottom;background-color:#F4F4F4;white-space:nowrap;">'
       + '<p style="margin:0;padding:0;font-size:16px;font-weight:900;color:#1a1a1a;'
       + 'font-family:Arial,Helvetica,sans-serif;line-height:1.25;white-space:nowrap;">' + nome + '</p>'
       + cargoHtml
       + '</td>'
-      + '<td width="240" height="125"'
-      + ' style="width:240px;height:125px;padding:0;line-height:0;font-size:0;">'
-      + '<img src="' + bgMidUrl + '" width="240" height="125" alt="" border="0"'
-      + ' style="display:block;border:0;width:240px;height:125px;">'
+      + '<td width="160" height="90"'
+      + ' style="width:160px;height:90px;padding:0;line-height:0;font-size:0;">'
+      + '<img src="' + bgMidUrl + '" width="160" height="90" alt="" border="0"'
+      + ' style="display:block;border:0;width:160px;height:90px;">'
       + '</td>'
-      + '<td width="192" height="125" bgcolor="#DBDBDB" valign="bottom" align="right"'
-      + ' style="width:192px;height:125px;padding:8px 14px 18px 0;vertical-align:bottom;background-color:#DBDBDB;">'
+      + '<td width="160" height="90" bgcolor="#DBDBDB" valign="middle" align="right"'
+      + ' style="width:160px;height:90px;padding:6px 12px 6px 0;vertical-align:middle;background-color:#DBDBDB;">'
       + '<table cellpadding="0" cellspacing="0" border="0" align="right"'
       + ' style="border-collapse:collapse;">'
       + rowOl(iCelular,  celular)

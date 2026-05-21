@@ -208,7 +208,8 @@
   <div class="actions">
     <button class="btn" onclick="downloadPNG()">Baixar como PNG</button>
     <button class="btn secondary" onclick="copyHTML()">Copiar para Gmail</button>
-    <button class="btn secondary" onclick="copyHTML(true)">Copiar para Outlook</button>
+    <button class="btn secondary" onclick="copyHTML('owa')">Copiar para Outlook Web</button>
+    <button class="btn secondary" onclick="copyHTML('desktop')">Copiar para Outlook Desktop</button>
   </div>
 </div>
 
@@ -409,8 +410,8 @@ function downloadPNG() {
   });
 }
 
-// Copia HTML da assinatura — forOutlook=true gera HTML otimizado para Outlook
-async function copyHTML(forOutlook) {
+// Copia HTML da assinatura — mode: undefined=Gmail | 'owa'=Outlook Web | 'desktop'=Outlook Desktop
+async function copyHTML(mode) {
   var nome     = (document.getElementById('f-nome').value     || '').trim();
   var cargo    = (document.getElementById('f-cargo').value    || '').trim();
   var celular  = (document.getElementById('f-celular').value  || '').trim();
@@ -466,28 +467,17 @@ async function copyHTML(forOutlook) {
 
   var html;
 
-  if (forOutlook) {
-    // === VERSÃO OUTLOOK ===
-    // Fundo two-tone via bgcolor em celulas separadas (background-image é ignorado pelo Outlook):
-    //   coluna esquerda (nome/cargo) + celula logo-topo = #F4F4F4 (cinza claro)
-    //   celula contatos-baixo        = #DBDBDB (cinza escuro)
-    // Isso simula a divisão diagonal do design original sem CSS que o Outlook descarta.
+  if (mode === 'desktop') {
+    // === VERSÃO OUTLOOK DESKTOP ===
     // background HTML attribute: suportado pelo Outlook Desktop (Word engine)
-    // bgcolor="#F4F4F4": fallback para clientes que nao suportam background attr
-    // Celulas internas sem bgcolor para serem transparentes e mostrar o background diagonal
+    // Celulas internas sem bgcolor — transparentes, mostram a diagonal do PNG
     html = '<table cellpadding="0" cellspacing="0" border="0" width="520"'
       + ' style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;width:520px;">'
-
-      // Celula unica de fundo: diagonal via background attr + bgcolor fallback
       + '<tr>'
       + '<td width="520" background="' + bgPngUrl + '" bgcolor="#F4F4F4"'
       + ' style="width:520px;background-color:#F4F4F4;">'
-
-      // Tabela interna de layout — celulas transparentes
       + '<table cellpadding="0" cellspacing="0" border="0" width="520"'
       + ' style="border-collapse:collapse;width:520px;">'
-
-      // Linha 1: Nome/Cargo (rowspan=2) | Logo
       + '<tr>'
       + '<td width="200" rowspan="2" valign="bottom"'
       + ' style="width:200px;padding:0 0 22px 26px;vertical-align:bottom;">'
@@ -501,8 +491,6 @@ async function copyHTML(forOutlook) {
       + ' style="display:block;border:0;width:280px;height:81px;" align="right">'
       + '</td>'
       + '</tr>'
-
-      // Linha 2: Contatos (celula transparente — diagonal do background aparece)
       + '<tr>'
       + '<td width="320" align="right" valign="bottom"'
       + ' style="width:320px;padding:8px 14px 22px 0;vertical-align:bottom;">'
@@ -515,18 +503,49 @@ async function copyHTML(forOutlook) {
       + '</table>'
       + '</td>'
       + '</tr>'
-
-      // Spacer
       + '<tr><td colspan="2" height="4" style="height:4px;font-size:0;line-height:0;"></td></tr>'
-
-      + '</table>'  // tabela interna
-      + '</td>'     // td de fundo
-      + '</tr>'     // linha de conteudo
-
-      // Barra laranja
+      + '</table>'
+      + '</td>'
+      + '</tr>'
       + '<tr><td bgcolor="#EB7927" height="14"'
       + ' style="background-color:#EB7927;height:14px;font-size:0;line-height:0;">&nbsp;</td></tr>'
+      + '</table>';
 
+  } else if (mode === 'owa') {
+    // === VERSÃO OUTLOOK WEB (OWA) ===
+    // OWA remove background-image/attr ao salvar via editor — usamos bgcolor em celulas separadas
+    // Resultado: fundo dividido em dois tons (cinza claro area nome/logo | cinza escuro area contatos)
+    html = '<table cellpadding="0" cellspacing="0" border="0" width="520"'
+      + ' style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;width:520px;">'
+      + '<tr>'
+      + '<td width="200" bgcolor="#F4F4F4" rowspan="2" valign="bottom"'
+      + ' style="width:200px;padding:0 0 22px 26px;vertical-align:bottom;background-color:#F4F4F4;">'
+      + '<p style="margin:0;padding:0;font-size:16px;font-weight:900;color:#1a1a1a;'
+      + 'font-family:Arial,Helvetica,sans-serif;line-height:1.25;">' + nome + '</p>'
+      + cargoHtml
+      + '</td>'
+      + '<td width="320" bgcolor="#F4F4F4" valign="top" align="right"'
+      + ' style="width:320px;padding:22px 14px 12px 0;vertical-align:top;text-align:right;background-color:#F4F4F4;">'
+      + '<img src="' + logoUrl + '" alt="Bracel" width="280" height="81" border="0"'
+      + ' style="display:block;border:0;width:280px;height:81px;" align="right">'
+      + '</td>'
+      + '</tr>'
+      + '<tr>'
+      + '<td width="320" bgcolor="#DBDBDB" valign="bottom" align="right"'
+      + ' style="width:320px;padding:8px 14px 22px 0;vertical-align:bottom;background-color:#DBDBDB;">'
+      + '<table cellpadding="0" cellspacing="0" border="0" align="right"'
+      + ' style="border-collapse:collapse;">'
+      + rowOl(iCelular,  celular)
+      + rowOl(iTelefone, telefone)
+      + rowOl(iEmail,    emailHtml)
+      + rowOl(iEndereco, endereco)
+      + '</table>'
+      + '</td>'
+      + '</tr>'
+      + '<tr><td colspan="2" height="4" bgcolor="#DBDBDB"'
+      + ' style="height:4px;font-size:0;line-height:0;background-color:#DBDBDB;"></td></tr>'
+      + '<tr><td colspan="2" bgcolor="#EB7927" height="14"'
+      + ' style="background-color:#EB7927;height:14px;font-size:0;line-height:0;">&nbsp;</td></tr>'
       + '</table>';
 
   } else {
@@ -581,9 +600,11 @@ async function copyHTML(forOutlook) {
     await navigator.clipboard.write([
       new ClipboardItem({ 'text/html': new Blob([html], { type: 'text/html' }) })
     ]);
-    var msg = forOutlook
-      ? 'Assinatura copiada! Cole no Outlook > Configurações > Assinatura de email.'
-      : 'Assinatura copiada! Cole no Gmail > Configurações > Assinatura.';
+    var msg = mode === 'desktop'
+      ? 'Copiado! Cole no Outlook Desktop: Arquivo > Opções > Email > Assinaturas.'
+      : mode === 'owa'
+      ? 'Copiado! Cole no Outlook Web: Configurações > Email > Assinatura de email.'
+      : 'Copiado! Cole no Gmail > Configurações > Assinatura.';
     alert(msg);
   } catch(e) {
     // Fallback: contenteditable preserva HTML formatado no clipboard

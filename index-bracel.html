@@ -515,8 +515,8 @@ async function copyHTML(mode) {
 
   } else if (mode === 'owa') {
     // === VERSÃO OUTLOOK WEB (OWA) — Opção A: 2 imagens com diagonal contínua ===
-    // Top 520x180 fixa, ancorada à direita. col3=180 e middle=100x100 (slope -1).
-    // Col1=200, total mínimo=480.
+    // Top 520x180 fixa, ancorada à direita. col3=180 e middle=110x110 (slope -1).
+    // Col1=auto, total mínimo=480.
     // Contatos compactos (fonte/ícones menores) para afastar o bloco da diagonal.
     var rowOwa = function(icon, content) {
       if (!content) return '';
@@ -547,13 +547,13 @@ async function copyHTML(mode) {
       + 'font-family:Arial,Helvetica,sans-serif;line-height:1.25;white-space:nowrap;">' + nome + '</p>'
       + cargoHtml
       + '</td>'
-      + '<td width="100" height="100"'
-      + ' style="width:100px;height:100px;padding:0;line-height:0;font-size:0;">'
-      + '<img src="' + bgMidUrl + '" width="100" height="100" alt="" border="0"'
-      + ' style="display:block;border:0;width:100px;height:100px;">'
+      + '<td width="110" height="110"'
+      + ' style="width:110px;height:110px;padding:0;line-height:0;font-size:0;">'
+      + '<img src="' + bgMidUrl + '" width="110" height="110" alt="" border="0"'
+      + ' style="display:block;border:0;width:110px;height:110px;">'
       + '</td>'
-      + '<td width="180" height="100" bgcolor="#DBDBDB" valign="middle" align="right"'
-      + ' style="width:180px;height:100px;padding:6px 10px 6px 0;vertical-align:middle;background-color:#DBDBDB;">'
+      + '<td width="180" height="110" bgcolor="#DBDBDB" valign="middle" align="right"'
+      + ' style="width:180px;height:110px;padding:6px 10px 6px 0;vertical-align:middle;background-color:#DBDBDB;">'
       + '<table cellpadding="0" cellspacing="0" border="0" align="right"'
       + ' style="border-collapse:collapse;">'
       + rowOwa(iCelular,  celular)

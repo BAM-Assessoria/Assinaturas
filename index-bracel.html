@@ -517,6 +517,20 @@ async function copyHTML(mode) {
     // === VERSÃO OUTLOOK WEB (OWA) — Opção A: 2 imagens com diagonal contínua ===
     // Top 520x180 fixa, ancorada à direita. col3=180 e middle=100x100 (slope -1).
     // Col1=200, total mínimo=480.
+    // Contatos compactos (fonte/ícones menores) para afastar o bloco da diagonal.
+    var rowOwa = function(icon, content) {
+      if (!content) return '';
+      return '<tr>'
+        + '<td width="15" valign="middle" style="width:15px;padding:0 4px 3px 0;vertical-align:middle;">'
+        + '<img src="' + icon + '" width="11" height="11" alt="" border="0"'
+        + ' style="display:block;border:0;width:11px;height:11px;">'
+        + '</td>'
+        + '<td valign="middle" style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;'
+        + 'padding-bottom:3px;vertical-align:middle;white-space:nowrap;line-height:1.2;">'
+        + content
+        + '</td>'
+        + '</tr>';
+    };
     html = '<table cellpadding="0" cellspacing="0" border="0"'
       + ' style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;">'
       + '<tr>'
@@ -539,13 +553,13 @@ async function copyHTML(mode) {
       + ' style="display:block;border:0;width:100px;height:100px;">'
       + '</td>'
       + '<td width="180" height="100" bgcolor="#DBDBDB" valign="middle" align="right"'
-      + ' style="width:180px;height:100px;padding:6px 12px 6px 0;vertical-align:middle;background-color:#DBDBDB;">'
+      + ' style="width:180px;height:100px;padding:6px 10px 6px 0;vertical-align:middle;background-color:#DBDBDB;">'
       + '<table cellpadding="0" cellspacing="0" border="0" align="right"'
       + ' style="border-collapse:collapse;">'
-      + rowOl(iCelular,  celular)
-      + rowOl(iTelefone, telefone)
-      + rowOl(iEmail,    emailHtml)
-      + rowOl(iEndereco, endereco)
+      + rowOwa(iCelular,  celular)
+      + rowOwa(iTelefone, telefone)
+      + rowOwa(iEmail,    emailHtml)
+      + rowOwa(iEndereco, endereco)
       + '</table>'
       + '</td>'
       + '</tr>'

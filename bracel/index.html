@@ -422,6 +422,8 @@ async function copyHTML(mode) {
   var BASE      = 'https://bam-assessoria.github.io/Assinaturas/';
   var bgUrl     = BASE + 'bg/bracel.svg';
   var bgPngUrl  = BASE + 'bg/bracel.png';
+  var bgTopUrl  = BASE + 'bg/bracel-top.png';
+  var bgMidUrl  = BASE + 'bg/bracel-middle.png';
   var logoUrl   = BASE + 'bracel_logo.png';
   var iCelular  = BASE + 'icons/celular.png';
   var iTelefone = BASE + 'icons/telefone.png';
@@ -512,27 +514,35 @@ async function copyHTML(mode) {
       + '</table>';
 
   } else if (mode === 'owa') {
-    // === VERSÃO OUTLOOK WEB (OWA) ===
-    // OWA remove background-image/attr ao salvar via editor — usamos bgcolor em celulas separadas
-    // Resultado: fundo dividido em dois tons (cinza claro area nome/logo | cinza escuro area contatos)
+    // === VERSÃO OUTLOOK WEB (OWA) — Opção A: 2 imagens com diagonal contínua ===
+    // OWA remove background-image/attr ao salvar; usamos PNGs <img> + bgcolor solido.
+    // Layout: linha 1 = imagem topo (logo+diagonal) | linha 2 = 3 colunas (nome | imagem-meio | contatos)
+    // A diagonal e contínua: sai do topo em x=328 e desce ate (200,150) na imagem do meio.
     html = '<table cellpadding="0" cellspacing="0" border="0" width="520"'
       + ' style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;width:520px;">'
+      // Linha 1: imagem do topo 520x90 (logo + diagonal)
       + '<tr>'
-      + '<td width="200" bgcolor="#F4F4F4" rowspan="2" valign="bottom"'
-      + ' style="width:200px;padding:0 0 22px 26px;vertical-align:bottom;background-color:#F4F4F4;">'
+      + '<td colspan="3" width="520" height="90"'
+      + ' style="width:520px;height:90px;padding:0;line-height:0;font-size:0;">'
+      + '<img src="' + bgTopUrl + '" width="520" height="90" alt="Bracel" border="0"'
+      + ' style="display:block;border:0;width:520px;height:90px;">'
+      + '</td>'
+      + '</tr>'
+      // Linha 2: 3 colunas — nome (F4F4F4) | imagem meio | contatos (DBDBDB)
+      + '<tr>'
+      + '<td width="200" height="60" bgcolor="#F4F4F4" valign="bottom"'
+      + ' style="width:200px;height:60px;padding:0 0 14px 26px;vertical-align:bottom;background-color:#F4F4F4;">'
       + '<p style="margin:0;padding:0;font-size:16px;font-weight:900;color:#1a1a1a;'
       + 'font-family:Arial,Helvetica,sans-serif;line-height:1.25;">' + nome + '</p>'
       + cargoHtml
       + '</td>'
-      + '<td width="320" bgcolor="#F4F4F4" valign="top" align="right"'
-      + ' style="width:320px;padding:22px 14px 12px 0;vertical-align:top;text-align:right;background-color:#F4F4F4;">'
-      + '<img src="' + logoUrl + '" alt="Bracel" width="280" height="81" border="0"'
-      + ' style="display:block;border:0;width:280px;height:81px;" align="right">'
+      + '<td width="128" height="60"'
+      + ' style="width:128px;height:60px;padding:0;line-height:0;font-size:0;">'
+      + '<img src="' + bgMidUrl + '" width="128" height="60" alt="" border="0"'
+      + ' style="display:block;border:0;width:128px;height:60px;">'
       + '</td>'
-      + '</tr>'
-      + '<tr>'
-      + '<td width="320" bgcolor="#DBDBDB" valign="bottom" align="right"'
-      + ' style="width:320px;padding:8px 14px 22px 0;vertical-align:bottom;background-color:#DBDBDB;">'
+      + '<td width="192" height="60" bgcolor="#DBDBDB" valign="bottom" align="right"'
+      + ' style="width:192px;height:60px;padding:8px 14px 14px 0;vertical-align:bottom;background-color:#DBDBDB;">'
       + '<table cellpadding="0" cellspacing="0" border="0" align="right"'
       + ' style="border-collapse:collapse;">'
       + rowOl(iCelular,  celular)
@@ -542,9 +552,7 @@ async function copyHTML(mode) {
       + '</table>'
       + '</td>'
       + '</tr>'
-      + '<tr><td colspan="2" height="4" bgcolor="#DBDBDB"'
-      + ' style="height:4px;font-size:0;line-height:0;background-color:#DBDBDB;"></td></tr>'
-      + '<tr><td colspan="2" bgcolor="#EB7927" height="14"'
+      + '<tr><td colspan="3" bgcolor="#EB7927" height="14"'
       + ' style="background-color:#EB7927;height:14px;font-size:0;line-height:0;">&nbsp;</td></tr>'
       + '</table>';
 

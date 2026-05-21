@@ -425,6 +425,8 @@ async function copyHTML(mode) {
   var bgTopUrl  = BASE + 'bg/bracel-top.png';
   var bgMidUrl  = BASE + 'bg/bracel-middle.png';
   var logoUrl   = BASE + 'bracel_logo.png';
+  // GIF transparente 1x1 em data URI (sobrevive ao OWA quando dentro de célula com conteúdo)
+  var SPACER    = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
   var iCelular  = BASE + 'icons/celular.png';
   var iTelefone = BASE + 'icons/telefone.png';
   var iEmail    = BASE + 'icons/email.png';
@@ -514,58 +516,104 @@ async function copyHTML(mode) {
       + '</table>';
 
   } else if (mode === 'owa') {
-    // === VERSÃO OUTLOOK WEB (OWA) — Opção A: 2 imagens com diagonal contínua ===
-    // OWA remove background-image/attr ao salvar; usamos PNGs <img> + bgcolor solido.
-    // Largura dinâmica: col1 cresce com o nome. Imagem do topo 520x90 fixa, ancorada à direita.
-    // Geometria: col3=160 e middle=160x100 (slope -0.625). Col1=auto, total mínimo=520.
-    // Contatos compactos (fonte/ícones menores) para afastar o bloco da diagonal.
+    // === VERSÃO OUTLOOK WEB (OWA) ===
+    // Estratégia validada (após observar o saneamento real do OWA):
+    //  - OWA REMOVE: <colgroup>, table-layout:fixed, linhas vazias/1px, width/height
+    //    em atributos HTML, align="right" em <table>, classes
+    //  - OWA PRESERVA: width/height NO STYLE inline, bgcolor, background="url",
+    //    colspan, align em <td> (vira text-align), border-collapse, padding/margin
+    //
+    // Layout: col1 (VARIÁVEL, mín 208) + col2 (160 fixo) + col3 (152 fixo) = mín 520
+    //   Top image 520x100 right-anchored. Quando col1>208, sobra light bg à esquerda.
+    //   Diagonais sempre alinhadas pois col2+col3=312 constantes → top_diag e mid_diag
+    //   deslocam juntos com qualquer col1.
+    //
+    // Contatos col3: formato Gmail (TD único, ícone inline com margin-right:5)
+    //   Endereço longo quebra em 2 linhas dentro dos 152px.
+    //
+    // Dark mode: bgcolor + background-image url(data:gif1x1) trava cor sólida.
     var rowOwa = function(icon, content) {
       if (!content) return '';
       return '<tr>'
-        + '<td width="15" valign="middle" style="width:15px;padding:0 4px 3px 0;vertical-align:middle;">'
-        + '<img src="' + icon + '" width="11" height="11" alt="" border="0"'
-        + ' style="display:block;border:0;width:11px;height:11px;">'
-        + '</td>'
-        + '<td valign="middle" style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;'
-        + 'padding-bottom:3px;vertical-align:middle;white-space:nowrap;line-height:1.2;">'
-        + content
+        + '<td style="font-size:10px;color:#333333;font-family:Arial,Helvetica,sans-serif;'
+        + 'padding:0 0 1px 0;vertical-align:middle;line-height:12px;'
+        + 'white-space:nowrap;overflow:hidden;">'
+        + '<img src="' + icon + '" width="10" height="10" alt="" border="0"'
+        + ' style="display:inline-block;border:0;vertical-align:middle;margin-right:4px;'
+        + 'width:10px;height:10px;">'
+        + '<span style="color:#333333;white-space:nowrap;font-size:10px;">' + content + '</span>'
         + '</td>'
         + '</tr>';
     };
-    html = '<table cellpadding="0" cellspacing="0" border="0"'
-      + ' style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;">'
+    // GIFs 1x1 de cor sólida (data URIs) — travam bgcolor contra inversão no dark mode
+    var BG_LIGHT  = 'data:image/gif;base64,R0lGODlhAQABAPAAAPT09AAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
+    var BG_DARK   = 'data:image/gif;base64,R0lGODlhAQABAPAAANvb2wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
+    var BG_ORANGE = 'data:image/gif;base64,R0lGODlhAQABAPAAAOt5JwAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
+    html = '<table cellpadding="0" cellspacing="0" border="0" role="presentation"'
+      + ' style="border-collapse:collapse;border-spacing:0;'
+      + 'font-family:Arial,Helvetica,sans-serif;mso-table-lspace:0pt;mso-table-rspace:0pt;">'
+      // Linha 1: imagem superior 551x106 (escalada 106% de 520x100), colspan=3, ancorada à direita e embaixo
       + '<tr>'
-      + '<td colspan="3" height="100" bgcolor="#F4F4F4" align="right"'
-      + ' style="height:100px;padding:0;line-height:0;font-size:0;background-color:#F4F4F4;text-align:right;">'
-      + '<img src="' + bgTopUrl + '" width="520" height="100" alt="Bracel" border="0"'
-      + ' style="border:0;width:520px;height:100px;vertical-align:top;">'
+      + '<td colspan="3" bgcolor="#F4F4F4" align="right" background="' + BG_LIGHT + '"'
+      + ' style="height:106px;padding:0;line-height:0;font-size:0;text-align:right;vertical-align:bottom;'
+      + 'background-color:#F4F4F4;background-image:url(\'' + BG_LIGHT + '\');background-repeat:repeat;">'
+      + '<img src="' + bgTopUrl + '" width="551" height="106" alt="Bracel" border="0"'
+      + ' style="display:inline-block;border:0;width:551px;height:106px;vertical-align:bottom;">'
       + '</td>'
       + '</tr>'
+      // Linha 2: nome | diagonal | contatos — TR forçada a 100px pelas três TDs
       + '<tr>'
-      + '<td bgcolor="#F4F4F4" valign="middle"'
-      + ' style="padding:0;vertical-align:middle;background-color:#F4F4F4;white-space:nowrap;">'
+      // COL1: nome+cargo. width mínimo via spacer GIF 208w; cresce se nome maior.
+      + '<td bgcolor="#F4F4F4" valign="middle" background="' + BG_LIGHT + '"'
+      + ' style="height:100px;padding:0 10px 0 10px;vertical-align:middle;'
+      + 'background-color:#F4F4F4;background-image:url(\'' + BG_LIGHT + '\');background-repeat:repeat;'
+      + 'white-space:nowrap;">'
       + '<p style="margin:0;padding:0;font-size:16px;font-weight:900;color:#1a1a1a;'
-      + 'font-family:Arial,Helvetica,sans-serif;line-height:1.25;white-space:nowrap;">' + nome + '</p>'
+      + 'font-family:Arial,Helvetica,sans-serif;line-height:1.25;white-space:nowrap;">'
+      + '<span style="color:#1a1a1a;">' + nome + '</span></p>'
       + cargoHtml
+      // Spacer GIF: trava col1 ≥ 208px (sobrevive ao OWA por estar dentro de TD com conteúdo)
+      + '<img src="' + SPACER + '" width="208" height="1" alt="" border="0"'
+      + ' style="display:block;border:0;width:208px;height:1px;line-height:0;font-size:0;">'
       + '</td>'
-      + '<td width="160" height="100"'
-      + ' style="width:160px;height:100px;padding:0;line-height:0;font-size:0;">'
+      // COL2: imagem da diagonal 160x100 — width FIXO em style (sobrevive ao OWA)
+      + '<td width="160" bgcolor="#F4F4F4" valign="top" background="' + BG_LIGHT + '"'
+      + ' style="width:160px;height:100px;padding:0;line-height:0;font-size:0;'
+      + 'vertical-align:top;background-color:#F4F4F4;'
+      + 'background-image:url(\'' + BG_LIGHT + '\');background-repeat:repeat;">'
       + '<img src="' + bgMidUrl + '" width="160" height="100" alt="" border="0"'
-      + ' style="display:block;border:0;width:160px;height:100px;">'
+      + ' style="display:block;border:0;width:160px;height:100px;vertical-align:top;">'
       + '</td>'
-      + '<td width="160" height="100" bgcolor="#DBDBDB" valign="middle" align="right"'
-      + ' style="width:160px;height:100px;padding:6px 10px 6px 0;vertical-align:middle;background-color:#DBDBDB;">'
-      + '<table cellpadding="0" cellspacing="0" border="0" align="right"'
-      + ' style="border-collapse:collapse;">'
+      // COL3: contatos em formato Gmail. Bloco cinza VISUALMENTE menor que col1/col2:
+      // TD externa tem bg claro (igual col1/col2) e alinha conteúdo embaixo;
+      // wrapper interno DBDBDB com altura reduzida (~75px) encosta na barra laranja.
+      + '<td width="152" bgcolor="#F4F4F4" valign="bottom" background="' + BG_LIGHT + '"'
+      + ' style="width:152px;height:100px;padding:0;vertical-align:bottom;'
+      + 'background-color:#F4F4F4;background-image:url(\'' + BG_LIGHT + '\');background-repeat:repeat;">'
+      + '<table cellpadding="0" cellspacing="0" border="0" role="presentation" width="152"'
+      + ' bgcolor="#DBDBDB" background="' + BG_DARK + '"'
+      + ' style="border-collapse:collapse;border-spacing:0;width:152px;'
+      + 'background-color:#DBDBDB;background-image:url(\'' + BG_DARK + '\');background-repeat:repeat;">'
+      + '<tr><td bgcolor="#DBDBDB" background="' + BG_DARK + '"'
+      + ' style="width:152px;height:90px;padding:5px 4px 5px 6px;vertical-align:middle;'
+      + 'background-color:#DBDBDB;background-image:url(\'' + BG_DARK + '\');background-repeat:repeat;">'
+      + '<table cellpadding="0" cellspacing="0" border="0" role="presentation"'
+      + ' style="border-collapse:collapse;border-spacing:0;">'
       + rowOwa(iCelular,  celular)
       + rowOwa(iTelefone, telefone)
       + rowOwa(iEmail,    emailHtml)
       + rowOwa(iEndereco, endereco)
       + '</table>'
+      // Spacer GIF que trava col3 = 152px (impede contatos curtos de encolher a coluna)
+      + '<img src="' + SPACER + '" width="152" height="1" alt="" border="0"'
+      + ' style="display:block;border:0;width:152px;height:1px;line-height:0;font-size:0;">'
+      + '</td></tr></table>'
       + '</td>'
       + '</tr>'
-      + '<tr><td colspan="3" bgcolor="#EB7927" height="14"'
-      + ' style="background-color:#EB7927;height:14px;font-size:0;line-height:0;">&nbsp;</td></tr>'
+      // Linha 3: barra laranja
+      + '<tr><td colspan="3" bgcolor="#EB7927" background="' + BG_ORANGE + '"'
+      + ' style="background-color:#EB7927;background-image:url(\'' + BG_ORANGE + '\');background-repeat:repeat;'
+      + 'height:14px;font-size:0;line-height:0;">&nbsp;</td></tr>'
       + '</table>';
 
   } else {

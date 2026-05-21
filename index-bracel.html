@@ -515,22 +515,22 @@ async function copyHTML(mode) {
 
   } else if (mode === 'owa') {
     // === VERSÃO OUTLOOK WEB (OWA) — Opção A: 2 imagens com diagonal contínua ===
-    // Layout: linha 1 = imagem topo 520x180 (logo+diagonal) | linha 2 = 3 colunas (nome | imagem-meio 80x60 | contatos)
-    // Diagonal contínua: topo sai em x=280, meio desce ate (200,240).
-    html = '<table cellpadding="0" cellspacing="0" border="0" width="520"'
-      + ' style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;width:520px;">'
+    // Largura dinâmica: col1 cresce com o nome. Imagem do topo 520x180 fixa, ancorada à direita.
+    // Geometria: col3=240 e middle=80 obrigatórios para alinhar a diagonal (topo sai em x=280).
+    html = '<table cellpadding="0" cellspacing="0" border="0"'
+      + ' style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;">'
       + '<tr>'
-      + '<td colspan="3" width="520" height="180"'
-      + ' style="width:520px;height:180px;padding:0;line-height:0;font-size:0;">'
+      + '<td colspan="3" height="180" bgcolor="#F4F4F4" align="right"'
+      + ' style="height:180px;padding:0;line-height:0;font-size:0;background-color:#F4F4F4;text-align:right;">'
       + '<img src="' + bgTopUrl + '" width="520" height="180" alt="Bracel" border="0"'
-      + ' style="display:block;border:0;width:520px;height:180px;">'
+      + ' style="border:0;width:520px;height:180px;vertical-align:top;">'
       + '</td>'
       + '</tr>'
       + '<tr>'
       + '<td width="200" height="60" bgcolor="#F4F4F4" valign="bottom"'
-      + ' style="width:200px;height:60px;padding:0 0 14px 26px;vertical-align:bottom;background-color:#F4F4F4;">'
+      + ' style="height:60px;padding:0 0 14px 26px;vertical-align:bottom;background-color:#F4F4F4;white-space:nowrap;">'
       + '<p style="margin:0;padding:0;font-size:16px;font-weight:900;color:#1a1a1a;'
-      + 'font-family:Arial,Helvetica,sans-serif;line-height:1.25;">' + nome + '</p>'
+      + 'font-family:Arial,Helvetica,sans-serif;line-height:1.25;white-space:nowrap;">' + nome + '</p>'
       + cargoHtml
       + '</td>'
       + '<td width="80" height="60"'

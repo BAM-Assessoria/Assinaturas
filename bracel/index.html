@@ -516,24 +516,25 @@ async function copyHTML(mode) {
   } else if (mode === 'owa') {
     // === VERSÃO OUTLOOK WEB (OWA) — Opção A: 2 imagens com diagonal contínua ===
     // OWA remove background-image/attr ao salvar; usamos PNGs <img> + bgcolor solido.
-    // Layout: linha 1 = imagem topo (logo+diagonal) | linha 2 = 3 colunas (nome | imagem-meio | contatos)
-    // A diagonal e contínua: sai do topo em x=328 e desce ate (200,150) na imagem do meio.
-    html = '<table cellpadding="0" cellspacing="0" border="0" width="520"'
-      + ' style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;width:520px;">'
-      // Linha 1: imagem do topo 520x90 (logo + diagonal)
+    // Largura dinâmica: col1 cresce com o nome. Imagem do topo 520x90 fixa, ancorada à direita.
+    // Geometria: col3=192 e middle=128 são obrigatórios para a diagonal alinhar (topo sai em x=328).
+    // Total mínimo = 520 (col1=200). Se nome maior, col1 cresce e total cresce; topo permanece à direita.
+    html = '<table cellpadding="0" cellspacing="0" border="0"'
+      + ' style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;">'
+      // Linha 1: faixa F4F4F4 que estica + imagem 520x90 ancorada à direita
       + '<tr>'
-      + '<td colspan="3" width="520" height="90"'
-      + ' style="width:520px;height:90px;padding:0;line-height:0;font-size:0;">'
+      + '<td colspan="3" height="90" bgcolor="#F4F4F4" align="right"'
+      + ' style="height:90px;padding:0;line-height:0;font-size:0;background-color:#F4F4F4;text-align:right;">'
       + '<img src="' + bgTopUrl + '" width="520" height="90" alt="Bracel" border="0"'
-      + ' style="display:block;border:0;width:520px;height:90px;">'
+      + ' style="border:0;width:520px;height:90px;vertical-align:top;">'
       + '</td>'
       + '</tr>'
-      // Linha 2: 3 colunas — nome (F4F4F4) | imagem meio | contatos (DBDBDB)
+      // Linha 2: 3 colunas — col1 cresce (min 200) | meio 128 fixo | contatos 192 fixo
       + '<tr>'
       + '<td width="200" height="60" bgcolor="#F4F4F4" valign="bottom"'
-      + ' style="width:200px;height:60px;padding:0 0 14px 26px;vertical-align:bottom;background-color:#F4F4F4;">'
+      + ' style="height:60px;padding:0 0 14px 26px;vertical-align:bottom;background-color:#F4F4F4;white-space:nowrap;">'
       + '<p style="margin:0;padding:0;font-size:16px;font-weight:900;color:#1a1a1a;'
-      + 'font-family:Arial,Helvetica,sans-serif;line-height:1.25;">' + nome + '</p>'
+      + 'font-family:Arial,Helvetica,sans-serif;line-height:1.25;white-space:nowrap;">' + nome + '</p>'
       + cargoHtml
       + '</td>'
       + '<td width="128" height="60"'

@@ -424,6 +424,10 @@ async function copyHTML(mode) {
   var bgPngUrl  = BASE + 'bg/bracel.png';
   var bgTopUrl  = BASE + 'bg/bracel-top.png';
   var bgMidUrl  = BASE + 'bg/bracel-middle.png';
+  // OWA: PNGs com fundo transparente — sobrevivem ao dark mode pois o bgcolor do TD (travado por gif 1x1)
+  // fornece o cinza claro #F4F4F4 atrás da diagonal
+  var bgTopOwa  = BASE + 'bg/bracel-top-dark.png';
+  var bgMidOwa  = BASE + 'bg/bracel-middle-dark.png';
   var logoUrl   = BASE + 'bracel_logo.png';
   // GIF transparente 1x1 em data URI (sobrevive ao OWA quando dentro de célula com conteúdo)
   var SPACER    = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
@@ -557,7 +561,7 @@ async function copyHTML(mode) {
       + '<td colspan="3" bgcolor="#F4F4F4" align="right" background="' + BG_LIGHT + '"'
       + ' style="height:106px;padding:0;line-height:0;font-size:0;text-align:right;vertical-align:bottom;'
       + 'background-color:#F4F4F4;background-image:url(\'' + BG_LIGHT + '\');background-repeat:repeat;">'
-      + '<img src="' + bgTopUrl + '" width="551" height="106" alt="Bracel" border="0"'
+      + '<img src="' + bgTopOwa + '" width="551" height="106" alt="Bracel" border="0"'
       + ' style="display:inline-block;border:0;width:551px;height:106px;vertical-align:bottom;">'
       + '</td>'
       + '</tr>'
@@ -581,7 +585,7 @@ async function copyHTML(mode) {
       + ' style="width:160px;height:100px;padding:0;line-height:0;font-size:0;'
       + 'vertical-align:top;background-color:#F4F4F4;'
       + 'background-image:url(\'' + BG_LIGHT + '\');background-repeat:repeat;">'
-      + '<img src="' + bgMidUrl + '" width="160" height="100" alt="" border="0"'
+      + '<img src="' + bgMidOwa + '" width="160" height="100" alt="" border="0"'
       + ' style="display:block;border:0;width:160px;height:100px;vertical-align:top;">'
       + '</td>'
       // COL3: contatos em formato Gmail. Bloco cinza VISUALMENTE menor que col1/col2:

@@ -539,30 +539,36 @@ async function copyHTML(mode) {
     var rowOwa = function(icon, content) {
       if (!content) return '';
       return '<tr>'
-        + '<td style="font-size:10px;color:#333333;font-family:Arial,Helvetica,sans-serif;'
+        + '<td bgcolor="#DBDBDB" background="' + BG_DARK + '"'
+        + ' style="font-size:10px;color:#333333 !important;font-family:Arial,Helvetica,sans-serif;'
         + 'padding:0 0 1px 0;vertical-align:middle;line-height:12px;'
-        + 'white-space:nowrap;overflow:hidden;">'
+        + 'white-space:nowrap;overflow:hidden;'
+        + 'background-color:#DBDBDB !important;background-image:url(\'' + BG_DARK + '\') !important;background-repeat:repeat;">'
         + '<img src="' + icon + '" width="10" height="10" alt="" border="0"'
         + ' style="display:inline-block;border:0;vertical-align:middle;margin-right:4px;'
         + 'width:10px;height:10px;">'
-        + '<span style="color:#333333;white-space:nowrap;font-size:10px;">' + content + '</span>'
+        + '<font color="#333333" style="color:#333333 !important;">'
+        + '<span style="color:#333333 !important;white-space:nowrap;font-size:10px;'
+        + 'font-family:Arial,Helvetica,sans-serif;">' + content + '</span>'
+        + '</font>'
         + '</td>'
         + '</tr>';
     };
-    // GIFs 1x1 de cor sólida (data URIs) — travam bgcolor contra inversão no dark mode
-    var BG_LIGHT  = 'data:image/gif;base64,R0lGODlhAQABAPAAAPT09AAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
-    var BG_DARK   = 'data:image/gif;base64,R0lGODlhAQABAPAAANvb2wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
-    var BG_ORANGE = 'data:image/gif;base64,R0lGODlhAQABAPAAAOt5JwAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
+    // PNGs 1x1 hospedados de cor sólida — sobrevivem ao dark mode (Gmail/OWA) muito melhor
+    // que data URIs. Servem como background-image para travar a cor original da TD.
+    var BG_LIGHT  = BASE + 'bg/bg-light.png';
+    var BG_DARK   = BASE + 'bg/bg-dark.png';
+    var BG_ORANGE = BASE + 'bg/bg-orange.png';
     html = '<table cellpadding="0" cellspacing="0" border="0" role="presentation"'
       + ' style="border-collapse:collapse;border-spacing:0;'
       + 'font-family:Arial,Helvetica,sans-serif;mso-table-lspace:0pt;mso-table-rspace:0pt;">'
-      // Linha 1: imagem superior 551x106 (escalada 106% de 520x100), colspan=3, ancorada à direita e embaixo
+      // Linha 1: imagem superior 556x107 (escalada 107% de 520x100), colspan=3, ancorada à direita e embaixo
       + '<tr>'
       + '<td colspan="3" bgcolor="#F4F4F4" align="right" background="' + BG_LIGHT + '"'
-      + ' style="height:106px;padding:0;line-height:0;font-size:0;text-align:right;vertical-align:bottom;'
+      + ' style="height:107px;padding:0;line-height:0;font-size:0;text-align:right;vertical-align:bottom;'
       + 'background-color:#F4F4F4;background-image:url(\'' + BG_LIGHT + '\');background-repeat:repeat;">'
-      + '<img src="' + bgTopOwa + '" width="551" height="106" alt="Bracel" border="0"'
-      + ' style="display:inline-block;border:0;width:551px;height:106px;vertical-align:bottom;">'
+      + '<img src="' + bgTopOwa + '" width="556" height="107" alt="Bracel" border="0"'
+      + ' style="display:inline-block;border:0;width:556px;height:107px;vertical-align:bottom;">'
       + '</td>'
       + '</tr>'
       // Linha 2: nome | diagonal | contatos — TR forçada a 100px pelas três TDs
@@ -593,14 +599,14 @@ async function copyHTML(mode) {
       // wrapper interno DBDBDB com altura reduzida (~75px) encosta na barra laranja.
       + '<td width="152" bgcolor="#F4F4F4" valign="bottom" background="' + BG_LIGHT + '"'
       + ' style="width:152px;height:100px;padding:0;vertical-align:bottom;'
-      + 'background-color:#F4F4F4;background-image:url(\'' + BG_LIGHT + '\');background-repeat:repeat;">'
+      + 'background-color:#F4F4F4 !important;background-image:url(\'' + BG_LIGHT + '\') !important;background-repeat:repeat;">'
       + '<table cellpadding="0" cellspacing="0" border="0" role="presentation" width="152"'
       + ' bgcolor="#DBDBDB" background="' + BG_DARK + '"'
       + ' style="border-collapse:collapse;border-spacing:0;width:152px;'
-      + 'background-color:#DBDBDB;background-image:url(\'' + BG_DARK + '\');background-repeat:repeat;">'
+      + 'background-color:#DBDBDB !important;background-image:url(\'' + BG_DARK + '\') !important;background-repeat:repeat;">'
       + '<tr><td bgcolor="#DBDBDB" background="' + BG_DARK + '"'
       + ' style="width:152px;height:90px;padding:5px 4px 5px 6px;vertical-align:middle;'
-      + 'background-color:#DBDBDB;background-image:url(\'' + BG_DARK + '\');background-repeat:repeat;">'
+      + 'background-color:#DBDBDB !important;background-image:url(\'' + BG_DARK + '\') !important;background-repeat:repeat;">'
       + '<table cellpadding="0" cellspacing="0" border="0" role="presentation"'
       + ' style="border-collapse:collapse;border-spacing:0;">'
       + rowOwa(iCelular,  celular)

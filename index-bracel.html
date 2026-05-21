@@ -531,32 +531,38 @@ async function copyHTML(mode) {
         + '</td>'
         + '</tr>';
     };
-    html = '<table cellpadding="0" cellspacing="0" border="0"'
-      + ' style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;">'
+    // Tabela TRAVADA em 520px com table-layout:fixed para impedir que o OWA
+    // redimensione colunas de acordo com o conteudo (nome longo/curto).
+    // col1 = 180px (nome) | col2 = 160px (img diagonal) | col3 = 180px (contatos)
+    // Total = 520px === largura da imagem do topo, garantindo continuidade da diagonal.
+    html = '<table cellpadding="0" cellspacing="0" border="0" width="520"'
+      + ' style="border-collapse:collapse;border-spacing:0;font-family:Arial,Helvetica,sans-serif;'
+      + 'width:520px;table-layout:fixed;mso-table-lspace:0pt;mso-table-rspace:0pt;">'
       + '<tr>'
-      + '<td colspan="2" height="180" bgcolor="#F4F4F4" align="right"'
-      + ' style="height:180px;padding:0;line-height:0;font-size:0;background-color:#F4F4F4;text-align:right;">'
+      + '<td colspan="3" width="520" height="180" bgcolor="#F4F4F4"'
+      + ' style="width:520px;height:180px;padding:0;line-height:0;font-size:0;background-color:#F4F4F4;">'
       + '<img src="' + bgTopUrl + '" width="520" height="180" alt="Bracel" border="0"'
-      + ' style="border:0;width:520px;height:180px;vertical-align:top;">'
+      + ' style="display:block;border:0;width:520px;height:180px;vertical-align:top;">'
       + '</td>'
       + '</tr>'
       + '<tr>'
-      + '<td bgcolor="#F4F4F4" valign="middle"'
-      + ' style="padding:0 0 0 10px;vertical-align:middle;background-color:#F4F4F4;white-space:nowrap;">'
-      + '<p style="margin:0;padding:0;font-size:16px;font-weight:900;color:#1a1a1a;'
-      + 'font-family:Arial,Helvetica,sans-serif;line-height:1.25;white-space:nowrap;">' + nome + '</p>'
+      + '<td width="180" height="160" bgcolor="#F4F4F4" valign="middle"'
+      + ' style="width:180px;height:160px;padding:0 0 0 10px;vertical-align:middle;'
+      + 'background-color:#F4F4F4;overflow:hidden;">'
+      + '<p style="margin:0;padding:0;font-size:15px;font-weight:900;color:#1a1a1a;'
+      + 'font-family:Arial,Helvetica,sans-serif;line-height:1.2;white-space:nowrap;'
+      + 'overflow:hidden;text-overflow:ellipsis;">' + nome + '</p>'
       + cargoHtml
       + '</td>'
-      + '<td width="340" style="width:340px;padding:0;line-height:0;font-size:0;vertical-align:top;">'
-      + '<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">'
-      + '<tr>'
       + '<td width="160" height="160" bgcolor="#DBDBDB" valign="top"'
-      + ' style="width:160px;height:160px;padding:0;line-height:0;font-size:0;vertical-align:top;background-color:#DBDBDB;">'
-      + '<img src="' + bgMidUrl + '" alt="" border="0"'
-      + ' style="display:block;border:0;width:100%;height:auto;vertical-align:top;">'
+      + ' style="width:160px;height:160px;padding:0;line-height:0;font-size:0;'
+      + 'vertical-align:top;background-color:#DBDBDB;">'
+      + '<img src="' + bgMidUrl + '" width="160" height="160" alt="" border="0"'
+      + ' style="display:block;border:0;width:160px;height:160px;vertical-align:top;">'
       + '</td>'
       + '<td width="180" height="160" bgcolor="#DBDBDB" valign="middle" align="right"'
-      + ' style="width:180px;height:160px;padding:6px 10px 6px 0;vertical-align:middle;background-color:#DBDBDB;">'
+      + ' style="width:180px;height:160px;padding:6px 10px 6px 0;vertical-align:middle;'
+      + 'background-color:#DBDBDB;">'
       + '<table cellpadding="0" cellspacing="0" border="0" align="right"'
       + ' style="border-collapse:collapse;">'
       + rowOwa(iCelular,  celular)
@@ -566,11 +572,8 @@ async function copyHTML(mode) {
       + '</table>'
       + '</td>'
       + '</tr>'
-      + '</table>'
-      + '</td>'
-      + '</tr>'
-      + '<tr><td colspan="2" bgcolor="#EB7927" height="14"'
-      + ' style="background-color:#EB7927;height:14px;font-size:0;line-height:0;">&nbsp;</td></tr>'
+      + '<tr><td colspan="3" width="520" bgcolor="#EB7927" height="14"'
+      + ' style="width:520px;background-color:#EB7927;height:14px;font-size:0;line-height:0;">&nbsp;</td></tr>'
       + '</table>';
 
   } else {

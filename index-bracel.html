@@ -515,31 +515,32 @@ async function copyHTML(mode) {
 
   } else if (mode === 'owa') {
     // === VERSÃO OUTLOOK WEB (OWA) — Opção A: 2 imagens com diagonal contínua ===
-    // Largura dinâmica: col1 cresce com o nome. Imagem do topo 520x180 fixa, ancorada à direita.
-    // Geometria: col3=240 e middle=80 obrigatórios para alinhar a diagonal (topo sai em x=280).
+    // Largura dinâmica: col1 cresce com o nome. Imagem do topo 520x200 fixa, ancorada à direita.
+    // Geometria: col3=240 e middle=180x150 obrigatórios para alinhar diagonal (slope -0.833).
+    // Total mínimo = 620.
     html = '<table cellpadding="0" cellspacing="0" border="0"'
       + ' style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;">'
       + '<tr>'
-      + '<td colspan="3" height="180" bgcolor="#F4F4F4" align="right"'
-      + ' style="height:180px;padding:0;line-height:0;font-size:0;background-color:#F4F4F4;text-align:right;">'
-      + '<img src="' + bgTopUrl + '" width="520" height="180" alt="Bracel" border="0"'
-      + ' style="border:0;width:520px;height:180px;vertical-align:top;">'
+      + '<td colspan="3" height="200" bgcolor="#F4F4F4" align="right"'
+      + ' style="height:200px;padding:0;line-height:0;font-size:0;background-color:#F4F4F4;text-align:right;">'
+      + '<img src="' + bgTopUrl + '" width="520" height="200" alt="Bracel" border="0"'
+      + ' style="border:0;width:520px;height:200px;vertical-align:top;">'
       + '</td>'
       + '</tr>'
       + '<tr>'
-      + '<td width="200" height="60" bgcolor="#F4F4F4" valign="bottom"'
-      + ' style="height:60px;padding:0 0 14px 26px;vertical-align:bottom;background-color:#F4F4F4;white-space:nowrap;">'
+      + '<td width="200" height="150" bgcolor="#F4F4F4" valign="bottom"'
+      + ' style="height:150px;padding:0 0 18px 26px;vertical-align:bottom;background-color:#F4F4F4;white-space:nowrap;">'
       + '<p style="margin:0;padding:0;font-size:16px;font-weight:900;color:#1a1a1a;'
       + 'font-family:Arial,Helvetica,sans-serif;line-height:1.25;white-space:nowrap;">' + nome + '</p>'
       + cargoHtml
       + '</td>'
-      + '<td width="80" height="60"'
-      + ' style="width:80px;height:60px;padding:0;line-height:0;font-size:0;">'
-      + '<img src="' + bgMidUrl + '" width="80" height="60" alt="" border="0"'
-      + ' style="display:block;border:0;width:80px;height:60px;">'
+      + '<td width="180" height="150"'
+      + ' style="width:180px;height:150px;padding:0;line-height:0;font-size:0;">'
+      + '<img src="' + bgMidUrl + '" width="180" height="150" alt="" border="0"'
+      + ' style="display:block;border:0;width:180px;height:150px;">'
       + '</td>'
-      + '<td width="240" height="60" bgcolor="#DBDBDB" valign="bottom" align="right"'
-      + ' style="width:240px;height:60px;padding:8px 14px 14px 0;vertical-align:bottom;background-color:#DBDBDB;">'
+      + '<td width="240" height="150" bgcolor="#DBDBDB" valign="bottom" align="right"'
+      + ' style="width:240px;height:150px;padding:8px 14px 18px 0;vertical-align:bottom;background-color:#DBDBDB;">'
       + '<table cellpadding="0" cellspacing="0" border="0" align="right"'
       + ' style="border-collapse:collapse;">'
       + rowOl(iCelular,  celular)

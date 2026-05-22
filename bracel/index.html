@@ -426,8 +426,9 @@ async function copyHTML(mode) {
   var bgMidUrl  = BASE + 'bg/bracel-middle.png';
   // OWA: PNGs com fundo transparente � sobrevivem ao dark mode pois o bgcolor do TD (travado por gif 1x1)
   // fornece o cinza claro #F4F4F4 atr�s da diagonal
-  var bgTopOwa  = BASE + 'bg/bracel-top-dark.png';
-  var bgMidOwa  = BASE + 'bg/bracel-middle-dark.png';
+  // ?v=2 = cache-buster ap�s reupload das imagens (B5B5B5)
+  var bgTopOwa  = BASE + 'bg/bracel-top-dark.png?v=2';
+  var bgMidOwa  = BASE + 'bg/bracel-middle-dark.png?v=2';
   var logoUrl   = BASE + 'bracel_logo.png';
   // GIF transparente 1x1 em data URI (sobrevive ao OWA quando dentro de c�lula com conte�do)
   var SPACER    = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';

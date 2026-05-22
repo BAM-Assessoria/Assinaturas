@@ -540,7 +540,7 @@ async function copyHTML(mode) {
     // COR DO BLOCO COL3: cinza #B5B5B5 + texto/links/icones #5A5A5A.
     // Replace troca qualquer color:#XXXXXX dentro do content (ex.: link de email) pela cor da col3.
     // Icones recebem opacity:0.65 para suavizar sem precisar de PNGs recoloridos.
-    var COL3_TXT = '#5A5A5A';
+    var COL3_TXT = '#000000';
     var rowOwa = function(icon, content) {
       if (!content) return '';
       var c = content.replace(/color:\s*#[0-9A-Fa-f]{6}/g, 'color:' + COL3_TXT);
@@ -552,7 +552,7 @@ async function copyHTML(mode) {
         + 'background-color:#B5B5B5 !important;background-image:url(\'' + BG_DARK + '\') !important;background-repeat:repeat;">'
         + '<img src="' + icon + '" width="10" height="10" alt="" border="0"'
         + ' style="display:inline-block;border:0;vertical-align:middle;margin-right:4px;'
-        + 'width:10px;height:10px;opacity:0.65;filter:alpha(opacity=65);">'
+        + 'width:10px;height:10px;">'
         + '<font color="' + COL3_TXT + '" style="color:' + COL3_TXT + ' !important;">'
         + '<span style="color:' + COL3_TXT + ' !important;white-space:nowrap;font-size:10px;'
         + 'font-family:Arial,Helvetica,sans-serif;">' + c + '</span>'

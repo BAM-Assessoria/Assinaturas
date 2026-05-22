@@ -537,21 +537,21 @@ async function copyHTML(mode) {
     //   Endere�o longo quebra em 2 linhas dentro dos 152px.
     //
     // Dark mode: bgcolor + background-image url(data:gif1x1) trava cor s�lida.
-    // COR DO BLOCO COL3: cinza #B5B5B5 + texto escuro #2C2C2C.
+    // COR DO BLOCO COL3: cinza #B5B5B5 + texto #5A5A5A (cinza escuro suave).
     // Texto escuro garante legibilidade mesmo se a imagem/bgcolor falhar em algum cliente.
     var rowOwa = function(icon, content) {
       if (!content) return '';
       return '<tr>'
         + '<td width="136" bgcolor="#B5B5B5" background="' + BG_DARK + '"'
-        + ' style="width:136px;max-width:136px;font-size:10px;color:#2C2C2C !important;font-family:Arial,Helvetica,sans-serif;'
+        + ' style="width:136px;max-width:136px;font-size:10px;color:#5A5A5A !important;font-family:Arial,Helvetica,sans-serif;'
         + 'padding:0 0 1px 0;vertical-align:middle;line-height:12px;'
         + 'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'
         + 'background-color:#B5B5B5 !important;background-image:url(\'' + BG_DARK + '\') !important;background-repeat:repeat;">'
         + '<img src="' + icon + '" width="10" height="10" alt="" border="0"'
         + ' style="display:inline-block;border:0;vertical-align:middle;margin-right:4px;'
         + 'width:10px;height:10px;">'
-        + '<font color="#2C2C2C" style="color:#2C2C2C !important;">'
-        + '<span style="color:#2C2C2C !important;white-space:nowrap;font-size:10px;'
+        + '<font color="#5A5A5A" style="color:#5A5A5A !important;">'
+        + '<span style="color:#5A5A5A !important;white-space:nowrap;font-size:10px;'
         + 'font-family:Arial,Helvetica,sans-serif;">' + content + '</span>'
         + '</font>'
         + '</td>'

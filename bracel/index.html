@@ -541,20 +541,24 @@ async function copyHTML(mode) {
     // Replace troca qualquer color:#XXXXXX dentro do content (ex.: link de email) pela cor da col3.
     // Icones recebem opacity:0.65 para suavizar sem precisar de PNGs recoloridos.
     var COL3_TXT = '#000000';
-    var rowOwa = function(icon, content) {
+    // rowOwa(icon, content, wrap?) — wrap=true permite quebra de linha (uso: endereço longo)
+    var rowOwa = function(icon, content, wrap) {
       if (!content) return '';
       var c = content.replace(/color:\s*#[0-9A-Fa-f]{6}/g, 'color:' + COL3_TXT);
+      var nowrapTd = wrap ? '' : 'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
+      var nowrapSpan = wrap ? '' : 'white-space:nowrap;';
+      var valign = wrap ? 'top' : 'middle';
       return '<tr>'
         + '<td width="136" bgcolor="#B5B5B5" background="' + BG_DARK + '"'
         + ' style="width:136px;max-width:136px;font-size:10px;color:' + COL3_TXT + ' !important;font-family:Arial,Helvetica,sans-serif;'
-        + 'padding:0 0 1px 0;vertical-align:middle;line-height:12px;'
-        + 'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'
+        + 'padding:0 0 1px 0;vertical-align:' + valign + ';line-height:12px;'
+        + nowrapTd
         + 'background-color:#B5B5B5 !important;background-image:url(\'' + BG_DARK + '\') !important;background-repeat:repeat;">'
         + '<img src="' + icon + '" width="10" height="10" alt="" border="0"'
         + ' style="display:inline-block;border:0;vertical-align:middle;margin-right:4px;'
         + 'width:10px;height:10px;filter:brightness(0);-webkit-filter:brightness(0);">'
         + '<font color="' + COL3_TXT + '" style="color:' + COL3_TXT + ' !important;">'
-        + '<span style="color:' + COL3_TXT + ' !important;white-space:nowrap;font-size:10px;'
+        + '<span style="color:' + COL3_TXT + ' !important;' + nowrapSpan + 'font-size:10px;'
         + 'font-family:Arial,Helvetica,sans-serif;">' + c + '</span>'
         + '</font>'
         + '</td>'
@@ -580,8 +584,9 @@ async function copyHTML(mode) {
       // Linha 2: nome | diagonal | contatos � TR for�ada a 100px pelas tr�s TDs
       + '<tr>'
       // COL1: nome+cargo. width m�nimo via spacer GIF 208w; cresce se nome maior.
+      // Sem height fixa — row 2 cresce quando contatos col3 quebram linha.
       + '<td bgcolor="#F4F5F4" valign="middle" background="' + BG_LIGHT + '"'
-      + ' style="height:100px;padding:0 10px 0 10px;vertical-align:middle;'
+      + ' style="padding:0 10px 0 10px;vertical-align:middle;'
       + 'background-color:#F4F5F4;background-image:url(\'' + BG_LIGHT + '\');background-repeat:repeat;'
       + 'white-space:nowrap;">'
       + '<p style="margin:0;padding:0;font-size:16px;font-weight:900;color:#1a1a1a;'
@@ -592,26 +597,25 @@ async function copyHTML(mode) {
       + '<img src="' + SPACER + '" width="208" height="1" alt="" border="0"'
       + ' style="display:block;border:0;width:208px;height:1px;line-height:0;font-size:0;">'
       + '</td>'
-      // COL2: imagem da diagonal 160x100 � width FIXO em style (sobrevive ao OWA)
+      // COL2: imagem da diagonal 160x100. Sem height fixa na TD; a img de 100px sustenta a altura mínima.
+      // Se row crescer, sobra bg claro abaixo da imagem (pequeno arteFato dark de ~4px na direita).
       + '<td width="160" bgcolor="#F4F5F4" valign="top" background="' + BG_LIGHT + '"'
-      + ' style="width:160px;height:100px;padding:0;line-height:0;font-size:0;'
+      + ' style="width:160px;padding:0;line-height:0;font-size:0;'
       + 'vertical-align:top;background-color:#F4F5F4;'
       + 'background-image:url(\'' + BG_LIGHT + '\');background-repeat:repeat;">'
       + '<img src="' + bgMidOwa + '" width="160" height="100" alt="" border="0"'
       + ' style="display:block;border:0;width:160px;height:100px;vertical-align:top;">'
       + '</td>'
-      // COL3: contatos em formato Gmail. Bloco cinza VISUALMENTE menor que col1/col2:
-      // TD externa tem bg claro (igual col1/col2) e alinha conte�do embaixo;
-      // wrapper interno DBDBDB com altura reduzida (~75px) encosta na barra laranja.
+      // COL3: contatos. TD externa light + wrapper interno B5B5B5 cresce com conteúdo.
       + '<td width="152" bgcolor="#F4F5F4" valign="bottom" background="' + BG_LIGHT + '"'
-      + ' style="width:152px;height:100px;padding:0;vertical-align:bottom;'
+      + ' style="width:152px;padding:0;vertical-align:bottom;'
       + 'background-color:#F4F5F4 !important;background-image:url(\'' + BG_LIGHT + '\') !important;background-repeat:repeat;">'
       + '<table cellpadding="0" cellspacing="0" border="0" role="presentation" width="152"'
       + ' bgcolor="#B5B5B5" background="' + BG_DARK + '"'
       + ' style="border-collapse:collapse;border-spacing:0;width:152px;'
       + 'background-color:#B5B5B5 !important;background-image:url(\'' + BG_DARK + '\') !important;background-repeat:repeat;">'
       + '<tr><td bgcolor="#B5B5B5" background="' + BG_DARK + '"'
-      + ' style="width:152px;height:90px;padding:5px 16px 5px 0;vertical-align:middle;'
+      + ' style="width:152px;padding:5px 16px 5px 0;vertical-align:middle;'
       + 'background-color:#B5B5B5 !important;background-image:url(\'' + BG_DARK + '\') !important;background-repeat:repeat;">'
       + '<table cellpadding="0" cellspacing="0" border="0" role="presentation" width="136"'
       + ' style="border-collapse:collapse;border-spacing:0;width:136px;table-layout:fixed;">'
@@ -623,7 +627,7 @@ async function copyHTML(mode) {
       + rowOwa(iCelular,  celular)
       + rowOwa(iTelefone, telefone)
       + rowOwa(iEmail,    emailHtml)
-      + rowOwa(iEndereco, endereco)
+      + rowOwa(iEndereco, endereco, true)
       + '</table>'
       // Spacer GIF que trava col3 = 152px (impede contatos curtos de encolher a coluna)
       + '<img src="' + SPACER + '" width="152" height="1" alt="" border="0"'

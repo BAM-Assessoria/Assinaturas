@@ -732,8 +732,9 @@ async function copyAsImageHTML() {
   html2canvas(sig, { scale: 2, backgroundColor: null, useCORS: true }).then(async function(canvas) {
     var dataUrl = canvas.toDataURL('image/png');
     var nome = (document.getElementById('f-nome').value || 'Assinatura').trim();
-    var html = '<img src="' + dataUrl + '" width="' + sigW + '" alt="'
-      + nome.replace(/"/g,'&quot;') + '" style="display:block;border:0;width:' + sigW + 'px;max-width:100%;height:auto;">';
+    var dispW = Math.round(sigW / 2);
+    var html = '<img src="' + dataUrl + '" width="' + dispW + '" alt="'
+      + nome.replace(/"/g,'&quot;') + '" style="display:block;border:0;width:' + dispW + 'px;max-width:100%;height:auto;">';
     try {
       await navigator.clipboard.write([
         new ClipboardItem({ 'text/html': new Blob([html], { type: 'text/html' }) })

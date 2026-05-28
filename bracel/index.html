@@ -6,7 +6,7 @@
 <title>Editor de Assinatura - Bracel</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=League+Spartan:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
   :root { --brand:#E8621A; --brand-hover:#c85218; --brand-focus:rgba(232,98,26,.15); }
@@ -210,6 +210,7 @@
     <button class="btn secondary" onclick="copyHTML()">Copiar para Gmail</button>
     <button class="btn secondary" onclick="copyHTML('owa')">Copiar para Outlook Web</button>
     <button class="btn secondary" onclick="copyHTML('desktop')">Copiar para Outlook Desktop</button>
+    <button class="btn secondary" onclick="copyAsImageHTML()">Copiar como imagem (OWA)</button>
   </div>
 </div>
 
@@ -232,10 +233,10 @@
           <td width="240" rowspan="2" valign="bottom"
               style="width:240px;padding:0 0 24px 33px;vertical-align:bottom;">
             <div id="s-nome"
-                 style="font-size:17px;font-weight:900;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;line-height:1.25;white-space:nowrap;"></div>
+                 style="font-size:17px;font-weight:700;color:#1a1a1a;font-family:'Inter',Arial,Helvetica,sans-serif;line-height:1.25;white-space:nowrap;"></div>
             <div id="s-cargo-wrap" style="display:none;margin-top:5px;">
               <span id="s-cargo"
-                    style="font-size:14px;font-weight:bold;color:#E8621A;font-family:Arial,Helvetica,sans-serif;"></span>
+                    style="font-size:14px;font-weight:700;color:#E8621A;font-family:'Inter',Arial,Helvetica,sans-serif;"></span>
             </div>
           </td>
           <td width="360" align="right" valign="top" height="160"
@@ -248,10 +249,10 @@
         <tr>
           <td valign="bottom" style="padding:0 20px 24px 0;vertical-align:bottom;">
             <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin-left:115px;">
-              <tr><td style="padding:0 8px 8px 0;vertical-align:middle;line-height:0;"><img id="icon-celular" src="" width="13" height="13" alt="" style="display:block;border:0;"></td><td id="s-celular" style="font-size:12px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:10px;vertical-align:middle;white-space:nowrap;"></td></tr>
-              <tr><td style="padding:0 8px 8px 0;vertical-align:middle;line-height:0;"><img id="icon-telefone" src="" width="13" height="13" alt="" style="display:block;border:0;"></td><td id="s-telefone" style="font-size:12px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:8px;vertical-align:middle;"></td></tr>
-              <tr><td style="padding:0 8px 8px 0;vertical-align:top;padding-top:1px;line-height:0;"><img id="icon-email" src="" width="13" height="13" alt="" style="display:block;border:0;"></td><td id="s-email" style="font-size:12px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:8px;vertical-align:top;max-width:280px;word-break:break-word;line-height:1.45;"></td></tr>
-              <tr><td style="padding:0 8px 0 0;vertical-align:top;padding-top:2px;line-height:0;"><img id="icon-endereco" src="" width="13" height="13" alt="" style="display:block;border:0;"></td><td id="s-endereco" style="font-size:12px;color:#333333;font-family:Arial,Helvetica,sans-serif;vertical-align:top;max-width:280px;word-break:break-word;line-height:1.45;"></td></tr>
+              <tr><td style="padding:0 8px 8px 0;vertical-align:middle;line-height:0;"><img id="icon-celular" src="" width="13" height="13" alt="" style="display:block;border:0;"></td><td id="s-celular" style="font-size:12px;color:#333333;font-family:'League Spartan',Arial,Helvetica,sans-serif;padding-bottom:10px;vertical-align:middle;white-space:nowrap;"></td></tr>
+              <tr><td style="padding:0 8px 8px 0;vertical-align:middle;line-height:0;"><img id="icon-telefone" src="" width="13" height="13" alt="" style="display:block;border:0;"></td><td id="s-telefone" style="font-size:12px;color:#333333;font-family:'League Spartan',Arial,Helvetica,sans-serif;padding-bottom:8px;vertical-align:middle;"></td></tr>
+              <tr><td style="padding:0 8px 8px 0;vertical-align:top;padding-top:1px;line-height:0;"><img id="icon-email" src="" width="13" height="13" alt="" style="display:block;border:0;"></td><td id="s-email" style="font-size:12px;color:#333333;font-family:'League Spartan',Arial,Helvetica,sans-serif;padding-bottom:8px;vertical-align:top;max-width:280px;word-break:break-word;line-height:1.45;"></td></tr>
+              <tr><td style="padding:0 8px 0 0;vertical-align:top;padding-top:2px;line-height:0;"><img id="icon-endereco" src="" width="13" height="13" alt="" style="display:block;border:0;"></td><td id="s-endereco" style="font-size:12px;color:#333333;font-family:'League Spartan',Arial,Helvetica,sans-serif;vertical-align:top;max-width:280px;word-break:break-word;line-height:1.45;"></td></tr>
             </table>
           </td>
         </tr>
@@ -466,8 +467,8 @@ async function copyHTML(mode) {
   }
 
   var cargoHtml = cargo
-    ? '<p style="margin:4px 0 0 0;padding:0;font-size:13px;font-weight:bold;'
-      + 'color:#E8621A;font-family:Arial,Helvetica,sans-serif;">' + cargo + '</p>'
+    ? '<p style="margin:4px 0 0 0;padding:0;font-size:13px;font-weight:700;'
+      + 'color:#E8621A;font-family:\'Inter\',Arial,Helvetica,sans-serif;">' + cargo + '</p>'
     : '';
   var emailHtml = emailVal
     ? '<a href="mailto:' + emailVal + '" style="color:#333333;text-decoration:none;">'
@@ -550,7 +551,7 @@ async function copyHTML(mode) {
       var valign = wrap ? 'top' : 'middle';
       return '<tr>'
         + '<td width="136" bgcolor="#B5B5B5" background="' + BG_DARK + '"'
-        + ' style="width:136px;max-width:136px;font-size:10px;color:' + COL3_TXT + ' !important;font-family:Arial,Helvetica,sans-serif;'
+        + ' style="width:136px;max-width:136px;font-size:10px;color:' + COL3_TXT + ' !important;font-family:\'League Spartan\',Arial,Helvetica,sans-serif;'
         + 'padding:0 0 1px 0;vertical-align:' + valign + ';line-height:12px;'
         + nowrapTd
         + 'background-color:#B5B5B5 !important;background-image:url(\'' + BG_DARK + '\') !important;background-repeat:repeat;">'
@@ -559,7 +560,7 @@ async function copyHTML(mode) {
         + 'width:10px;height:10px;filter:brightness(0);-webkit-filter:brightness(0);">'
         + '<font color="' + COL3_TXT + '" style="color:' + COL3_TXT + ' !important;">'
         + '<span style="color:' + COL3_TXT + ' !important;' + nowrapSpan + 'font-size:10px;'
-        + 'font-family:Arial,Helvetica,sans-serif;">' + c + '</span>'
+        + 'font-family:\'League Spartan\',Arial,Helvetica,sans-serif;">' + c + '</span>'
         + '</font>'
         + '</td>'
         + '</tr>';
@@ -589,8 +590,8 @@ async function copyHTML(mode) {
       + ' style="padding:0 10px 0 10px;vertical-align:middle;'
       + 'background-color:#F4F5F4;background-image:url(\'' + BG_LIGHT + '\');background-repeat:repeat;'
       + 'white-space:nowrap;">'
-      + '<p style="margin:0;padding:0;font-size:16px;font-weight:900;color:#1a1a1a;'
-      + 'font-family:Arial,Helvetica,sans-serif;line-height:1.25;white-space:nowrap;">'
+      + '<p style="margin:0;padding:0;font-size:16px;font-weight:700;color:#1a1a1a;'
+      + 'font-family:\'Inter\',Arial,Helvetica,sans-serif;line-height:1.25;white-space:nowrap;">'
       + '<span style="color:#1a1a1a;">' + nome + '</span></p>'
       + cargoHtml
       // Spacer GIF: trava col1 = 208px (sobrevive ao OWA por estar dentro de TD com conte�do)
@@ -615,7 +616,7 @@ async function copyHTML(mode) {
       + ' style="border-collapse:collapse;border-spacing:0;width:152px;'
       + 'background-color:#B5B5B5 !important;background-image:url(\'' + BG_DARK + '\') !important;background-repeat:repeat;">'
       + '<tr><td bgcolor="#B5B5B5" background="' + BG_DARK + '"'
-      + ' style="width:152px;padding:10px 16px 10px 0;vertical-align:middle;'
+      + ' style="width:152px;padding:11px 16px 10px 0;vertical-align:middle;'
       + 'background-color:#B5B5B5 !important;background-image:url(\'' + BG_DARK + '\') !important;background-repeat:repeat;">'
       + '<table cellpadding="0" cellspacing="0" border="0" role="presentation" width="136"'
       + ' style="border-collapse:collapse;border-spacing:0;width:136px;table-layout:fixed;">'
@@ -716,6 +717,45 @@ async function copyHTML(mode) {
     document.body.removeChild(div);
     alert('Assinatura copiada.');
   }
+}
+
+// Copia a assinatura como UMA IMAGEM PNG embutida via data URI dentro de <img>.
+// Útil para OWA quando se quer evitar qualquer sanitização de layout: o cliente
+// renderiza apenas a tag <img>. Aviso: alguns clientes podem converter data URIs
+// grandes em anexos; nesse caso, hospedar o PNG e usar src=URL é mais robusto.
+async function copyAsImageHTML() {
+  // Aguarda fontes (Inter / League Spartan) carregarem antes de rasterizar
+  try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch(e) {}
+  var sig = document.getElementById('signature');
+  if (!sig) return;
+  var sigW = parseInt(sig.getAttribute('width')) || 600;
+  html2canvas(sig, { scale: 2, backgroundColor: null, useCORS: true }).then(async function(canvas) {
+    var dataUrl = canvas.toDataURL('image/png');
+    var nome = (document.getElementById('f-nome').value || 'Assinatura').trim();
+    var html = '<img src="' + dataUrl + '" width="' + sigW + '" alt="'
+      + nome.replace(/"/g,'&quot;') + '" style="display:block;border:0;width:' + sigW + 'px;max-width:100%;height:auto;">';
+    try {
+      await navigator.clipboard.write([
+        new ClipboardItem({ 'text/html': new Blob([html], { type: 'text/html' }) })
+      ]);
+      alert('Imagem copiada como HTML! Cole no Outlook Web: Configurações > Email > Assinatura.');
+    } catch(e) {
+      var div = document.createElement('div');
+      div.contentEditable = 'true';
+      div.innerHTML = html;
+      div.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0;pointer-events:none;';
+      document.body.appendChild(div);
+      var sel = window.getSelection();
+      var range = document.createRange();
+      range.selectNodeContents(div);
+      sel.removeAllRanges();
+      sel.addRange(range);
+      try { document.execCommand('copy'); } catch(e2) {}
+      sel.removeAllRanges();
+      document.body.removeChild(div);
+      alert('Imagem copiada como HTML.');
+    }
+  });
 }
 </script>
 </body>

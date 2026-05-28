@@ -528,13 +528,13 @@ async function copyHTML(mode) {
     //  - OWA PRESERVA: width/height NO STYLE inline, bgcolor, background="url",
     //    colspan, align em <td> (vira text-align), border-collapse, padding/margin
     //
-    // Layout: col1 (VARI�VEL, m�n 208) + col2 (160 fixo) + col3 (172 fixo) = m�n 540
+    // Layout: col1 (VARI�VEL, m�n 208) + col2 (160 fixo) + col3 (200 fixo) = m�n 568
     //   Top image 520x100 right-anchored. Quando col1>208, sobra light bg � esquerda.
-    //   Diagonais sempre alinhadas pois col2+col3=332 constantes ? top_diag e mid_diag
+    //   Diagonais sempre alinhadas pois col2+col3=360 constantes ? top_diag e mid_diag
     //   deslocam juntos com qualquer col1.
     //
     // Contatos col3: formato Gmail (TD �nico, �cone inline com margin-right:5)
-    //   Endere�o longo quebra em 2 linhas dentro dos 172px.
+    //   Endere�o longo quebra em 2 linhas dentro dos 200px.
     //
     // Dark mode: bgcolor + background-image url(data:gif1x1) trava cor s�lida.
     // COR DO BLOCO COL3: cinza #B5B5B5 + texto/links/icones #5A5A5A.
@@ -549,8 +549,8 @@ async function copyHTML(mode) {
       var nowrapSpan = wrap ? '' : 'white-space:nowrap;';
       var valign = wrap ? 'top' : 'middle';
       return '<tr>'
-        + '<td width="156" bgcolor="#B5B5B5" background="' + BG_DARK + '"'
-        + ' style="width:156px;max-width:156px;font-size:10px;color:' + COL3_TXT + ' !important;font-family:Arial,Helvetica,sans-serif;'
+        + '<td width="184" bgcolor="#B5B5B5" background="' + BG_DARK + '"'
+        + ' style="width:184px;max-width:184px;font-size:10px;color:' + COL3_TXT + ' !important;font-family:Arial,Helvetica,sans-serif;'
         + 'padding:0 0 1px 0;vertical-align:' + valign + ';line-height:12px;'
         + nowrapTd
         + 'background-color:#B5B5B5 !important;background-image:url(\'' + BG_DARK + '\') !important;background-repeat:repeat;">'
@@ -607,31 +607,31 @@ async function copyHTML(mode) {
       + ' style="display:block;border:0;width:160px;height:100px;vertical-align:top;">'
       + '</td>'
       // COL3: contatos. TD externa light + wrapper interno B5B5B5 cresce com conteúdo.
-      + '<td width="172" bgcolor="#F4F5F4" valign="bottom" background="' + BG_LIGHT + '"'
-      + ' style="width:172px;padding:0;vertical-align:bottom;'
+      + '<td width="200" bgcolor="#F4F5F4" valign="bottom" background="' + BG_LIGHT + '"'
+      + ' style="width:200px;padding:0;vertical-align:bottom;'
       + 'background-color:#F4F5F4 !important;background-image:url(\'' + BG_LIGHT + '\') !important;background-repeat:repeat;">'
-      + '<table cellpadding="0" cellspacing="0" border="0" role="presentation" width="172"'
+      + '<table cellpadding="0" cellspacing="0" border="0" role="presentation" width="200"'
       + ' bgcolor="#B5B5B5" background="' + BG_DARK + '"'
-      + ' style="border-collapse:collapse;border-spacing:0;width:172px;'
+      + ' style="border-collapse:collapse;border-spacing:0;width:200px;'
       + 'background-color:#B5B5B5 !important;background-image:url(\'' + BG_DARK + '\') !important;background-repeat:repeat;">'
       + '<tr><td bgcolor="#B5B5B5" background="' + BG_DARK + '"'
-      + ' style="width:172px;padding:5px 16px 5px 0;vertical-align:middle;'
+      + ' style="width:200px;padding:5px 16px 5px 0;vertical-align:middle;'
       + 'background-color:#B5B5B5 !important;background-image:url(\'' + BG_DARK + '\') !important;background-repeat:repeat;">'
-      + '<table cellpadding="0" cellspacing="0" border="0" role="presentation" width="156"'
-      + ' style="border-collapse:collapse;border-spacing:0;width:156px;table-layout:fixed;">'
-      // Spacer GIF no topo trava a largura interna em 156px (col3=172 - padding 16)
+      + '<table cellpadding="0" cellspacing="0" border="0" role="presentation" width="184"'
+      + ' style="border-collapse:collapse;border-spacing:0;width:184px;table-layout:fixed;">'
+      // Spacer GIF no topo trava a largura interna em 184px (col3=200 - padding 16)
       + '<tr><td style="padding:0;line-height:0;font-size:0;height:0;">'
-      + '<img src="' + SPACER + '" width="156" height="1" alt="" border="0"'
-      + ' style="display:block;border:0;width:156px;height:1px;line-height:0;font-size:0;">'
+      + '<img src="' + SPACER + '" width="184" height="1" alt="" border="0"'
+      + ' style="display:block;border:0;width:184px;height:1px;line-height:0;font-size:0;">'
       + '</td></tr>'
       + rowOwa(iCelular,  celular)
       + rowOwa(iTelefone, telefone)
       + rowOwa(iEmail,    emailHtml)
       + rowOwa(iEndereco, endereco, true)
       + '</table>'
-      // Spacer GIF que trava col3 = 172px (impede contatos curtos de encolher a coluna)
-      + '<img src="' + SPACER + '" width="172" height="1" alt="" border="0"'
-      + ' style="display:block;border:0;width:172px;height:1px;line-height:0;font-size:0;">'
+      // Spacer GIF que trava col3 = 200px (impede contatos curtos de encolher a coluna)
+      + '<img src="' + SPACER + '" width="200" height="1" alt="" border="0"'
+      + ' style="display:block;border:0;width:200px;height:1px;line-height:0;font-size:0;">'
       + '</td></tr></table>'
       + '</td>'
       + '</tr>'

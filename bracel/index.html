@@ -223,12 +223,12 @@
      Para duplicar: trocar logo, cor #E8621A e poligono SVG do fundo
      ============================================================ -->
 <table id="signature" cellpadding="0" cellspacing="0" border="0" width="600"
-  style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;background:#F4F4F4;table-layout:fixed;">
+  style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;background:#F4F4F4;">
   <tr>
     <td id="bg-td"
         style="padding:0;background-repeat:no-repeat;background-position:top left;vertical-align:top;">
       <table cellpadding="0" cellspacing="0" border="0" width="600"
-             style="border-collapse:collapse;table-layout:fixed;">
+             style="border-collapse:collapse;">
         <tr>
           <td width="240" rowspan="2" valign="bottom"
               style="width:240px;padding:0 0 24px 33px;vertical-align:bottom;">
@@ -251,7 +251,7 @@
             <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin-left:115px;">
               <tr><td style="padding:0 8px 8px 0;vertical-align:middle;line-height:0;"><img id="icon-celular" src="" width="20" height="20" alt="" style="display:block;border:0;"></td><td id="s-celular" style="font-size:18px;color:#333333;font-family:'League Spartan',Arial,Helvetica,sans-serif;padding-bottom:10px;vertical-align:middle;white-space:nowrap;"></td></tr>
               <tr><td style="padding:0 8px 8px 0;vertical-align:middle;line-height:0;"><img id="icon-telefone" src="" width="20" height="20" alt="" style="display:block;border:0;"></td><td id="s-telefone" style="font-size:18px;color:#333333;font-family:'League Spartan',Arial,Helvetica,sans-serif;padding-bottom:8px;vertical-align:middle;"></td></tr>
-              <tr><td style="padding:0 8px 8px 0;vertical-align:top;padding-top:1px;line-height:0;"><img id="icon-email" src="" width="20" height="20" alt="" style="display:block;border:0;"></td><td id="s-email" style="font-size:18px;color:#333333;font-family:'League Spartan',Arial,Helvetica,sans-serif;padding-bottom:8px;vertical-align:top;max-width:280px;word-break:break-word;line-height:1.45;"></td></tr>
+              <tr><td style="padding:0 8px 8px 0;vertical-align:top;padding-top:1px;line-height:0;"><img id="icon-email" src="" width="20" height="20" alt="" style="display:block;border:0;"></td><td id="s-email" style="font-size:18px;color:#333333;font-family:'League Spartan',Arial,Helvetica,sans-serif;padding-bottom:8px;vertical-align:middle;white-space:nowrap;line-height:1.45;"></td></tr>
               <tr><td style="padding:0 8px 0 0;vertical-align:top;padding-top:2px;line-height:0;"><img id="icon-endereco" src="" width="20" height="20" alt="" style="display:block;border:0;"></td><td id="s-endereco" style="font-size:18px;color:#333333;font-family:'League Spartan',Arial,Helvetica,sans-serif;vertical-align:top;max-width:280px;word-break:break-word;line-height:1.45;"></td></tr>
             </table>
           </td>
@@ -729,38 +729,91 @@ async function copyAsImageHTML() {
   var sig = document.getElementById('signature');
   if (!sig) return;
 
-  // Desabilita quebra de linha no email + permite a tabela crescer se precisar
-  var emailEl = document.getElementById('s-email');
-  var origEmailStyle = emailEl ? (emailEl.getAttribute('style') || '') : '';
-  var origSigWidth = sig.getAttribute('width');
-  var origSigStyle = sig.getAttribute('style') || '';
-  var baseW = parseInt(origSigWidth) || 600;
+  // Elementos que precisam soltar amarras para o email caber em uma linha
+  var wrapper  = document.getElementById('signature-wrapper');
+  var emailEl  = document.getElementById('s-email');
+  var enderEl  = document.getElementById('s-endereco');
+  var innerTbl = sig.querySelector('table');
+  // TD do topo direito (logo) e TD inferior direito (contatos)
+  var rightTds = innerTbl ? innerTbl.querySelectorAll('tr > td[width="360"], tr > td[valign="bottom"]') : [];
 
+  // Snapshot do estado original
+  var snap = [];
+  function save(el, attrs) {
+    if (!el) return;
+    var s = { el: el };
+    attrs.forEach(function(a){ s[a] = el.getAttribute(a); });
+    s.style = el.getAttribute('style') || '';
+    snap.push(s);
+  }
+  save(wrapper, []);
+  save(sig, ['width']);
+  save(innerTbl, ['width']);
+  save(emailEl, []);
+  save(enderEl, []);
+  // Guarda HTML original do endereco para envolver em wrapper com max-width
+  var origEnderHtml = enderEl ? enderEl.innerHTML : '';
+  rightTds.forEach(function(td){ save(td, ['width','height']); });
+
+  // Libera o wrapper para a tabela poder crescer alem do max-width:720
+  if (wrapper) {
+    wrapper.style.overflow = 'visible';
+    wrapper.style.maxWidth = 'none';
+    wrapper.style.width = 'auto';
+  }
+  // Solta o table-layout fixed e largura
+  sig.removeAttribute('width');
+  sig.style.tableLayout = 'auto';
+  sig.style.width = 'auto';
+  if (innerTbl) {
+    innerTbl.removeAttribute('width');
+    innerTbl.style.tableLayout = 'auto';
+    innerTbl.style.width = 'auto';
+  }
+  rightTds.forEach(function(td){
+    td.removeAttribute('width');
+    td.removeAttribute('height');
+    td.style.width = 'auto';
+  });
+  // Email: sem quebra de linha
   if (emailEl) {
     emailEl.style.whiteSpace = 'nowrap';
     emailEl.style.wordBreak = 'normal';
     emailEl.style.maxWidth = 'none';
   }
-  // Solta o table-layout fixed e largura, deixa o conteudo determinar
-  sig.removeAttribute('width');
-  sig.style.tableLayout = 'auto';
-  sig.style.width = 'auto';
+  // Endereco: garante quebra envolvendo em DIV com largura fixa
+  if (enderEl) {
+    enderEl.style.maxWidth = 'none';
+    enderEl.innerHTML = '<div style="display:block;width:280px;max-width:280px;word-break:break-word;white-space:normal;line-height:1.45;">'
+      + origEnderHtml + '</div>';
+  }
+
   // Forca reflow e mede largura natural
   void sig.offsetWidth;
   var naturalW = sig.offsetWidth;
+  var baseW = parseInt(snap[1].width) || 600;
   var finalW = Math.max(baseW, naturalW);
-  // Trava a nova largura para o html2canvas capturar
-  sig.setAttribute('width', finalW);
   sig.style.width = finalW + 'px';
+  sig.setAttribute('width', finalW);
   void sig.offsetWidth;
 
   function restore() {
-    if (emailEl) emailEl.setAttribute('style', origEmailStyle);
-    if (origSigWidth) sig.setAttribute('width', origSigWidth); else sig.removeAttribute('width');
-    sig.setAttribute('style', origSigStyle);
+    snap.forEach(function(s){
+      // Restaura atributos
+      Object.keys(s).forEach(function(k){
+        if (k === 'el' || k === 'style') return;
+        var v = s[k];
+        if (v === null || v === undefined) s.el.removeAttribute(k);
+        else s.el.setAttribute(k, v);
+      });
+      // Restaura style
+      if (s.style) s.el.setAttribute('style', s.style);
+      else s.el.removeAttribute('style');
+    });
+    if (enderEl) enderEl.innerHTML = origEnderHtml;
   }
 
-  html2canvas(sig, { scale: 2, backgroundColor: null, useCORS: true }).then(async function(canvas) {
+  html2canvas(sig, { scale: 2, backgroundColor: null, useCORS: true, width: finalW, windowWidth: Math.max(window.innerWidth, finalW + 100) }).then(async function(canvas) {
     restore();
     var dataUrl = canvas.toDataURL('image/png');
     var nome = (document.getElementById('f-nome').value || 'Assinatura').trim();

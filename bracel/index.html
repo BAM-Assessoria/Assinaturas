@@ -307,16 +307,31 @@ var ICONS = {
   )
 };
 
-// Fundo SVG: poligono cinza (superior/esquerdo) + branco (inferior/direito)
-// Diagonal: de (370,0) no topo ate (162,320) na base
-var BG = mkIcon(
-  '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="350"><rect width="600" height="350" fill="#DBDBDB"/><polygon points="0,0 558,0 62,370 0,320" fill="#F4F4F4"/></svg>'
-);
-
-// Aplica fundo e icones ao carregar
+// Fundo SVG: regerado dinamicamente conforme a largura do signature
+// para a diagonal acompanhar quando a tabela cresce horizontalmente.
+// Geometria base (W=600, H=350): diagonal vai de (W-42, 0) ate (62, 370)
 var bgTd = document.getElementById('bg-td');
-bgTd.style.backgroundImage = 'url(' + BG + ')';
-bgTd.style.backgroundSize  = '600px 350px';
+function buildBG(w, h) {
+  w = w || 600;
+  h = h || 350;
+  var topRight = (w - 42);
+  var bottomX  = 62;
+  var bottomY  = Math.round(h * 370 / 350);
+  var leftY    = Math.round(h * 320 / 350);
+  return mkIcon(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h + '">'
+    + '<rect width="' + w + '" height="' + h + '" fill="#DBDBDB"/>'
+    + '<polygon points="0,0 ' + topRight + ',0 ' + bottomX + ',' + bottomY + ' 0,' + leftY + '" fill="#F4F4F4"/>'
+    + '</svg>'
+  );
+}
+function applyBG(w, h) {
+  w = w || 600;
+  h = h || 350;
+  bgTd.style.backgroundImage = 'url(' + buildBG(w, h) + ')';
+  bgTd.style.backgroundSize  = w + 'px ' + h + 'px';
+}
+applyBG(600, 350);
 
 document.getElementById('icon-celular').src   = ICONS.celular;
 document.getElementById('icon-telefone').src  = ICONS.telefone;
@@ -334,6 +349,13 @@ function update() {
   document.getElementById('s-telefone').textContent = document.getElementById('f-telefone').value;
   document.getElementById('s-email').textContent    = document.getElementById('f-email').value;
   document.getElementById('s-endereco').textContent = document.getElementById('f-endereco').value;
+  // Atualiza BG para acompanhar a largura atual do signature (se cresceu por email longo)
+  var sig = document.getElementById('signature');
+  if (sig) {
+    var w = Math.max(600, sig.offsetWidth);
+    var h = Math.max(350, sig.offsetHeight);
+    applyBG(w, h);
+  }
 }
 ['f-nome','f-cargo','f-celular','f-telefone','f-email','f-endereco'].forEach(function(id) {
   document.getElementById(id).addEventListener('input', update);
@@ -797,6 +819,13 @@ async function copyAsImageHTML() {
   sig.setAttribute('width', finalW);
   void sig.offsetWidth;
 
+  // Regenera diagonal do BG para acompanhar a nova largura
+  var sigH = sig.offsetHeight || 350;
+  var origBgImage = bgTd.style.backgroundImage;
+  var origBgSize  = bgTd.style.backgroundSize;
+  applyBG(finalW, sigH);
+  void sig.offsetWidth;
+
   function restore() {
     snap.forEach(function(s){
       // Restaura atributos
@@ -811,6 +840,9 @@ async function copyAsImageHTML() {
       else s.el.removeAttribute('style');
     });
     if (enderEl) enderEl.innerHTML = origEnderHtml;
+    // Restaura BG original
+    bgTd.style.backgroundImage = origBgImage;
+    bgTd.style.backgroundSize  = origBgSize;
   }
 
   html2canvas(sig, { scale: 2, backgroundColor: null, useCORS: true, width: finalW, windowWidth: Math.max(window.innerWidth, finalW + 100) }).then(async function(canvas) {

@@ -728,11 +728,43 @@ async function copyAsImageHTML() {
   try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch(e) {}
   var sig = document.getElementById('signature');
   if (!sig) return;
-  var sigW = parseInt(sig.getAttribute('width')) || 600;
+
+  // Desabilita quebra de linha no email + permite a tabela crescer se precisar
+  var emailEl = document.getElementById('s-email');
+  var origEmailStyle = emailEl ? (emailEl.getAttribute('style') || '') : '';
+  var origSigWidth = sig.getAttribute('width');
+  var origSigStyle = sig.getAttribute('style') || '';
+  var baseW = parseInt(origSigWidth) || 600;
+
+  if (emailEl) {
+    emailEl.style.whiteSpace = 'nowrap';
+    emailEl.style.wordBreak = 'normal';
+    emailEl.style.maxWidth = 'none';
+  }
+  // Solta o table-layout fixed e largura, deixa o conteudo determinar
+  sig.removeAttribute('width');
+  sig.style.tableLayout = 'auto';
+  sig.style.width = 'auto';
+  // Forca reflow e mede largura natural
+  void sig.offsetWidth;
+  var naturalW = sig.offsetWidth;
+  var finalW = Math.max(baseW, naturalW);
+  // Trava a nova largura para o html2canvas capturar
+  sig.setAttribute('width', finalW);
+  sig.style.width = finalW + 'px';
+  void sig.offsetWidth;
+
+  function restore() {
+    if (emailEl) emailEl.setAttribute('style', origEmailStyle);
+    if (origSigWidth) sig.setAttribute('width', origSigWidth); else sig.removeAttribute('width');
+    sig.setAttribute('style', origSigStyle);
+  }
+
   html2canvas(sig, { scale: 2, backgroundColor: null, useCORS: true }).then(async function(canvas) {
+    restore();
     var dataUrl = canvas.toDataURL('image/png');
     var nome = (document.getElementById('f-nome').value || 'Assinatura').trim();
-    var dispW = Math.round(sigW * 0.66);
+    var dispW = Math.round(finalW * 0.66);
     var html = '<img src="' + dataUrl + '" width="' + dispW + '" alt="'
       + nome.replace(/"/g,'&quot;') + '" style="display:block;border:0;width:' + dispW + 'px;max-width:100%;height:auto;">';
     try {
@@ -756,7 +788,7 @@ async function copyAsImageHTML() {
       document.body.removeChild(div);
       alert('Imagem copiada como HTML.');
     }
-  });
+  }).catch(function(err){ restore(); throw err; });
 }
 </script>
 </body>

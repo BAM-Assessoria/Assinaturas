@@ -348,60 +348,66 @@ function buildHTML() {
   var siteHref  = siteHrefOf(site);
   var siteLabel = siteLabelOf(site);
 
+  // ==== ESCALA DA ASSINATURA NO E-MAIL ====
+  // SCALE = 1 -> tamanho cheio (560px) | 0.5 -> metade | ajuste aqui p/ aumentar/diminuir tudo proporcionalmente
+  var SCALE = 0.5;
+  function d(n){ return Math.max(1, Math.round(n * SCALE)); }   // dimensões/espaços (px inteiros)
+  function f(n){ return Math.round(n * SCALE * 10) / 10; }      // tamanhos de fonte (1 casa decimal)
+
   function contactRow(icon, value, label, italic, wrap, href) {
     if (!value) return '';
-    var valStyle = 'font-size:13px;color:#3a3a3a;font-family:Georgia,\'Times New Roman\',serif;' + (italic ? 'font-style:italic;' : '');
+    var valStyle = 'font-size:' + f(13) + 'px;color:#3a3a3a;font-family:Georgia,\'Times New Roman\',serif;' + (italic ? 'font-style:italic;' : '');
     var inner = href
       ? '<a href="' + href + '" style="' + valStyle + 'text-decoration:none;">' + value + '</a>'
       : '<span style="' + valStyle + '">' + value + '</span>';
     var lbl = label
-      ? '<span style="font-size:11px;font-style:italic;color:#7a7766;font-family:Georgia,\'Times New Roman\',serif;padding-left:8px;">' + label + '</span>'
+      ? '<span style="font-size:' + f(11) + 'px;font-style:italic;color:#7a7766;font-family:Georgia,\'Times New Roman\',serif;padding-left:' + d(8) + 'px;">' + label + '</span>'
       : '';
     var va = wrap ? 'top' : 'middle';
     return '<tr>'
-      + '<td width="22" valign="' + va + '" style="width:22px;padding:' + (wrap?'1px':'0') + ' 8px 8px 0;vertical-align:' + va + ';line-height:0;">'
-      + '<img src="' + BASE + icon + '" width="15" height="15" alt="" border="0" style="display:block;border:0;width:15px;height:15px;"></td>'
-      + '<td valign="' + va + '" style="padding:0 0 8px 0;vertical-align:' + va + ';' + (wrap?'line-height:1.4;':'white-space:nowrap;') + '">'
+      + '<td width="' + d(22) + '" valign="' + va + '" style="width:' + d(22) + 'px;padding:' + (wrap?'1px':'0') + ' ' + d(8) + 'px ' + d(8) + 'px 0;vertical-align:' + va + ';line-height:0;">'
+      + '<img src="' + BASE + icon + '" width="' + d(15) + '" height="' + d(15) + '" alt="" border="0" style="display:block;border:0;width:' + d(15) + 'px;height:' + d(15) + 'px;"></td>'
+      + '<td valign="' + va + '" style="padding:0 0 ' + d(8) + 'px 0;vertical-align:' + va + ';' + (wrap?'line-height:1.4;':'white-space:nowrap;') + '">'
       + inner + lbl + '</td></tr>';
   }
 
   var endValue = (end1 || '') + (end1 && end2 ? '<br>' : '') + (end2 || '');
 
-  return '<table cellpadding="0" cellspacing="0" border="0" width="560" role="presentation"'
-    + ' style="border-collapse:collapse;font-family:Georgia,\'Times New Roman\',serif;background:#ffffff;width:560px;">'
+  return '<table cellpadding="0" cellspacing="0" border="0" width="' + d(560) + '" role="presentation"'
+    + ' style="border-collapse:collapse;font-family:Georgia,\'Times New Roman\',serif;background:#ffffff;width:' + d(560) + 'px;">'
     + '<tr>'
     // --- coluna esquerda (50%) — aproxima o preview com espaçadores (Gmail remove posição absoluta) ---
-    + '<td width="279" valign="top" align="center" style="width:279px;padding:0 22px 0 22px;vertical-align:top;text-align:center;">'
+    + '<td width="' + d(279) + '" valign="top" align="center" style="width:' + d(279) + 'px;padding:0 ' + d(22) + 'px 0 ' + d(22) + 'px;vertical-align:top;text-align:center;">'
     + '<table cellpadding="0" cellspacing="0" border="0" role="presentation" align="center" style="border-collapse:collapse;margin:0 auto;">'
-    + '<tr><td height="60" style="height:60px;font-size:0;line-height:0;">&nbsp;</td></tr>'
+    + '<tr><td height="' + d(60) + '" style="height:' + d(60) + 'px;font-size:0;line-height:0;">&nbsp;</td></tr>'
     + '<tr><td align="center" style="text-align:center;padding:0;">'
-    + '<img src="' + BASE + 'mgl_logo.png" alt="MGL" width="180" border="0" style="display:block;border:0;width:180px;height:auto;margin:0 auto;">'
+    + '<img src="' + BASE + 'mgl_logo.png" alt="MGL" width="' + d(180) + '" border="0" style="display:block;border:0;width:' + d(180) + 'px;height:auto;margin:0 auto;">'
     + '</td></tr>'
-    + '<tr><td height="24" style="height:24px;font-size:0;line-height:0;">&nbsp;</td></tr>'
+    + '<tr><td height="' + d(24) + '" style="height:' + d(24) + 'px;font-size:0;line-height:0;">&nbsp;</td></tr>'
     + '<tr><td align="center" style="text-align:center;padding:0;">'
-    + '<div style="font-size:9.5px;font-style:italic;color:#585543;font-family:Georgia,\'Times New Roman\',serif;line-height:1.5;text-align:left;max-width:200px;margin:0 auto;">'
+    + '<div style="font-size:' + f(9.5) + 'px;font-style:italic;color:#585543;font-family:Georgia,\'Times New Roman\',serif;line-height:1.5;text-align:left;max-width:' + d(200) + 'px;margin:0 auto;">'
     + 'We truly appreciate your feedback! If you\'ve had a great experience working with us, please consider leaving us a <b>Google review.</b></div>'
     + '</td></tr>'
-    + '<tr><td height="7" style="height:7px;font-size:0;line-height:0;">&nbsp;</td></tr>'
+    + '<tr><td height="' + d(7) + '" style="height:' + d(7) + 'px;font-size:0;line-height:0;">&nbsp;</td></tr>'
     + '<tr><td align="center" style="text-align:center;padding:0;">'
-    + '<img src="' + BASE + 'google_reviews.png" alt="Google Reviews" width="96" border="0" style="display:block;border:0;width:96px;height:auto;margin:0 auto;">'
+    + '<img src="' + BASE + 'google_reviews.png" alt="Google Reviews" width="' + d(96) + '" border="0" style="display:block;border:0;width:' + d(96) + 'px;height:auto;margin:0 auto;">'
     + '</td></tr></table>'
     + '</td>'
     // --- divisória (no centro) — linha de altura cheia (confiável em e-mail) ---
     + '<td width="1" bgcolor="#cdcabd" style="width:1px;background-color:#cdcabd;font-size:0;line-height:0;">&nbsp;</td>'
     // --- coluna direita (50%) — padding-top dá o gap p/ o nome alinhar com o topo da linha ---
-    + '<td width="279" valign="top" style="width:279px;padding:16px 6px 16px 24px;vertical-align:top;">'
-    + '<p style="margin:0;padding:0 0 7px 0;font-size:21px;color:#585543;font-family:Georgia,\'Times New Roman\',serif;line-height:1.15;border-bottom:1px solid #cdcabd;white-space:nowrap;">' + nome + '</p>'
-    + (cargo  ? '<p style="margin:8px 0 0 0;padding:0;font-size:13px;font-style:italic;color:#585543;font-family:Georgia,\'Times New Roman\',serif;line-height:1.3;">' + cargo + '</p>' : '')
-    + (slogan ? '<p style="margin:0;padding:0;font-size:13px;font-style:italic;color:#585543;font-family:Georgia,\'Times New Roman\',serif;line-height:1.3;">' + slogan + '</p>' : '')
-    + '<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse;margin-top:12px;">'
+    + '<td width="' + d(279) + '" valign="top" style="width:' + d(279) + 'px;padding:' + d(16) + 'px ' + d(6) + 'px ' + d(16) + 'px ' + d(24) + 'px;vertical-align:top;">'
+    + '<p style="margin:0;padding:0 0 ' + d(7) + 'px 0;font-size:' + f(21) + 'px;color:#585543;font-family:Georgia,\'Times New Roman\',serif;line-height:1.15;border-bottom:1px solid #cdcabd;white-space:nowrap;">' + nome + '</p>'
+    + (cargo  ? '<p style="margin:' + d(8) + 'px 0 0 0;padding:0;font-size:' + f(13) + 'px;font-style:italic;color:#585543;font-family:Georgia,\'Times New Roman\',serif;line-height:1.3;">' + cargo + '</p>' : '')
+    + (slogan ? '<p style="margin:0;padding:0;font-size:' + f(13) + 'px;font-style:italic;color:#585543;font-family:Georgia,\'Times New Roman\',serif;line-height:1.3;">' + slogan + '</p>' : '')
+    + '<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse;margin-top:' + d(12) + 'px;">'
     + contactRow('icon-phone.png',    office,   'Office',   false, false, telHref(office))
     + contactRow('icon-whatsapp.png', whatsapp, 'WhatsApp', false, false, waHref(whatsapp))
     + contactRow('icon-email.png',    email,    '',         false, false, email ? 'mailto:'+email : '')
     + contactRow('icon-location.png', endValue, '',         true,  true,  '')
     + contactRow('icon-globe.png',    siteLabel,'',         true,  false, siteHref)
     + '</table>'
-    + '<p style="margin:14px 0 0 0;padding:0;font-size:8px;font-style:italic;color:#9a9a9a;font-family:Georgia,\'Times New Roman\',serif;line-height:1.45;max-width:250px;">'
+    + '<p style="margin:' + d(14) + 'px 0 0 0;padding:0;font-size:' + f(8) + 'px;font-style:italic;color:#9a9a9a;font-family:Georgia,\'Times New Roman\',serif;line-height:1.45;max-width:' + d(250) + 'px;">'
     + 'Confidentiality Notice: This email and any attachments may contain confidential and/or privileged information intended solely for the recipient. If you are not the intended recipient, please notify the sender immediately and delete this message.</p>'
     + '</td>'
     + '</tr></table>';
@@ -438,7 +444,7 @@ async function copyAsImageHTML() {
   try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch(e) {}
   html2canvas(document.getElementById('signature'), {scale:2, backgroundColor:'#ffffff', useCORS:true}).then(function(canvas) {
     var dataUrl = canvas.toDataURL('image/png');
-    var dispW = Math.round(canvas.width / 2);
+    var dispW = Math.round(canvas.width / 2 * 0.5);  // exibe a ~50% (mesma escala do HTML)
     var html = '<img src="' + dataUrl + '" width="' + dispW + '" alt="' + val('f-nome').replace(/"/g,'&quot;')
       + '" style="display:block;border:0;width:' + dispW + 'px;max-width:100%;height:auto;">';
     copyToClipboard(html, 'Copiado! Cole no Gmail > Configuracoes > Assinatura (a assinatura vai como imagem, identica ao preview).');

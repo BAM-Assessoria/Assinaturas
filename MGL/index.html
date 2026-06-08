@@ -204,7 +204,8 @@
   </div>
   <div class="actions">
     <button class="btn" onclick="downloadPNG()">Baixar como PNG</button>
-    <button class="btn secondary" onclick="copyAsImageHTML()">Copiar para Gmail</button>
+    <button class="btn secondary" onclick="copyHTML('gmail')">Copiar para Gmail (HTML)</button>
+    <button class="btn secondary" onclick="copyAsImageHTML()">Copiar como imagem (idêntico)</button>
   </div>
 </div>
 
@@ -369,18 +370,19 @@ function buildHTML() {
   return '<table cellpadding="0" cellspacing="0" border="0" width="560" role="presentation"'
     + ' style="border-collapse:collapse;font-family:Georgia,\'Times New Roman\',serif;background:#ffffff;width:560px;">'
     + '<tr>'
-    // --- coluna esquerda (50%) — pilha centralizada e compacta (e-mail não suporta posição absoluta) ---
-    + '<td width="279" valign="middle" align="center" style="width:279px;padding:16px 22px 16px 22px;vertical-align:middle;text-align:center;">'
+    // --- coluna esquerda (50%) — aproxima o preview com espaçadores (Gmail remove posição absoluta) ---
+    + '<td width="279" valign="top" align="center" style="width:279px;padding:0 22px 0 22px;vertical-align:top;text-align:center;">'
     + '<table cellpadding="0" cellspacing="0" border="0" role="presentation" align="center" style="border-collapse:collapse;margin:0 auto;">'
+    + '<tr><td height="60" style="height:60px;font-size:0;line-height:0;">&nbsp;</td></tr>'
     + '<tr><td align="center" style="text-align:center;padding:0;">'
     + '<img src="' + BASE + 'mgl_logo.png" alt="MGL" width="180" border="0" style="display:block;border:0;width:180px;height:auto;margin:0 auto;">'
     + '</td></tr>'
-    + '<tr><td height="22" style="height:22px;font-size:0;line-height:0;">&nbsp;</td></tr>'
+    + '<tr><td height="24" style="height:24px;font-size:0;line-height:0;">&nbsp;</td></tr>'
     + '<tr><td align="center" style="text-align:center;padding:0;">'
     + '<div style="font-size:9.5px;font-style:italic;color:#585543;font-family:Georgia,\'Times New Roman\',serif;line-height:1.5;text-align:left;max-width:200px;margin:0 auto;">'
     + 'We truly appreciate your feedback! If you\'ve had a great experience working with us, please consider leaving us a <b>Google review.</b></div>'
     + '</td></tr>'
-    + '<tr><td height="10" style="height:10px;font-size:0;line-height:0;">&nbsp;</td></tr>'
+    + '<tr><td height="7" style="height:7px;font-size:0;line-height:0;">&nbsp;</td></tr>'
     + '<tr><td align="center" style="text-align:center;padding:0;">'
     + '<img src="' + BASE + 'google_reviews.png" alt="Google Reviews" width="96" border="0" style="display:block;border:0;width:96px;height:auto;margin:0 auto;">'
     + '</td></tr></table>'

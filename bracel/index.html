@@ -190,20 +190,20 @@
     </svg>
     Voltar
   </a>
-  <span class="header-title">Editor � Bracel</span>
+  <span class="header-title">Editor — Bracel</span>
   <span class="header-spacer"></span>
 </header>
 
 <div class="main">
 <div class="panel">
-  <div class="panel-title">Editar dados da assinatura � Bracel</div>
+  <div class="panel-title">Editar dados da assinatura — Bracel</div>
   <div class="grid">
     <label>Nome completo <input type="text" id="f-nome" value="Roberto Cremonezi"></label>
     <label>Cargo (opcional) <input type="text" id="f-cargo" value=""></label>
     <label>Celular / WhatsApp <input type="text" id="f-celular" value=""></label>
     <label>Telefone <input type="text" id="f-telefone" value=""></label>
     <label class="full">E-mail <input type="text" id="f-email" value=""></label>
-    <label class="full">Endere�o <input type="text" id="f-endereco" value="Estrada Tenente Marques, 5.558"></label>
+    <label class="full">Endereço <input type="text" id="f-endereco" value="Estrada Tenente Marques, 5.558"></label>
   </div>
   <div class="actions">
     <button class="btn" onclick="downloadPNG()">Baixar como PNG</button>
@@ -215,7 +215,7 @@
 </div>
 
 <div class="preview-panel">
-  <div class="preview-label">Pr�-visualiza��o</div>
+  <div class="preview-label">Pré-visualização</div>
 <div id="signature-wrapper" style="max-width:720px;margin:0 auto;">
 <!-- ============================================================
      ASSINATURA BRACEL
@@ -361,7 +361,7 @@ function update() {
   document.getElementById(id).addEventListener('input', update);
 });
 
-// Formata��o autom�tica de telefone brasileiro
+// Formatação automática de telefone brasileiro
 function fmtPhone(v){
   var d=v.replace(/\D/g,'').slice(0,11);
   if(!d.length) return '';
@@ -379,7 +379,7 @@ function fmtPhone(v){
   });
 });
 
-// Autocomplete de dom�nio de e-mail
+// Autocomplete de domínio de e-mail
 (function(){
   var DOMAINS = ['bracel.com.br','gmail.com','hotmail.com'];
   var input = document.getElementById('f-email');
@@ -433,7 +433,7 @@ function downloadPNG() {
   });
 }
 
-// Copia HTML da assinatura � mode: undefined=Gmail | 'owa'=Outlook Web | 'desktop'=Outlook Desktop
+// Copia HTML da assinatura — mode: undefined=Gmail | 'owa'=Outlook Web | 'desktop'=Outlook Desktop
 async function copyHTML(mode) {
   var nome     = (document.getElementById('f-nome').value     || '').trim();
   var cargo    = (document.getElementById('f-cargo').value    || '').trim();
@@ -447,20 +447,20 @@ async function copyHTML(mode) {
   var bgPngUrl  = BASE + 'bg/bracel.png';
   var bgTopUrl  = BASE + 'bg/bracel-top.png';
   var bgMidUrl  = BASE + 'bg/bracel-middle.png';
-  // OWA: PNGs com fundo transparente � sobrevivem ao dark mode pois o bgcolor do TD (travado por gif 1x1)
-  // fornece o cinza claro #F4F4F4 atr�s da diagonal
-  // ?v=2 = cache-buster ap�s reupload das imagens (B5B5B5)
+  // OWA: PNGs com fundo transparente ainda sobrevivem ao dark mode pois o bgcolor do TD (travado por gif 1x1)
+  // fornece o cinza claro #F4F4F4 atrás da diagonal
+  // ?v=2 = cache-buster após reupload das imagens (B5B5B5)
   var bgTopOwa  = BASE + 'bg/bracel-top-dark.png?v=2';
   var bgMidOwa  = BASE + 'bg/bracel-middle-dark.png?v=2';
   var logoUrl   = BASE + 'bracel_logo.png';
-  // GIF transparente 1x1 em data URI (sobrevive ao OWA quando dentro de c�lula com conte�do)
+  // GIF transparente 1x1 em data URI (sobrevive ao OWA quando dentro de célula com conteúdo)
   var SPACER    = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
   var iCelular  = BASE + 'icons/celular.png';
   var iTelefone = BASE + 'icons/telefone.png';
   var iEmail    = BASE + 'icons/email.png';
   var iEndereco = BASE + 'icons/endereco.png';
 
-  // Outlook: duas colunas separadas por linha � icone | texto
+  // Outlook: duas colunas separadas por linha = ícone | texto
   function rowOl(icon, content) {
     if (!content) return '';
     return '<tr>'
@@ -500,9 +500,9 @@ async function copyHTML(mode) {
   var html;
 
   if (mode === 'desktop') {
-    // === VERS�O OUTLOOK DESKTOP ===
+    // === VERSÃO OUTLOOK DESKTOP ===
     // background HTML attribute: suportado pelo Outlook Desktop (Word engine)
-    // Celulas internas sem bgcolor � transparentes, mostram a diagonal do PNG
+    // Células internas sem bgcolor são transparentes, mostram a diagonal do PNG
     html = '<table cellpadding="0" cellspacing="0" border="0" width="520"'
       + ' style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;width:520px;">'
       + '<tr>'
@@ -544,22 +544,22 @@ async function copyHTML(mode) {
       + '</table>';
 
   } else if (mode === 'owa') {
-    // === VERS�O OUTLOOK WEB (OWA) ===
-    // Estrat�gia validada (ap�s observar o saneamento real do OWA):
+    // === VERSÃO OUTLOOK WEB (OWA) ===
+    // Estratégia validada (após observar o saneamento real do OWA):
     //  - OWA REMOVE: <colgroup>, table-layout:fixed, linhas vazias/1px, width/height
     //    em atributos HTML, align="right" em <table>, classes
     //  - OWA PRESERVA: width/height NO STYLE inline, bgcolor, background="url",
     //    colspan, align em <td> (vira text-align), border-collapse, padding/margin
     //
-    // Layout: col1 (VARI�VEL, m�n 208) + col2 (160 fixo) + col3 (152 fixo) = m�n 520
-    //   Top image 520x100 right-anchored. Quando col1>208, sobra light bg � esquerda.
-    //   Diagonais sempre alinhadas pois col2+col3=312 constantes ? top_diag e mid_diag
+    // Layout: col1 (VARIÁVEL, mín 208) + col2 (160 fixo) + col3 (152 fixo) = mín 520
+    //   Top image 520x100 right-anchored. Quando col1>208, sobra light bg à esquerda.
+    //   Diagonais sempre alinhadas pois col2+col3=312 constantes e top_diag e mid_diag
     //   deslocam juntos com qualquer col1.
     //
-    // Contatos col3: formato Gmail (TD �nico, �cone inline com margin-right:5)
-    //   Endere�o longo quebra em 2 linhas dentro dos 152px.
+    // Contatos col3: formato Gmail (TD único, ícone inline com margin-right:5)
+    //   Endereço longo quebra em 2 linhas dentro dos 152px.
     //
-    // Dark mode: bgcolor + background-image url(data:gif1x1) trava cor s�lida.
+    // Dark mode: bgcolor + background-image url(data:gif1x1) trava cor sólida.
     // COR DO BLOCO COL3: cinza #B5B5B5 + texto/links/icones #5A5A5A.
     // Replace troca qualquer color:#XXXXXX dentro do content (ex.: link de email) pela cor da col3.
     // Icones recebem opacity:0.65 para suavizar sem precisar de PNGs recoloridos.
@@ -587,7 +587,7 @@ async function copyHTML(mode) {
         + '</td>'
         + '</tr>';
     };
-    // PNGs 1x1 hospedados de cor s�lida � sobrevivem ao dark mode (Gmail/OWA) muito melhor
+    // PNGs 1x1 hospedados de cor sólida e sobrevivem ao dark mode (Gmail/OWA) muito melhor
     // que data URIs. Servem como background-image para travar a cor original da TD.
     var BG_LIGHT  = BASE + 'bg/bg-light.png';
     var BG_DARK   = BASE + 'bg/bg-dark.png';
@@ -604,9 +604,9 @@ async function copyHTML(mode) {
       + ' style="display:inline-block;border:0;width:546px;height:105px;vertical-align:bottom;">'
       + '</td>'
       + '</tr>'
-      // Linha 2: nome | diagonal | contatos � TR for�ada a 100px pelas tr�s TDs
+      // Linha 2: nome | diagonal | contatos é TR forçada a 100px pelas três TDs
       + '<tr>'
-      // COL1: nome+cargo. width m�nimo via spacer GIF 208w; cresce se nome maior.
+      // COL1: nome+cargo. width mínimo via spacer GIF 208w; cresce se nome maior.
       // Sem height fixa — row 2 cresce quando contatos col3 quebram linha.
       + '<td bgcolor="#F4F5F4" valign="middle" background="' + BG_LIGHT + '"'
       + ' style="padding:0 10px 0 10px;vertical-align:middle;'
@@ -616,7 +616,7 @@ async function copyHTML(mode) {
       + 'font-family:\'Inter\',Arial,Helvetica,sans-serif;line-height:1.25;white-space:nowrap;">'
       + '<span style="color:#1a1a1a;">' + nome + '</span></p>'
       + cargoHtml
-      // Spacer GIF: trava col1 = 208px (sobrevive ao OWA por estar dentro de TD com conte�do)
+      // Spacer GIF: trava col1 = 208px (sobrevive ao OWA por estar dentro de TD com conteúdo)
       + '<img src="' + SPACER + '" width="208" height="1" alt="" border="0"'
       + ' style="display:block;border:0;width:208px;height:1px;line-height:0;font-size:0;">'
       + '</td>'
@@ -665,7 +665,7 @@ async function copyHTML(mode) {
       + '</table>';
 
   } else {
-    // === VERS�O GMAIL ===
+    // === VERSÃO GMAIL ===
     var bgTdStyle = 'padding:0;background-color:#F4F4F4;vertical-align:top;'
       + 'background-image:url(' + bgUrl + ');background-repeat:no-repeat;background-position:top left;';
 
@@ -717,10 +717,10 @@ async function copyHTML(mode) {
       new ClipboardItem({ 'text/html': new Blob([html], { type: 'text/html' }) })
     ]);
     var msg = mode === 'desktop'
-      ? 'Copiado! Cole no Outlook Desktop: Arquivo > Op��es > Email > Assinaturas.'
+      ? 'Copiado! Cole no Outlook Desktop: Arquivo > Opções > Email > Assinaturas.'
       : mode === 'owa'
-      ? 'Copiado! Cole no Outlook Web: Configura��es > Email > Assinatura de email.'
-      : 'Copiado! Cole no Gmail > Configura��es > Assinatura.';
+      ? 'Copiado! Cole no Outlook Web: Configurações > Email > Assinatura de email.'
+      : 'Copiado! Cole no Gmail > Configurações > Assinatura.';
     alert(msg);
   } catch(e) {
     // Fallback: contenteditable preserva HTML formatado no clipboard

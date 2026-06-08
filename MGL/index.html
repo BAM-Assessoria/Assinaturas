@@ -350,7 +350,7 @@ function buildHTML() {
 
   // ==== ESCALA DA ASSINATURA NO E-MAIL ====
   // SCALE = 1 -> tamanho cheio (560px) | 0.5 -> metade | ajuste aqui p/ aumentar/diminuir tudo proporcionalmente
-  var SCALE = 0.6;
+  var SCALE = 0.7;
   function d(n){ return Math.max(1, Math.round(n * SCALE)); }   // dimensões/espaços (px inteiros)
   function f(n){ return Math.round(n * SCALE * 10) / 10; }      // tamanhos de fonte (1 casa decimal)
 
@@ -444,7 +444,7 @@ async function copyAsImageHTML() {
   try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch(e) {}
   html2canvas(document.getElementById('signature'), {scale:2, backgroundColor:'#ffffff', useCORS:true}).then(function(canvas) {
     var dataUrl = canvas.toDataURL('image/png');
-    var dispW = Math.round(canvas.width / 2 * 0.6);  // exibe a ~60% (mesma escala do HTML)
+    var dispW = Math.round(canvas.width / 2 * 0.7);  // exibe a ~70% (mesma escala do HTML)
     var html = '<img src="' + dataUrl + '" width="' + dispW + '" alt="' + val('f-nome').replace(/"/g,'&quot;')
       + '" style="display:block;border:0;width:' + dispW + 'px;max-width:100%;height:auto;">';
     copyToClipboard(html, 'Copiado! Cole no Gmail > Configuracoes > Assinatura (a assinatura vai como imagem, identica ao preview).');

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Editor de Assinatura - MGL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  :root { --brand:#585543; --brand-hover:#403e30; --brand-focus:rgba(88,85,67,.14); }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #f5f7fb;
+    font-family: 'Inter', system-ui, -apple-system, Arial, sans-serif;
+    min-height: 100vh;
+    color: #0f172a;
+  }
+
+  .page-header {
+    background: #fff;
+    border-bottom: 1px solid rgba(0,0,0,.07);
+    padding: 0 24px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 1px 3px rgba(0,0,0,.05);
+  }
+
+  .header-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #64748b;
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 8px;
+    transition: background .15s, color .15s;
+  }
+  .header-back:hover { background: #f1f5f9; color: #0f172a; }
+  .header-back svg { width: 14px; height: 14px; }
+
+  .header-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: -0.01em;
+  }
+
+  .header-spacer { width: 90px; }
+
+  .main {
+    max-width: 760px;
+    margin: 32px auto 0;
+    padding: 0 20px 60px;
+  }
+
+  .panel {
+    background: #fff;
+    padding: 28px 28px 24px;
+    border-radius: 16px;
+    border: 1px solid rgba(0,0,0,.07);
+    box-shadow: 0 1px 3px rgba(0,0,0,.04), 0 4px 20px rgba(0,0,0,.05);
+    margin-bottom: 20px;
+  }
+
+  .panel-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 20px;
+    letter-spacing: -0.01em;
+  }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 16px; }
+
+  .grid label {
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+    font-weight: 600;
+    color: #475569;
+    gap: 6px;
+    letter-spacing: 0.01em;
+  }
+
+  .grid input {
+    padding: 9px 12px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-family: inherit;
+    color: #0f172a;
+    background: #fff;
+    transition: border-color .15s, box-shadow .15s;
+    outline: none;
+  }
+  .grid input:hover { border-color: #cbd5e1; }
+  .grid input:focus { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-focus); }
+
+  .full { grid-column: 1 / -1; }
+
+  .actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    padding: 10px 20px;
+    background: var(--brand);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background .15s, transform .1s, box-shadow .15s;
+    box-shadow: 0 1px 3px rgba(0,0,0,.15);
+    letter-spacing: 0.01em;
+  }
+  .btn:hover { background: var(--brand-hover); transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,.2); }
+  .btn:active { transform: translateY(0); }
+
+  .btn.secondary {
+    background: #f1f5f9;
+    color: #475569;
+    box-shadow: none;
+    border: 1.5px solid #e2e8f0;
+  }
+  .btn.secondary:hover { background: #e2e8f0; color: #0f172a; box-shadow: none; transform: translateY(-1px); }
+
+  .preview-panel { background: transparent; padding: 0; }
+
+  .preview-label {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 16px;
+  }
+
+  #signature-wrapper { max-width: 720px; margin: 0 auto; }
+
+  .page-footer {
+    text-align: center;
+    padding: 36px 0 0;
+    font-size: 12px;
+    color: #94a3b8;
+    font-weight: 500;
+  }
+  .page-footer strong { color: #64748b; font-weight: 700; }
+
+  @media (max-width: 600px) {
+    .main { padding: 0 12px 48px; margin-top: 16px; }
+    .panel { padding: 20px 16px 18px; border-radius: 12px; }
+    .preview-panel { padding: 0; }
+    .grid { grid-template-columns: 1fr; gap: 12px; }
+    .grid input { min-height: 44px; font-size: 16px; }
+    .header-spacer { display: none; }
+    .btn { width: 100%; justify-content: center; padding: 13px 20px; font-size: 15px; min-height: 44px; }
+    .actions { gap: 8px; }
+    #signature-wrapper { overflow: hidden; }
+  }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <a class="header-back" href="../index.html">
+    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 2L4 7l5 5"/>
+    </svg>
+    Voltar
+  </a>
+  <span class="header-title">Editor — MGL</span>
+  <span class="header-spacer"></span>
+</header>
+
+<div class="main">
+<div class="panel">
+  <div class="panel-title">Editar dados da assinatura — MGL</div>
+  <div class="grid">
+    <label>Nome completo <input type="text" id="f-nome" value="Josye Piassa, LCAM"></label>
+    <label>Cargo <input type="text" id="f-cargo" value="Owner/ Property Manager"></label>
+    <label>Slogan <input type="text" id="f-slogan" value="Management for Great Living"></label>
+    <label>Telefone (Office) <input type="text" id="f-office" value="(786)809-6825"></label>
+    <label>WhatsApp <input type="text" id="f-whatsapp" value="(786)743-7121"></label>
+    <label>Site <input type="text" id="f-site" value="https://www.mglpm.com/"></label>
+    <label class="full">E-mail <input type="text" id="f-email" value="josye@mglpm.com"></label>
+    <label class="full">Endereço — linha 1 <input type="text" id="f-end1" value="1801 NE 123rd Street, Suite 314"></label>
+    <label class="full">Endereço — linha 2 <input type="text" id="f-end2" value="North Miami, FL 33181"></label>
+  </div>
+  <div class="actions">
+    <button class="btn" onclick="downloadPNG()">Baixar como PNG</button>
+    <button class="btn secondary" onclick="copyAsImageHTML()">Copiar para Gmail</button>
+  </div>
+</div>
+
+<div class="preview-panel">
+  <div class="preview-label">Pré-visualização</div>
+<div id="signature-wrapper" style="max-width:720px;margin:0 auto;">
+<!-- ============================================================
+     ASSINATURA MGL  (largura 560px)
+     Coluna esquerda: logo + CTA Google | divisória | coluna direita: dados
+     ============================================================ -->
+<table id="signature" cellpadding="0" cellspacing="0" border="0" width="560"
+  style="border-collapse:collapse;font-family:Georgia,'Times New Roman',serif;background:#ffffff;table-layout:fixed;">
+  <tr>
+    <!-- COLUNA ESQUERDA (50%) — itens com posição ABSOLUTA: cada 'top' move SÓ aquele item e NÃO estica o card -->
+    <td width="279" valign="top" align="center"
+        style="width:279px;padding:0;vertical-align:top;text-align:center;position:relative;">
+      <!-- LOGO MGL — mude o 'top' para subir/descer (sozinho) -->
+      <img id="logo-mgl" src="mgl_logo.png" alt="MGL" width="180"
+           style="position:absolute;top:80px;left:0;right:0;margin:0 auto;display:block;border:0;width:180px;height:auto;">
+      <!-- TEXTO Google review — mude o 'top' para subir/descer (sozinho) -->
+      <div style="position:absolute;top:190px;left:0;right:0;text-align:center;">
+        <div style="display:inline-block;font-size:9.5px;font-style:italic;color:#585543;font-family:Georgia,'Times New Roman',serif;line-height:1.5;text-align:left;max-width:200px;">
+          We truly appreciate your feedback! If you've had a great experience working with us, please consider leaving us a <b>Google review.</b>
+        </div>
+      </div>
+      <!-- SELO Google Reviews — mude o 'top' para subir/descer (sozinho) -->
+      <img id="logo-google" src="google_reviews.png" alt="Google Reviews" width="96"
+           style="position:absolute;top:220px;left:0;right:0;margin:0 auto;display:block;border:0;width:96px;height:auto;">
+    </td>
+    <!-- DIVISÓRIA (no centro) — linha = 90% da altura (top/bottom 5% cada). Mude os 5% p/ encurtar/alongar -->
+    <td width="1" style="width:1px;padding:0;position:relative;font-size:0;line-height:0;">
+      <div style="position:absolute;top:5%;bottom:5%;left:0;width:1px;background:#cdcabd;"></div>
+    </td>
+    <!-- COLUNA DIREITA (50%) — padding-top dá o gap p/ o nome começar junto ao topo da linha -->
+    <td width="279" valign="top" style="width:279px;padding:16px 6px 16px 24px;vertical-align:top;">
+      <div id="s-nome" style="font-size:21px;color:#585543;font-family:Georgia,'Times New Roman',serif;line-height:1.15;padding-bottom:7px;border-bottom:1px solid #cdcabd;white-space:nowrap;"></div>
+      <div id="s-cargo" style="font-size:13px;font-style:italic;color:#585543;font-family:Georgia,'Times New Roman',serif;line-height:1.3;padding-top:8px;"></div>
+      <div id="s-slogan" style="font-size:13px;font-style:italic;color:#585543;font-family:Georgia,'Times New Roman',serif;line-height:1.3;"></div>
+
+      <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin-top:12px;">
+        <tr id="row-office">
+          <td width="22" valign="middle" style="width:22px;padding:0 8px 8px 0;vertical-align:middle;line-height:0;"><img id="icon-office" src="icon-phone.svg" width="15" height="15" alt="" style="display:block;border:0;"></td>
+          <td valign="middle" style="padding:0 0 8px 0;vertical-align:middle;white-space:nowrap;font-family:Georgia,'Times New Roman',serif;"><a id="s-office" href="#" style="font-size:13px;color:#3a3a3a;text-decoration:none;"></a><span style="font-size:11px;font-style:italic;color:#7a7766;padding-left:8px;">Office</span></td>
+        </tr>
+        <tr id="row-whatsapp">
+          <td width="22" valign="middle" style="width:22px;padding:0 8px 8px 0;vertical-align:middle;line-height:0;"><img id="icon-whatsapp" src="icon-whatsapp.svg" width="15" height="15" alt="" style="display:block;border:0;"></td>
+          <td valign="middle" style="padding:0 0 8px 0;vertical-align:middle;white-space:nowrap;font-family:Georgia,'Times New Roman',serif;"><a id="s-whatsapp" href="#" style="font-size:13px;color:#3a3a3a;text-decoration:none;"></a><span style="font-size:11px;font-style:italic;color:#7a7766;padding-left:8px;">WhatsApp</span></td>
+        </tr>
+        <tr id="row-email">
+          <td width="22" valign="middle" style="width:22px;padding:0 8px 8px 0;vertical-align:middle;line-height:0;"><img id="icon-mail" src="icon-email.svg" width="15" height="15" alt="" style="display:block;border:0;"></td>
+          <td valign="middle" style="padding:0 0 8px 0;vertical-align:middle;white-space:nowrap;font-family:Georgia,'Times New Roman',serif;"><a id="s-email" href="#" style="font-size:12.5px;color:#3a3a3a;text-decoration:none;"></a></td>
+        </tr>
+        <tr id="row-end">
+          <td width="22" valign="top" style="width:22px;padding:1px 8px 8px 0;vertical-align:top;line-height:0;"><img id="icon-location" src="icon-location.svg" width="15" height="15" alt="" style="display:block;border:0;"></td>
+          <td valign="top" style="padding:0 0 8px 0;vertical-align:top;font-family:Georgia,'Times New Roman',serif;font-style:italic;color:#3a3a3a;line-height:1.4;"><span id="s-end1" style="font-size:12.5px;"></span><br><span id="s-end2" style="font-size:12.5px;"></span></td>
+        </tr>
+        <tr id="row-site">
+          <td width="22" valign="middle" style="width:22px;padding:0 8px 0 0;vertical-align:middle;line-height:0;"><img id="icon-globe" src="icon-globe.svg" width="15" height="15" alt="" style="display:block;border:0;"></td>
+          <td valign="middle" style="padding:0;vertical-align:middle;white-space:nowrap;font-family:Georgia,'Times New Roman',serif;"><a id="s-site" href="#" style="font-size:12.5px;font-style:italic;color:#3a3a3a;text-decoration:none;"></a></td>
+        </tr>
+      </table>
+
+      <div style="font-size:8px;font-style:italic;color:#9a9a9a;font-family:Georgia,'Times New Roman',serif;line-height:1.45;margin-top:14px;max-width:250px;">
+        Confidentiality Notice: This email and any attachments may contain confidential and/or privileged information intended solely for the recipient. If you are not the intended recipient, please notify the sender immediately and delete this message.
+      </div>
+    </td>
+  </tr>
+</table>
+</div>
+</div><!-- /preview-panel -->
+
+<div class="page-footer">
+  <span>Desenvolvido por <strong>BAM</strong></span>
+</div>
+</div><!-- /main -->
+
+<script>
+function val(id){ return (document.getElementById(id).value || '').trim(); }
+
+// Helpers de links clicáveis (números assumidos como EUA, +1)
+function digits(v){ return (v||'').replace(/\D/g,''); }
+function telHref(v){ var d=digits(v); if(!d) return ''; if(d.length===10) d='1'+d; return 'tel:+'+d; }
+function waHref(v){ var d=digits(v); if(!d) return ''; if(d.length===10) d='1'+d; return 'https://wa.me/'+d; }
+function siteHrefOf(v){ return v ? (/^https?:\/\//.test(v) ? v : 'https://'+v) : ''; }
+function siteLabelOf(v){ return v.replace(/^https?:\/\//,'').replace(/\/$/,''); }
+
+function update() {
+  document.getElementById('s-nome').textContent   = val('f-nome');
+  document.getElementById('s-cargo').textContent  = val('f-cargo');
+  document.getElementById('s-slogan').textContent = val('f-slogan');
+  document.getElementById('s-end1').textContent   = val('f-end1');
+  document.getElementById('s-end2').textContent   = val('f-end2');
+
+  var office = val('f-office');
+  var aOff = document.getElementById('s-office'); aOff.textContent = office; aOff.href = telHref(office) || '#';
+
+  var wa = val('f-whatsapp');
+  var aWa = document.getElementById('s-whatsapp'); aWa.textContent = wa; aWa.href = waHref(wa) || '#';
+
+  var email = val('f-email');
+  var aEmail = document.getElementById('s-email'); aEmail.textContent = email; aEmail.href = email ? 'mailto:'+email : '#';
+
+  var site = val('f-site');
+  var aSite = document.getElementById('s-site'); aSite.textContent = siteLabelOf(site); aSite.href = siteHrefOf(site) || '#';
+
+  // esconde linhas vazias
+  document.getElementById('row-office').style.display   = office ? '' : 'none';
+  document.getElementById('row-whatsapp').style.display = wa     ? '' : 'none';
+  document.getElementById('row-email').style.display    = email  ? '' : 'none';
+  document.getElementById('row-site').style.display     = site   ? '' : 'none';
+}
+['f-nome','f-cargo','f-slogan','f-office','f-whatsapp','f-email','f-site','f-end1','f-end2'].forEach(function(id){
+  document.getElementById(id).addEventListener('input', update);
+});
+update();
+
+function downloadPNG() {
+  html2canvas(document.getElementById('signature'), {scale:2, backgroundColor:'#ffffff', useCORS:true}).then(function(canvas) {
+    var link = document.createElement('a');
+    var nome = val('f-nome').replace(/[^a-z0-9]+/gi, '_').toLowerCase() || 'assinatura';
+    link.download = 'assinatura_mgl_' + nome + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  });
+}
+
+// ===== HTML para colar no Gmail / Outlook =====
+function buildHTML() {
+  var nome     = val('f-nome');
+  var cargo    = val('f-cargo');
+  var slogan   = val('f-slogan');
+  var office   = val('f-office');
+  var whatsapp = val('f-whatsapp');
+  var email    = val('f-email');
+  var end1     = val('f-end1');
+  var end2     = val('f-end2');
+  var site     = val('f-site');
+
+  var BASE = 'https://bam-assessoria.github.io/Assinaturas/MGL/';
+  var siteHref  = siteHrefOf(site);
+  var siteLabel = siteLabelOf(site);
+
+  function contactRow(icon, value, label, italic, wrap, href) {
+    if (!value) return '';
+    var valStyle = 'font-size:13px;color:#3a3a3a;font-family:Georgia,\'Times New Roman\',serif;' + (italic ? 'font-style:italic;' : '');
+    var inner = href
+      ? '<a href="' + href + '" style="' + valStyle + 'text-decoration:none;">' + value + '</a>'
+      : '<span style="' + valStyle + '">' + value + '</span>';
+    var lbl = label
+      ? '<span style="font-size:11px;font-style:italic;color:#7a7766;font-family:Georgia,\'Times New Roman\',serif;padding-left:8px;">' + label + '</span>'
+      : '';
+    var va = wrap ? 'top' : 'middle';
+    return '<tr>'
+      + '<td width="22" valign="' + va + '" style="width:22px;padding:' + (wrap?'1px':'0') + ' 8px 8px 0;vertical-align:' + va + ';line-height:0;">'
+      + '<img src="' + BASE + icon + '" width="15" height="15" alt="" border="0" style="display:block;border:0;width:15px;height:15px;"></td>'
+      + '<td valign="' + va + '" style="padding:0 0 8px 0;vertical-align:' + va + ';' + (wrap?'line-height:1.4;':'white-space:nowrap;') + '">'
+      + inner + lbl + '</td></tr>';
+  }
+
+  var endValue = (end1 || '') + (end1 && end2 ? '<br>' : '') + (end2 || '');
+
+  return '<table cellpadding="0" cellspacing="0" border="0" width="560" role="presentation"'
+    + ' style="border-collapse:collapse;font-family:Georgia,\'Times New Roman\',serif;background:#ffffff;width:560px;">'
+    + '<tr>'
+    // --- coluna esquerda (50%) — pilha centralizada e compacta (e-mail não suporta posição absoluta) ---
+    + '<td width="279" valign="middle" align="center" style="width:279px;padding:16px 22px 16px 22px;vertical-align:middle;text-align:center;">'
+    + '<table cellpadding="0" cellspacing="0" border="0" role="presentation" align="center" style="border-collapse:collapse;margin:0 auto;">'
+    + '<tr><td align="center" style="text-align:center;padding:0;">'
+    + '<img src="' + BASE + 'mgl_logo.png" alt="MGL" width="180" border="0" style="display:block;border:0;width:180px;height:auto;margin:0 auto;">'
+    + '</td></tr>'
+    + '<tr><td height="22" style="height:22px;font-size:0;line-height:0;">&nbsp;</td></tr>'
+    + '<tr><td align="center" style="text-align:center;padding:0;">'
+    + '<div style="font-size:9.5px;font-style:italic;color:#585543;font-family:Georgia,\'Times New Roman\',serif;line-height:1.5;text-align:left;max-width:200px;margin:0 auto;">'
+    + 'We truly appreciate your feedback! If you\'ve had a great experience working with us, please consider leaving us a <b>Google review.</b></div>'
+    + '</td></tr>'
+    + '<tr><td height="10" style="height:10px;font-size:0;line-height:0;">&nbsp;</td></tr>'
+    + '<tr><td align="center" style="text-align:center;padding:0;">'
+    + '<img src="' + BASE + 'google_reviews.png" alt="Google Reviews" width="96" border="0" style="display:block;border:0;width:96px;height:auto;margin:0 auto;">'
+    + '</td></tr></table>'
+    + '</td>'
+    // --- divisória (no centro) — linha de altura cheia (confiável em e-mail) ---
+    + '<td width="1" bgcolor="#cdcabd" style="width:1px;background-color:#cdcabd;font-size:0;line-height:0;">&nbsp;</td>'
+    // --- coluna direita (50%) — padding-top dá o gap p/ o nome alinhar com o topo da linha ---
+    + '<td width="279" valign="top" style="width:279px;padding:16px 6px 16px 24px;vertical-align:top;">'
+    + '<p style="margin:0;padding:0 0 7px 0;font-size:21px;color:#585543;font-family:Georgia,\'Times New Roman\',serif;line-height:1.15;border-bottom:1px solid #cdcabd;white-space:nowrap;">' + nome + '</p>'
+    + (cargo  ? '<p style="margin:8px 0 0 0;padding:0;font-size:13px;font-style:italic;color:#585543;font-family:Georgia,\'Times New Roman\',serif;line-height:1.3;">' + cargo + '</p>' : '')
+    + (slogan ? '<p style="margin:0;padding:0;font-size:13px;font-style:italic;color:#585543;font-family:Georgia,\'Times New Roman\',serif;line-height:1.3;">' + slogan + '</p>' : '')
+    + '<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse;margin-top:12px;">'
+    + contactRow('icon-phone.png',    office,   'Office',   false, false, telHref(office))
+    + contactRow('icon-whatsapp.png', whatsapp, 'WhatsApp', false, false, waHref(whatsapp))
+    + contactRow('icon-email.png',    email,    '',         false, false, email ? 'mailto:'+email : '')
+    + contactRow('icon-location.png', endValue, '',         true,  true,  '')
+    + contactRow('icon-globe.png',    siteLabel,'',         true,  false, siteHref)
+    + '</table>'
+    + '<p style="margin:14px 0 0 0;padding:0;font-size:8px;font-style:italic;color:#9a9a9a;font-family:Georgia,\'Times New Roman\',serif;line-height:1.45;max-width:250px;">'
+    + 'Confidentiality Notice: This email and any attachments may contain confidential and/or privileged information intended solely for the recipient. If you are not the intended recipient, please notify the sender immediately and delete this message.</p>'
+    + '</td>'
+    + '</tr></table>';
+}
+
+async function copyToClipboard(html, msg) {
+  try {
+    await navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob([html], { type: 'text/html' }) })]);
+    alert(msg);
+  } catch(e) {
+    var div = document.createElement('div');
+    div.contentEditable = 'true';
+    div.innerHTML = html;
+    div.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0;pointer-events:none;';
+    document.body.appendChild(div);
+    var sel = window.getSelection(), range = document.createRange();
+    range.selectNodeContents(div); sel.removeAllRanges(); sel.addRange(range);
+    try { document.execCommand('copy'); } catch(e2) {}
+    sel.removeAllRanges(); document.body.removeChild(div);
+    alert(msg);
+  }
+}
+
+function copyHTML(mode) {
+  var html = buildHTML();
+  var msg = mode === 'outlook'
+    ? 'Copiado! Cole no Outlook: Configurações > Email > Assinatura.'
+    : 'Copiado! Cole no Gmail > Configurações > Assinatura.';
+  copyToClipboard(html, msg);
+}
+
+// Copia a assinatura como UMA imagem (data URI) — útil quando o cliente sanitiza tabelas
+async function copyAsImageHTML() {
+  try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch(e) {}
+  html2canvas(document.getElementById('signature'), {scale:2, backgroundColor:'#ffffff', useCORS:true}).then(function(canvas) {
+    var dataUrl = canvas.toDataURL('image/png');
+    var dispW = Math.round(canvas.width / 2);
+    var html = '<img src="' + dataUrl + '" width="' + dispW + '" alt="' + val('f-nome').replace(/"/g,'&quot;')
+      + '" style="display:block;border:0;width:' + dispW + 'px;max-width:100%;height:auto;">';
+    copyToClipboard(html, 'Copiado! Cole no Gmail > Configuracoes > Assinatura (a assinatura vai como imagem, identica ao preview).');
+  });
+}
+</script>
+</body>
+</html>

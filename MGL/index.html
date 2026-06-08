@@ -365,9 +365,9 @@ function buildHTML() {
       : '';
     var va = wrap ? 'top' : 'middle';
     return '<tr>'
-      + '<td width="' + d(22) + '" valign="' + va + '" style="width:' + d(22) + 'px;padding:' + (wrap?'1px':'0') + ' ' + d(8) + 'px ' + d(8) + 'px 0;vertical-align:' + va + ';line-height:0;">'
+      + '<td width="' + d(22) + '" valign="' + va + '" style="width:' + d(22) + 'px;padding:' + (wrap?'1px':'0') + ' ' + d(8) + 'px ' + d(5) + 'px 0;vertical-align:' + va + ';line-height:0;">'
       + '<img src="' + BASE + icon + '" width="' + d(15) + '" height="' + d(15) + '" alt="" border="0" style="display:block;border:0;width:' + d(15) + 'px;height:' + d(15) + 'px;"></td>'
-      + '<td valign="' + va + '" style="padding:0 0 ' + d(8) + 'px 0;vertical-align:' + va + ';' + (wrap?'line-height:1.4;':'white-space:nowrap;') + '">'
+      + '<td valign="' + va + '" style="padding:0 0 ' + d(5) + 'px 0;vertical-align:' + va + ';' + (wrap?'line-height:1.1;':'white-space:nowrap;') + '">'
       + inner + lbl + '</td></tr>';
   }
 
@@ -376,14 +376,13 @@ function buildHTML() {
   return '<table cellpadding="0" cellspacing="0" border="0" width="' + d(560) + '" role="presentation"'
     + ' style="border-collapse:collapse;font-family:Georgia,\'Times New Roman\',serif;background:#ffffff;width:' + d(560) + 'px;">'
     + '<tr>'
-    // --- coluna esquerda (50%) — aproxima o preview com espaçadores (Gmail remove posição absoluta) ---
-    + '<td width="' + d(279) + '" valign="top" align="center" style="width:' + d(279) + 'px;padding:0 ' + d(22) + 'px 0 ' + d(22) + 'px;vertical-align:top;text-align:center;">'
+    // --- coluna esquerda (50%) — bloco centralizado verticalmente (se adapta à altura da direita, sem vão) ---
+    + '<td width="' + d(279) + '" valign="middle" align="center" style="width:' + d(279) + 'px;padding:' + d(14) + 'px ' + d(22) + 'px ' + d(14) + 'px ' + d(22) + 'px;vertical-align:middle;text-align:center;">'
     + '<table cellpadding="0" cellspacing="0" border="0" role="presentation" align="center" style="border-collapse:collapse;margin:0 auto;">'
-    + '<tr><td height="' + d(60) + '" style="height:' + d(60) + 'px;font-size:0;line-height:0;">&nbsp;</td></tr>'
     + '<tr><td align="center" style="text-align:center;padding:0;">'
     + '<img src="' + BASE + 'mgl_logo.png" alt="MGL" width="' + d(180) + '" border="0" style="display:block;border:0;width:' + d(180) + 'px;height:auto;margin:0 auto;">'
     + '</td></tr>'
-    + '<tr><td height="' + d(24) + '" style="height:' + d(24) + 'px;font-size:0;line-height:0;">&nbsp;</td></tr>'
+    + '<tr><td height="' + d(22) + '" style="height:' + d(22) + 'px;font-size:0;line-height:0;">&nbsp;</td></tr>'
     + '<tr><td align="center" style="text-align:center;padding:0;">'
     + '<div style="font-size:' + f(9.5) + 'px;font-style:italic;color:#585543;font-family:Georgia,\'Times New Roman\',serif;line-height:1.5;text-align:left;max-width:' + d(200) + 'px;margin:0 auto;">'
     + 'We truly appreciate your feedback! If you\'ve had a great experience working with us, please consider leaving us a <b>Google review.</b></div>'

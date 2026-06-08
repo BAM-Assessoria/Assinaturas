@@ -464,12 +464,12 @@ async function copyHTML(mode) {
   function rowOl(icon, content) {
     if (!content) return '';
     return '<tr>'
-      + '<td width="18" valign="middle" style="width:18px;padding:0 5px 6px 0;vertical-align:middle;">'
-      + '<img src="' + icon + '" width="13" height="13" alt="" border="0"'
-      + ' style="display:block;border:0;width:13px;height:13px;">'
+      + '<td width="18" valign="middle" style="width:18px;padding:0 4px 4px 0;vertical-align:middle;">'
+      + '<img src="' + icon + '" width="11" height="11" alt="" border="0"'
+      + ' style="display:block;border:0;width:11px;height:11px;">'
       + '</td>'
-      + '<td valign="middle" style="font-size:12px;color:#333333;font-family:Arial,Helvetica,sans-serif;'
-      + 'padding-bottom:6px;vertical-align:middle;white-space:nowrap;">'
+      + '<td valign="middle" style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;'
+      + 'padding-bottom:4px;vertical-align:middle;white-space:nowrap;">'
       + content
       + '</td>'
       + '</tr>';
@@ -479,17 +479,17 @@ async function copyHTML(mode) {
   function rowGm(icon, content) {
     if (!content) return '';
     return '<tr>'
-      + '<td style="font-size:12px;color:#333333;font-family:Arial,Helvetica,sans-serif;'
-      + 'padding-bottom:6px;vertical-align:middle;white-space:nowrap;">'
-      + '<img src="' + icon + '" width="13" height="13" alt="" border="0"'
-      + ' style="display:inline;border:0;vertical-align:middle;margin-right:5px;">'
+      + '<td style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;'
+      + 'padding-bottom:4px;vertical-align:middle;white-space:nowrap;">'
+      + '<img src="' + icon + '" width="11" height="11" alt="" border="0"'
+      + ' style="display:inline;border:0;vertical-align:middle;margin-right:4px;">'
       + content
       + '</td>'
       + '</tr>';
   }
 
   var cargoHtml = cargo
-    ? '<p style="margin:4px 0 0 0;padding:0;font-size:13px;font-weight:700;'
+    ? '<p style="margin:4px 0 0 0;padding:0;font-size:11px;font-weight:700;'
       + 'color:#E8621A;font-family:\'Inter\',Arial,Helvetica,sans-serif;">' + cargo + '</p>'
     : '';
   var emailHtml = emailVal
@@ -512,20 +512,20 @@ async function copyHTML(mode) {
       + ' style="border-collapse:collapse;width:520px;">'
       + '<tr>'
       + '<td width="200" rowspan="2" valign="bottom"'
-      + ' style="width:200px;padding:0 0 22px 26px;vertical-align:bottom;">'
-      + '<p style="margin:0;padding:0;font-size:16px;font-weight:900;color:#1a1a1a;'
+      + ' style="width:200px;padding:0 0 18px 22px;vertical-align:bottom;">'
+      + '<p style="margin:0;padding:0;font-size:14px;font-weight:900;color:#1a1a1a;'
       + 'font-family:Arial,Helvetica,sans-serif;line-height:1.25;">' + nome + '</p>'
       + cargoHtml
       + '</td>'
       + '<td width="320" align="right" valign="top"'
-      + ' style="width:320px;padding:22px 14px 12px 0;vertical-align:top;text-align:right;">'
+      + ' style="width:320px;padding:18px 12px 10px 0;vertical-align:top;text-align:right;">'
       + '<img src="' + logoUrl + '" alt="Bracel" width="280" height="81" border="0"'
       + ' style="display:block;border:0;width:280px;height:81px;" align="right">'
       + '</td>'
       + '</tr>'
       + '<tr>'
       + '<td width="320" align="right" valign="bottom"'
-      + ' style="width:320px;padding:8px 14px 22px 0;vertical-align:bottom;">'
+      + ' style="width:320px;padding:6px 12px 18px 0;vertical-align:bottom;">'
       + '<table cellpadding="0" cellspacing="0" border="0" align="right"'
       + ' style="border-collapse:collapse;">'
       + rowOl(iCelular,  celular)
@@ -612,7 +612,7 @@ async function copyHTML(mode) {
       + ' style="padding:0 10px 0 10px;vertical-align:middle;'
       + 'background-color:#F4F5F4;background-image:url(\'' + BG_LIGHT + '\');background-repeat:repeat;'
       + 'white-space:nowrap;">'
-      + '<p style="margin:0;padding:0;font-size:16px;font-weight:700;color:#1a1a1a;'
+      + '<p style="margin:0;padding:0;font-size:14px;font-weight:700;color:#1a1a1a;'
       + 'font-family:\'Inter\',Arial,Helvetica,sans-serif;line-height:1.25;white-space:nowrap;">'
       + '<span style="color:#1a1a1a;">' + nome + '</span></p>'
       + cargoHtml
@@ -677,20 +677,20 @@ async function copyHTML(mode) {
       + ' style="border-collapse:collapse;width:520px;">'
       + '<tr>'
       + '<td width="200" rowspan="2" valign="bottom"'
-      + ' style="width:200px;padding:0 0 22px 26px;vertical-align:bottom;">'
-      + '<p style="margin:0;padding:0;font-size:16px;font-weight:900;color:#1a1a1a;'
+      + ' style="width:200px;padding:0 0 18px 22px;vertical-align:bottom;">'
+      + '<p style="margin:0;padding:0;font-size:14px;font-weight:900;color:#1a1a1a;'
       + 'font-family:Arial,Helvetica,sans-serif;line-height:1.25;">' + nome + '</p>'
       + cargoHtml
       + '</td>'
       + '<td width="320" align="right" valign="top"'
-      + ' style="width:320px;padding:22px 14px 0 0;vertical-align:top;text-align:right;">'
+      + ' style="width:320px;padding:18px 12px 0 0;vertical-align:top;text-align:right;">'
       + '<img src="' + logoUrl + '" alt="Bracel" width="280" height="81" border="0"'
       + ' style="display:block;border:0;" align="right">'
       + '</td>'
       + '</tr>'
       + '<tr>'
       + '<td valign="bottom" align="right"'
-      + ' style="padding:0 14px 22px 0;vertical-align:bottom;text-align:right;">'
+      + ' style="padding:0 12px 18px 0;vertical-align:bottom;text-align:right;">'
       + '<table cellpadding="0" cellspacing="0" border="0" align="right"'
       + ' style="border-collapse:collapse;">'
       + rowGm(iCelular,  celular)

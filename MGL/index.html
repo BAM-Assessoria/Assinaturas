@@ -364,10 +364,11 @@ function buildHTML() {
       ? '<span style="font-size:' + f(11) + 'px;font-style:italic;color:#7a7766;font-family:Georgia,\'Times New Roman\',serif;padding-left:' + d(8) + 'px;">' + label + '</span>'
       : '';
     var va = wrap ? 'top' : 'middle';
+    var lh = (f(13) * 1.25).toFixed(1);  // altura de linha em px (casa o strut com o texto pequeno -> linhas justas)
     return '<tr>'
-      + '<td width="' + d(22) + '" valign="' + va + '" style="width:' + d(22) + 'px;padding:' + (wrap?'1px':'0') + ' ' + d(8) + 'px ' + d(5) + 'px 0;vertical-align:' + va + ';line-height:0;">'
-      + '<img src="' + BASE + icon + '" width="' + d(15) + '" height="' + d(15) + '" alt="" border="0" style="display:block;border:0;width:' + d(15) + 'px;height:' + d(15) + 'px;"></td>'
-      + '<td valign="' + va + '" style="padding:0 0 ' + d(5) + 'px 0;vertical-align:' + va + ';' + (wrap?'line-height:1.1;':'white-space:nowrap;') + '">'
+      + '<td width="' + d(20) + '" valign="' + va + '" style="width:' + d(20) + 'px;padding:' + (wrap?'1px':'0') + ' ' + d(7) + 'px ' + d(2) + 'px 0;vertical-align:' + va + ';line-height:0;">'
+      + '<img src="' + BASE + icon + '" width="' + d(13) + '" height="' + d(13) + '" alt="" border="0" style="display:block;border:0;width:' + d(13) + 'px;height:' + d(13) + 'px;"></td>'
+      + '<td valign="' + va + '" style="padding:0 0 ' + d(2) + 'px 0;vertical-align:' + va + ';font-size:' + f(13) + 'px;line-height:' + lh + 'px;' + (wrap?'':'white-space:nowrap;') + '">'
       + inner + lbl + '</td></tr>';
   }
 

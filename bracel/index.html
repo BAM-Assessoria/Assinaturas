@@ -7,7 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=League+Spartan:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
   :root { --brand:#E8621A; --brand-hover:#c85218; --brand-focus:rgba(232,98,26,.15); }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -204,65 +203,58 @@
     <label>Telefone <input type="text" id="f-telefone" value=""></label>
     <label class="full">E-mail <input type="text" id="f-email" value=""></label>
     <label class="full">Endereço <input type="text" id="f-endereco" value="Estrada Tenente Marques, 5.558"></label>
+    <label class="full">LinkedIn (opcional) <input type="text" id="f-linkedin" value="" placeholder="https://linkedin.com/in/usuario"></label>
+    <label class="full">Mensagem ao clicar no WhatsApp (opcional) <input type="text" id="f-wamsg" value="" placeholder="Ex.: Olá! Cheguei pela assinatura de e-mail."></label>
+    <label class="full">Fundo do card <select id="f-fundo" style="padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:13.5px;font-family:inherit;color:#0f172a;background:#fff;outline:none;cursor:pointer;">
+      <option value="cinza">Cinza claro (atual)</option>
+      <option value="branco">Branco com borda cinza</option>
+    </select></label>
   </div>
   <div class="actions">
-    <button class="btn" onclick="downloadPNG()">Baixar como PNG</button>
-    <button class="btn secondary" onclick="copyHTML()">Copiar para Gmail</button>
-    <button class="btn secondary" onclick="copyHTML('owa')">Copiar para Outlook Web</button>
+    <button class="btn" onclick="copyHTML('owa')">Copiar para Outlook Web</button>
     <button class="btn secondary" onclick="copyHTML('desktop')">Copiar para Outlook Desktop</button>
-    <button class="btn secondary" onclick="copyAsImageHTML()">Copiar como imagem (OWA)</button>
   </div>
 </div>
 
 <div class="preview-panel">
   <div class="preview-label">Pré-visualização</div>
-<div id="signature-wrapper" style="max-width:720px;margin:0 auto;">
-<!-- ============================================================
-     ASSINATURA BRACEL
-     Largura: 460px | Area principal: 320px | Barra: 26px
-     Para duplicar: trocar logo, cor #E8621A e poligono SVG do fundo
-     ============================================================ -->
-<table id="signature" cellpadding="0" cellspacing="0" border="0" width="600"
-  style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;background:#F4F4F4;">
+<div id="signature-wrapper" style="margin:18px auto 0;text-align:center;">
+<!-- Pré-visualização = mesma estrutura do export. IDs s-* atualizados por update(); fundo/borda por applyFundo(). -->
+<table id="signature" cellpadding="0" cellspacing="0" border="0"
+  style="border-collapse:collapse;font-family:'League Spartan',Arial,Helvetica,sans-serif;display:inline-block;text-align:left;">
   <tr>
-    <td id="bg-td"
-        style="padding:0;background-repeat:no-repeat;background-position:top left;vertical-align:top;">
-      <table cellpadding="0" cellspacing="0" border="0" width="600"
-             style="border-collapse:collapse;">
+    <td id="s-card" style="background:#F4F4F4;padding:0;vertical-align:top;">
+      <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
         <tr>
-          <td width="240" rowspan="2" valign="bottom"
-              style="width:240px;padding:0 0 24px 33px;vertical-align:bottom;">
-              <div id="s-nome"
-                style="font-size:16px;font-weight:700;color:#1a1a1a;font-family:'Inter',Arial,Helvetica,sans-serif;line-height:1.25;white-space:nowrap;"></div>
-            <div id="s-cargo-wrap" style="display:none;margin-top:5px;">
-                <span id="s-cargo"
-                  style="font-size:14px;font-weight:700;color:#E8621A;font-family:'Inter',Arial,Helvetica,sans-serif;"></span>
+          <td width="140" rowspan="2" valign="bottom"
+              style="width:140px;padding:0 16px 15px 17px;vertical-align:bottom;">
+            <div id="s-nome" style="font-size:14px;font-weight:900;color:#1a1a1a;font-family:'League Spartan',Arial,Helvetica,sans-serif;line-height:1.25;"></div>
+            <div id="s-cargo-wrap" style="display:none;margin-top:4px;">
+              <span id="s-cargo" style="font-size:11px;font-weight:700;color:#E8621A;font-family:'Inter',Arial,Helvetica,sans-serif;"></span>
             </div>
           </td>
-          <td width="360" align="right" valign="top" height="160"
-              style="width:360px;height:160px;padding:25px 20px 0 0;vertical-align:top;text-align:right;">
-            <div style="width:280px;margin-left:auto;margin-right:5px;margin-top:-10px;">
-              <img id="logo-bracel" src="../bracel_logo.png" alt="Bracel" width="280" style="display:block;border:0;width:280px;">
-            </div>
+          <td align="right" valign="top"
+              style="padding:8px 19px 0 0;vertical-align:top;text-align:right;">
+            <img id="logo-bracel" src="../bracel_logo.png" alt="Bracel" width="149" height="43" style="display:block;border:0;width:149px;height:43px;">
           </td>
         </tr>
         <tr>
-          <td valign="bottom" style="padding:0 20px 24px 0;vertical-align:bottom;">
-            <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin-left:115px;">
-              <tr><td style="padding:0 8px 8px 0;vertical-align:middle;line-height:0;"><img id="icon-celular" src="" width="13" height="13" alt="" style="display:block;border:0;"></td><td id="s-celular" style="font-size:12px;color:#333333;font-family:'League Spartan',Arial,Helvetica,sans-serif;padding-bottom:10px;vertical-align:middle;white-space:nowrap;"></td></tr>
-              <tr><td style="padding:0 8px 8px 0;vertical-align:middle;line-height:0;"><img id="icon-telefone" src="" width="13" height="13" alt="" style="display:block;border:0;"></td><td id="s-telefone" style="font-size:12px;color:#333333;font-family:'League Spartan',Arial,Helvetica,sans-serif;padding-bottom:8px;vertical-align:middle;"></td></tr>
-              <tr><td style="padding:0 8px 8px 0;vertical-align:top;padding-top:1px;line-height:0;"><img id="icon-email" src="" width="13" height="13" alt="" style="display:block;border:0;"></td><td id="s-email" style="font-size:12px;color:#333333;font-family:'League Spartan',Arial,Helvetica,sans-serif;padding-bottom:8px;vertical-align:middle;white-space:nowrap;line-height:1.45;"></td></tr>
-              <tr><td style="padding:0 8px 0 0;vertical-align:top;padding-top:2px;line-height:0;"><img id="icon-endereco" src="" width="13" height="13" alt="" style="display:block;border:0;"></td><td id="s-endereco" style="font-size:12px;color:#333333;font-family:'League Spartan',Arial,Helvetica,sans-serif;vertical-align:top;max-width:280px;word-break:break-word;line-height:1.45;"></td></tr>
+          <td align="right" valign="bottom"
+              style="padding:25px 9px 14px 0;vertical-align:bottom;text-align:right;">
+            <table cellpadding="0" cellspacing="0" border="0" align="right" style="border-collapse:collapse;">
+              <tr id="r-celular"><td style="padding:1px 5px 3px 0;vertical-align:top;line-height:0;"><img id="icon-celular" src="" width="11" height="11" alt="" style="display:block;border:0;"></td><td id="s-celular" style="font-size:11px;color:#333333;font-family:'League Spartan',Arial,Helvetica,sans-serif;padding-bottom:3px;vertical-align:top;line-height:14px;text-align:left;white-space:nowrap;"></td></tr>
+              <tr id="r-telefone"><td style="padding:1px 5px 3px 0;vertical-align:top;line-height:0;"><img id="icon-telefone" src="" width="11" height="11" alt="" style="display:block;border:0;"></td><td id="s-telefone" style="font-size:11px;color:#333333;font-family:'League Spartan',Arial,Helvetica,sans-serif;padding-bottom:3px;vertical-align:top;line-height:14px;text-align:left;white-space:nowrap;"></td></tr>
+              <tr id="r-email"><td style="padding:1px 5px 3px 0;vertical-align:top;line-height:0;"><img id="icon-email" src="" width="11" height="11" alt="" style="display:block;border:0;"></td><td id="s-email" style="font-size:11px;color:#333333;font-family:'League Spartan',Arial,Helvetica,sans-serif;padding-bottom:3px;vertical-align:top;line-height:14px;text-align:left;word-break:break-word;"></td></tr>
+              <tr id="r-endereco"><td style="padding:1px 5px 0 0;vertical-align:top;line-height:0;"><img id="icon-endereco" src="" width="11" height="11" alt="" style="display:block;border:0;"></td><td id="s-endereco" style="font-size:11px;color:#333333;font-family:'League Spartan',Arial,Helvetica,sans-serif;vertical-align:top;line-height:14px;text-align:left;word-break:break-word;"></td></tr>
             </table>
           </td>
         </tr>
-        <tr><td colspan="2" height="1" style="height:1px;font-size:0;line-height:0;"></td></tr>
       </table>
     </td>
   </tr>
   <tr>
-    <td bgcolor="#EB7927" height="20"
-        style="background-color:#EB7927;height:20px;font-size:0;line-height:0;">&nbsp;</td>
+    <td bgcolor="#EB7927" height="14"
+        style="background-color:#EB7927;height:14px;font-size:0;line-height:0;">&nbsp;</td>
   </tr>
 </table>
 </div>
@@ -272,6 +264,15 @@
   <span>Desenvolvido por <strong>BAM</strong></span>
 </div>
 </div><!-- /main -->
+
+<!-- Aviso de "copiado" (toast) com a logo -->
+<div id="toast" role="status" aria-live="polite" style="position:fixed;top:20px;right:20px;display:flex;align-items:center;gap:12px;background:#fff;border:1px solid rgba(0,0,0,.08);border-left:4px solid #E8621A;border-radius:12px;padding:13px 16px;box-shadow:0 10px 34px rgba(0,0,0,.16);max-width:330px;z-index:9999;transform:translateX(120%);opacity:0;transition:transform .38s cubic-bezier(.4,0,.2,1),opacity .38s;font-family:'Inter',system-ui,Arial,sans-serif;">
+  <img src="../bracel_logo.png" alt="" style="width:40px;height:auto;flex-shrink:0;">
+  <div style="display:flex;flex-direction:column;gap:2px;">
+    <strong id="toast-title" style="font-size:13.5px;font-weight:700;color:#0f172a;line-height:1.2;">Sua assinatura Bracel está pronta!</strong>
+    <span id="toast-sub" style="font-size:11.5px;color:#64748b;line-height:1.4;"></span>
+  </div>
+</div>
 
 <script>
 // Cria data URI de icone SVG a partir de string SVG (somente ASCII)
@@ -307,32 +308,6 @@ var ICONS = {
   )
 };
 
-// Fundo SVG: regerado dinamicamente conforme a largura do signature
-// para a diagonal acompanhar quando a tabela cresce horizontalmente.
-// Geometria base (W=600, H=350): diagonal vai de (W-42, 0) ate (62, 370)
-var bgTd = document.getElementById('bg-td');
-function buildBG(w, h) {
-  w = w || 600;
-  h = h || 350;
-  var topRight = (w - 42);
-  var bottomX  = 62;
-  var bottomY  = Math.round(h * 370 / 350);
-  var leftY    = Math.round(h * 320 / 350);
-  return mkIcon(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h + '">'
-    + '<rect width="' + w + '" height="' + h + '" fill="#DBDBDB"/>'
-    + '<polygon points="0,0 ' + topRight + ',0 ' + bottomX + ',' + bottomY + ' 0,' + leftY + '" fill="#F4F4F4"/>'
-    + '</svg>'
-  );
-}
-function applyBG(w, h) {
-  w = w || 600;
-  h = h || 350;
-  bgTd.style.backgroundImage = 'url(' + buildBG(w, h) + ')';
-  bgTd.style.backgroundSize  = w + 'px ' + h + 'px';
-}
-applyBG(600, 350);
-
 document.getElementById('icon-celular').src   = ICONS.celular;
 document.getElementById('icon-telefone').src  = ICONS.telefone;
 document.getElementById('icon-email').src     = ICONS.email;
@@ -341,25 +316,43 @@ update();
 
 // Atualiza preview em tempo real
 function update() {
-  document.getElementById('s-nome').textContent     = document.getElementById('f-nome').value;
+  document.getElementById('s-nome').textContent = document.getElementById('f-nome').value;
   var cargo = document.getElementById('f-cargo').value.trim();
-  document.getElementById('s-cargo').textContent    = cargo;
+  document.getElementById('s-cargo').textContent = cargo;
   document.getElementById('s-cargo-wrap').style.display = cargo ? '' : 'none';
-  document.getElementById('s-celular').textContent  = document.getElementById('f-celular').value;
-  document.getElementById('s-telefone').textContent = document.getElementById('f-telefone').value;
-  document.getElementById('s-email').textContent    = document.getElementById('f-email').value;
-  document.getElementById('s-endereco').textContent = document.getElementById('f-endereco').value;
-  // Atualiza BG para acompanhar a largura atual do signature (se cresceu por email longo)
-  var sig = document.getElementById('signature');
-  if (sig) {
-    var w = Math.max(600, sig.offsetWidth);
-    var h = Math.max(350, sig.offsetHeight);
-    applyBG(w, h);
-  }
+  // Contato vazio: esconde a linha no preview (igual ao export, que omite contato vazio)
+  ['celular','telefone','email','endereco'].forEach(function(k){
+    var v = document.getElementById('f-' + k).value;
+    document.getElementById('s-' + k).textContent = v;
+    var r = document.getElementById('r-' + k);
+    if (r) r.style.display = v.trim() ? '' : 'none';
+  });
 }
 ['f-nome','f-cargo','f-celular','f-telefone','f-email','f-endereco'].forEach(function(id) {
   document.getElementById(id).addEventListener('input', update);
 });
+
+// Aviso "copiado" deslizante com a logo (substitui o alert)
+function showToast(title, sub) {
+  var t = document.getElementById('toast');
+  if (!t) return;
+  document.getElementById('toast-title').textContent = title;
+  document.getElementById('toast-sub').textContent = sub || '';
+  t.style.transform = 'translateX(0)';
+  t.style.opacity = '1';
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(function(){ t.style.transform = 'translateX(120%)'; t.style.opacity = '0'; }, 4500);
+}
+
+// Preview reflete o seletor Fundo do card (cinza / branco com borda)
+function applyFundo() {
+  var branco = (document.getElementById('f-fundo') || {}).value === 'branco';
+  var card = document.getElementById('s-card');
+  var tbl  = document.getElementById('signature');
+  if (card) card.style.background = branco ? '#FFFFFF' : '#F4F4F4';
+  if (tbl)  tbl.style.border = branco ? '1px solid #E0E0E0' : '0';
+}
+(function(){ var s = document.getElementById('f-fundo'); if (s) s.addEventListener('change', applyFundo); applyFundo(); })();
 
 // Formatação automática de telefone brasileiro
 function fmtPhone(v){
@@ -420,18 +413,8 @@ function fmtPhone(v){
   window.addEventListener('resize',function(){if(box.style.display!=='none')pos();});
 })();
 
-// Exporta PNG (somente a assinatura)
+// Ajusta o preview pra caber em telas estreitas (escala via CSS transform)
 function scaleSignature(){var wrap=document.getElementById('signature-wrapper');var sig=document.getElementById('signature');if(!sig||!wrap)return;var w=wrap.getBoundingClientRect().width;var sw=parseInt(sig.getAttribute('width'))||500;if(w<sw){var s=w/sw;sig.style.transform='scale('+s+')';sig.style.transformOrigin='top left';wrap.style.height=Math.ceil(sig.offsetHeight*s)+'px';}else{sig.style.transform='';sig.style.transformOrigin='';wrap.style.height='';}}window.addEventListener('resize',scaleSignature);
-
-function downloadPNG() {
-  html2canvas(document.getElementById('signature'), {scale:2, backgroundColor:null, useCORS:true}).then(function(canvas) {
-    var link = document.createElement('a');
-    var nome = document.getElementById('f-nome').value.replace(/[^a-z0-9]+/gi, '_').toLowerCase() || 'assinatura';
-    link.download = 'assinatura_' + nome + '.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-  });
-}
 
 // Copia HTML da assinatura — mode: undefined=Gmail | 'owa'=Outlook Web | 'desktop'=Outlook Desktop
 async function copyHTML(mode) {
@@ -441,48 +424,67 @@ async function copyHTML(mode) {
   var telefone = (document.getElementById('f-telefone').value || '').trim();
   var emailVal = (document.getElementById('f-email').value    || '').trim();
   var endereco = (document.getElementById('f-endereco').value || '').trim();
+  var linkedin = (document.getElementById('f-linkedin').value || '').trim();
+  var wamsg    = (document.getElementById('f-wamsg').value    || '').trim();
 
   var BASE      = 'https://bam-assessoria.github.io/Assinaturas/';
-  var bgUrl     = BASE + 'bg/bracel.svg';
-  var bgPngUrl  = BASE + 'bg/bracel.png';
-  var bgTopUrl  = BASE + 'bg/bracel-top.png';
-  var bgMidUrl  = BASE + 'bg/bracel-middle.png';
-  // OWA: PNGs com fundo transparente ainda sobrevivem ao dark mode pois o bgcolor do TD (travado por gif 1x1)
-  // fornece o cinza claro #F4F4F4 atrás da diagonal
-  // ?v=2 = cache-buster após reupload das imagens (B5B5B5)
-  var bgTopOwa  = BASE + 'bg/bracel-top-dark.png?v=2';
-  var bgMidOwa  = BASE + 'bg/bracel-middle-dark.png?v=2';
   var logoUrl   = BASE + 'bracel_logo.png';
-  // GIF transparente 1x1 em data URI (sobrevive ao OWA quando dentro de célula com conteúdo)
-  var SPACER    = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
   var iCelular  = BASE + 'icons/celular.png';
   var iTelefone = BASE + 'icons/telefone.png';
   var iEmail    = BASE + 'icons/email.png';
   var iEndereco = BASE + 'icons/endereco.png';
+  // Fundo do card: 'cinza' (#F4F4F4, padrão aprovado) ou 'branco' (#FFFFFF + borda fina cinza),
+  // escolhido no seletor do formulário — pra mostrar as duas versões pra cliente.
+  // Tile 1x1 HOSPEDADO aplicado via bgcolor + background="url" + background-image em TODAS as
+  // células: o OWA enxerga fundo explícito e não-invertível, mantendo a cor no dark mode.
+  var BG_LIGHT  = BASE + 'bg/bg-light.png';
+  var BG_WHITE  = BASE + 'bg/bg-white.png';
+  var BG_ORANGE = BASE + 'bg/bg-orange.png';
+  var fundoBranco = (document.getElementById('f-fundo') || {}).value === 'branco';
+  var CARD_HEX    = fundoBranco ? '#FFFFFF' : '#F4F4F4';
+  var CARD_TILE   = fundoBranco ? BG_WHITE : BG_LIGHT;
+  var CARD_BORDER = fundoBranco ? 'border:1px solid #E0E0E0;' : '';
+  var CBG = 'background-color:' + CARD_HEX + ';background-image:url(\'' + CARD_TILE + '\');background-repeat:repeat;';
+  var OBG = 'background-color:#EB7927;background-image:url(\'' + BG_ORANGE + '\');background-repeat:repeat;';
 
-  // Outlook: duas colunas separadas por linha = ícone | texto
-  function rowOl(icon, content) {
+  // Contatos clicáveis: celular abre WhatsApp, telefone disca, email compõe, endereço abre o mapa.
+  function onlyDigits(s){ return (s || '').replace(/\D/g, ''); }
+  function telHref(s){ var d = onlyDigits(s); if(!d) return ''; if(d.length <= 11) d = '55' + d; return 'tel:+' + d; }
+  function waHref(s, msg){ var d = onlyDigits(s); if(!d) return ''; if(d.length <= 11) d = '55' + d; var u = 'https://wa.me/' + d; if(msg) u += '?text=' + encodeURIComponent(msg); return u; }
+  function mapsHref(s){ return s ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(s) : ''; }
+  function urlHref(s){ s = (s || '').trim(); if(!s) return ''; return /^https?:\/\//i.test(s) ? s : 'https://' + s; }
+  function linkTxt(href, text){ return href ? '<a href="' + href + '" style="color:#333333;text-decoration:none;">' + text + '</a>' : text; }
+
+  // Outlook Desktop (engine do Word): ícone em TD separada do texto (inline desalinha).
+  // Texto à esquerda → ícones formam coluna e o texto cola no ícone (como na pré-visualização).
+  // Todas as linhas usam valign:top + espaçamento igual (sem mistura middle/top que abria gap no OWA).
+  function rowOl(icon, content, wrap) {
     if (!content) return '';
+    var wrapCss = wrap ? 'word-break:break-word;overflow-wrap:break-word;' : 'white-space:nowrap;';
     return '<tr>'
-      + '<td width="18" valign="middle" style="width:18px;padding:0 4px 4px 0;vertical-align:middle;">'
+      + '<td width="18" valign="top" bgcolor="' + CARD_HEX + '" background="' + CARD_TILE + '"'
+      + ' style="width:18px;padding:1px 5px 3px 0;vertical-align:top;line-height:0;' + CBG +'">'
       + '<img src="' + icon + '" width="11" height="11" alt="" border="0"'
       + ' style="display:block;border:0;width:11px;height:11px;">'
       + '</td>'
-      + '<td valign="middle" style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;'
-      + 'padding-bottom:4px;vertical-align:middle;white-space:nowrap;">'
+      + '<td valign="top" bgcolor="' + CARD_HEX + '" background="' + CARD_TILE + '"'
+      + ' style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;'
+      + 'padding:0 0 3px 0;vertical-align:top;text-align:left;line-height:14px;' + CBG +wrapCss + '">'
       + content
       + '</td>'
       + '</tr>';
   }
 
-  // Gmail: icone inline na mesma celula do texto (comportamento original)
-  function rowGm(icon, content) {
+  // OWA / Gmail: ícone inline na mesma célula do texto. valign:top uniforme + espaçamento enxuto.
+  function rowGm(icon, content, wrap) {
     if (!content) return '';
+    var wrapCss = wrap ? 'word-break:break-word;overflow-wrap:break-word;' : 'white-space:nowrap;';
     return '<tr>'
-      + '<td style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;'
-      + 'padding-bottom:4px;vertical-align:middle;white-space:nowrap;">'
+      + '<td bgcolor="' + CARD_HEX + '" background="' + CARD_TILE + '"'
+      + ' style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;'
+      + 'padding:0 0 3px 0;vertical-align:top;text-align:left;line-height:14px;' + CBG +wrapCss + '">'
       + '<img src="' + icon + '" width="11" height="11" alt="" border="0"'
-      + ' style="display:inline;border:0;vertical-align:middle;margin-right:4px;">'
+      + ' style="display:inline;border:0;vertical-align:middle;margin-right:5px;">'
       + content
       + '</td>'
       + '</tr>';
@@ -490,238 +492,80 @@ async function copyHTML(mode) {
 
   var cargoHtml = cargo
     ? '<p style="margin:4px 0 0 0;padding:0;font-size:11px;font-weight:700;'
-      + 'color:#E8621A;font-family:\'Inter\',Arial,Helvetica,sans-serif;">' + cargo + '</p>'
+      + 'color:#E8621A;font-family:\'Inter\',Arial,Helvetica,sans-serif;word-break:break-word;">' + cargo + '</p>'
     : '';
-  var emailHtml = emailVal
-    ? '<a href="mailto:' + emailVal + '" style="color:#333333;text-decoration:none;">'
-      + emailVal + '</a>'
-    : '';
+  var celHtml   = celular  ? linkTxt(waHref(celular, wamsg), celular) : '';
+  var telHtml   = telefone ? linkTxt(telHref(telefone), telefone)    : '';
+  var emailHtml = emailVal ? linkTxt('mailto:' + emailVal, emailVal) : '';
+  var endHtml   = endereco ? linkTxt(mapsHref(endereco), endereco)   : '';
+  // Nome vira link clicável pro LinkedIn quando o campo está preenchido (mantém a mesma cor/peso).
+  var liHref    = urlHref(linkedin);
+  var nomeHtml  = liHref
+    ? '<a href="' + liHref + '" style="color:#1a1a1a;text-decoration:none;">' + nome + '</a>'
+    : nome;
 
-  var html;
+  // Fundo agora é sólido: OWA e Gmail ficam idênticos. A única diferença que vale
+  // manter é o estilo da linha de contato — no Outlook Desktop (engine do Word) o
+  // ícone inline desalinha, então usa rowOl (ícone em TD separada); o resto usa rowGm.
+  var row = (mode === 'desktop') ? rowOl : rowGm;
+  var contatos = row(iCelular, celHtml)
+    + row(iTelefone, telHtml)
+    + row(iEmail, emailHtml, true)
+    + row(iEndereco, endHtml, true);
 
-  if (mode === 'desktop') {
-    // === VERSÃO OUTLOOK DESKTOP ===
-    // background HTML attribute: suportado pelo Outlook Desktop (Word engine)
-    // Células internas sem bgcolor são transparentes, mostram a diagonal do PNG
-    html = '<table cellpadding="0" cellspacing="0" border="0" width="520"'
-      + ' style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;width:520px;">'
-      + '<tr>'
-      + '<td width="520" background="' + bgPngUrl + '" bgcolor="#F4F4F4"'
-      + ' style="width:520px;background-color:#F4F4F4;">'
-      + '<table cellpadding="0" cellspacing="0" border="0" width="520"'
-      + ' style="border-collapse:collapse;width:520px;">'
-      + '<tr>'
-      + '<td width="200" rowspan="2" valign="bottom"'
-      + ' style="width:200px;padding:0 0 18px 22px;vertical-align:bottom;">'
-      + '<p style="margin:0;padding:0;font-size:14px;font-weight:900;color:#1a1a1a;'
-      + 'font-family:Arial,Helvetica,sans-serif;line-height:1.25;">' + nome + '</p>'
-      + cargoHtml
-      + '</td>'
-      + '<td width="320" align="right" valign="top"'
-      + ' style="width:320px;padding:18px 12px 10px 0;vertical-align:top;text-align:right;">'
-      + '<img src="' + logoUrl + '" alt="Bracel" width="280" height="81" border="0"'
-      + ' style="display:block;border:0;width:280px;height:81px;" align="right">'
-      + '</td>'
-      + '</tr>'
-      + '<tr>'
-      + '<td width="320" align="right" valign="bottom"'
-      + ' style="width:320px;padding:6px 12px 18px 0;vertical-align:bottom;">'
-      + '<table cellpadding="0" cellspacing="0" border="0" align="right"'
-      + ' style="border-collapse:collapse;">'
-      + rowOl(iCelular,  celular)
-      + rowOl(iTelefone, telefone)
-      + rowOl(iEmail,    emailHtml)
-      + rowOl(iEndereco, endereco)
-      + '</table>'
-      + '</td>'
-      + '</tr>'
-      + '<tr><td colspan="2" height="4" style="height:4px;font-size:0;line-height:0;"></td></tr>'
-      + '</table>'
-      + '</td>'
-      + '</tr>'
-      + '<tr><td bgcolor="#EB7927" height="14"'
-      + ' style="background-color:#EB7927;height:14px;font-size:0;line-height:0;">&nbsp;</td></tr>'
-      + '</table>';
-
-  } else if (mode === 'owa') {
-    // === VERSÃO OUTLOOK WEB (OWA) ===
-    // Estratégia validada (após observar o saneamento real do OWA):
-    //  - OWA REMOVE: <colgroup>, table-layout:fixed, linhas vazias/1px, width/height
-    //    em atributos HTML, align="right" em <table>, classes
-    //  - OWA PRESERVA: width/height NO STYLE inline, bgcolor, background="url",
-    //    colspan, align em <td> (vira text-align), border-collapse, padding/margin
-    //
-    // Layout: col1 (VARIÁVEL, mín 208) + col2 (160 fixo) + col3 (152 fixo) = mín 520
-    //   Top image 520x100 right-anchored. Quando col1>208, sobra light bg à esquerda.
-    //   Diagonais sempre alinhadas pois col2+col3=312 constantes e top_diag e mid_diag
-    //   deslocam juntos com qualquer col1.
-    //
-    // Contatos col3: formato Gmail (TD único, ícone inline com margin-right:5)
-    //   Endereço longo quebra em 2 linhas dentro dos 152px.
-    //
-    // Dark mode: bgcolor + background-image url(data:gif1x1) trava cor sólida.
-    // COR DO BLOCO COL3: cinza #B5B5B5 + texto/links/icones #5A5A5A.
-    // Replace troca qualquer color:#XXXXXX dentro do content (ex.: link de email) pela cor da col3.
-    // Icones recebem opacity:0.65 para suavizar sem precisar de PNGs recoloridos.
-    var COL3_TXT = '#000000';
-    // rowOwa(icon, content, wrap?) — wrap=true permite quebra de linha (uso: endereço longo)
-    var rowOwa = function(icon, content, wrap) {
-      if (!content) return '';
-      var c = content.replace(/color:\s*#[0-9A-Fa-f]{6}/g, 'color:' + COL3_TXT);
-      var nowrapTd = wrap ? '' : 'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
-      var nowrapSpan = wrap ? '' : 'white-space:nowrap;';
-      var valign = wrap ? 'top' : 'middle';
-      return '<tr>'
-        + '<td width="136" bgcolor="#B5B5B5" background="' + BG_DARK + '"'
-        + ' style="width:136px;max-width:136px;font-size:10px;color:' + COL3_TXT + ' !important;font-family:\'League Spartan\',Arial,Helvetica,sans-serif;'
-        + 'padding:0 0 1px 0;vertical-align:' + valign + ';line-height:12px;'
-        + nowrapTd
-        + 'background-color:#B5B5B5 !important;background-image:url(\'' + BG_DARK + '\') !important;background-repeat:repeat;">'
-        + '<img src="' + icon + '" width="10" height="10" alt="" border="0"'
-        + ' style="display:inline-block;border:0;vertical-align:middle;margin-right:4px;'
-        + 'width:10px;height:10px;filter:brightness(0);-webkit-filter:brightness(0);">'
-        + '<font color="' + COL3_TXT + '" style="color:' + COL3_TXT + ' !important;">'
-        + '<span style="color:' + COL3_TXT + ' !important;' + nowrapSpan + 'font-size:10px;'
-        + 'font-family:\'League Spartan\',Arial,Helvetica,sans-serif;">' + c + '</span>'
-        + '</font>'
-        + '</td>'
-        + '</tr>';
-    };
-    // PNGs 1x1 hospedados de cor sólida e sobrevivem ao dark mode (Gmail/OWA) muito melhor
-    // que data URIs. Servem como background-image para travar a cor original da TD.
-    var BG_LIGHT  = BASE + 'bg/bg-light.png';
-    var BG_DARK   = BASE + 'bg/bg-dark.png';
-    var BG_ORANGE = BASE + 'bg/bg-orange.png';
-    html = '<table cellpadding="0" cellspacing="0" border="0" role="presentation"'
-      + ' style="border-collapse:collapse;border-spacing:0;'
-      + 'font-family:Arial,Helvetica,sans-serif;mso-table-lspace:0pt;mso-table-rspace:0pt;">'
-      // Linha 1: imagem superior 546x105 (proporcional 5.2:1, baseada em 520x100)
-      + '<tr>'
-      + '<td colspan="3" bgcolor="#F4F5F4" align="right" background="' + BG_LIGHT + '"'
-      + ' style="height:105px;padding:0;line-height:0;font-size:0;text-align:right;vertical-align:bottom;'
-      + 'background-color:#F4F5F4;background-image:url(\'' + BG_LIGHT + '\');background-repeat:repeat;">'
-      + '<img src="' + bgTopOwa + '" width="546" height="105" alt="Bracel" border="0"'
-      + ' style="display:inline-block;border:0;width:546px;height:105px;vertical-align:bottom;">'
-      + '</td>'
-      + '</tr>'
-      // Linha 2: nome | diagonal | contatos é TR forçada a 100px pelas três TDs
-      + '<tr>'
-      // COL1: nome+cargo. width mínimo via spacer GIF 208w; cresce se nome maior.
-      // Sem height fixa — row 2 cresce quando contatos col3 quebram linha.
-      + '<td bgcolor="#F4F5F4" valign="middle" background="' + BG_LIGHT + '"'
-      + ' style="padding:0 10px 0 10px;vertical-align:middle;'
-      + 'background-color:#F4F5F4;background-image:url(\'' + BG_LIGHT + '\');background-repeat:repeat;'
-      + 'white-space:nowrap;">'
-      + '<p style="margin:0;padding:0;font-size:14px;font-weight:700;color:#1a1a1a;'
-      + 'font-family:\'Inter\',Arial,Helvetica,sans-serif;line-height:1.25;white-space:nowrap;">'
-      + '<span style="color:#1a1a1a;">' + nome + '</span></p>'
-      + cargoHtml
-      // Spacer GIF: trava col1 = 208px (sobrevive ao OWA por estar dentro de TD com conteúdo)
-      + '<img src="' + SPACER + '" width="208" height="1" alt="" border="0"'
-      + ' style="display:block;border:0;width:208px;height:1px;line-height:0;font-size:0;">'
-      + '</td>'
-      // COL2: imagem da diagonal 160x100. Sem height fixa na TD; a img de 100px sustenta a altura mínima.
-      // Se row crescer, sobra bg claro abaixo da imagem (pequeno arteFato dark de ~4px na direita).
-      + '<td width="160" bgcolor="#F4F5F4" valign="top" background="' + BG_LIGHT + '"'
-      + ' style="width:160px;padding:0;line-height:0;font-size:0;'
-      + 'vertical-align:top;background-color:#F4F5F4;'
-      + 'background-image:url(\'' + BG_LIGHT + '\');background-repeat:repeat;">'
-      + '<img src="' + bgMidOwa + '" width="160" height="100" alt="" border="0"'
-      + ' style="display:block;border:0;width:160px;height:100px;vertical-align:top;">'
-      + '</td>'
-      // COL3: contatos. TD externa light + wrapper interno B5B5B5 cresce com conteúdo.
-      + '<td width="152" bgcolor="#F4F5F4" valign="bottom" background="' + BG_LIGHT + '"'
-      + ' style="width:152px;padding:0;vertical-align:bottom;'
-      + 'background-color:#F4F5F4 !important;background-image:url(\'' + BG_LIGHT + '\') !important;background-repeat:repeat;">'
-      + '<table cellpadding="0" cellspacing="0" border="0" role="presentation" width="152"'
-      + ' bgcolor="#B5B5B5" background="' + BG_DARK + '"'
-      + ' style="border-collapse:collapse;border-spacing:0;width:152px;'
-      + 'background-color:#B5B5B5 !important;background-image:url(\'' + BG_DARK + '\') !important;background-repeat:repeat;">'
-      + '<tr><td bgcolor="#B5B5B5" background="' + BG_DARK + '"'
-      + ' style="width:152px;padding:11px 16px 10px 0;vertical-align:middle;'
-      + 'background-color:#B5B5B5 !important;background-image:url(\'' + BG_DARK + '\') !important;background-repeat:repeat;">'
-      + '<table cellpadding="0" cellspacing="0" border="0" role="presentation" width="136"'
-      + ' style="border-collapse:collapse;border-spacing:0;width:136px;table-layout:fixed;">'
-      // Spacer GIF no topo trava a largura interna em 136px (col3=152 - padding 16)
-      + '<tr><td style="padding:0;line-height:0;font-size:0;height:0;">'
-      + '<img src="' + SPACER + '" width="136" height="1" alt="" border="0"'
-      + ' style="display:block;border:0;width:136px;height:1px;line-height:0;font-size:0;">'
-      + '</td></tr>'
-      + rowOwa(iCelular,  celular)
-      + rowOwa(iTelefone, telefone)
-      + rowOwa(iEmail,    emailHtml)
-      + rowOwa(iEndereco, endereco, true)
-      + '</table>'
-      // Spacer GIF que trava col3 = 152px (impede contatos curtos de encolher a coluna)
-      + '<img src="' + SPACER + '" width="152" height="1" alt="" border="0"'
-      + ' style="display:block;border:0;width:152px;height:1px;line-height:0;font-size:0;">'
-      + '</td></tr></table>'
-      + '</td>'
-      + '</tr>'
-      // Linha 3: barra laranja
-      + '<tr><td colspan="3" bgcolor="#EB7927" background="' + BG_ORANGE + '"'
-      + ' style="background-color:#EB7927;background-image:url(\'' + BG_ORANGE + '\');background-repeat:repeat;'
-      + 'height:14px;font-size:0;line-height:0;">&nbsp;</td></tr>'
-      + '</table>';
-
-  } else {
-    // === VERSÃO GMAIL ===
-    var bgTdStyle = 'padding:0;background-color:#F4F4F4;vertical-align:top;'
-      + 'background-image:url(' + bgUrl + ');background-repeat:no-repeat;background-position:top left;';
-
-    html = '<table cellpadding="0" cellspacing="0" border="0" width="520"'
-      + ' style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;width:520px;">'
-      + '<tr>'
-      + '<td bgcolor="#F4F4F4" style="' + bgTdStyle + '">'
-      + '<table cellpadding="0" cellspacing="0" border="0" width="520"'
-      + ' style="border-collapse:collapse;width:520px;">'
-      + '<tr>'
-      + '<td width="200" rowspan="2" valign="bottom"'
-      + ' style="width:200px;padding:0 0 18px 22px;vertical-align:bottom;">'
-      + '<p style="margin:0;padding:0;font-size:14px;font-weight:900;color:#1a1a1a;'
-      + 'font-family:Arial,Helvetica,sans-serif;line-height:1.25;">' + nome + '</p>'
-      + cargoHtml
-      + '</td>'
-      + '<td width="320" align="right" valign="top"'
-      + ' style="width:320px;padding:18px 12px 0 0;vertical-align:top;text-align:right;">'
-      + '<img src="' + logoUrl + '" alt="Bracel" width="280" height="81" border="0"'
-      + ' style="display:block;border:0;" align="right">'
-      + '</td>'
-      + '</tr>'
-      + '<tr>'
-      + '<td valign="bottom" align="left"'
-      + ' style="padding:0 12px 18px 0;vertical-align:bottom;text-align:left;">'
-      + '<table cellpadding="0" cellspacing="0" border="0" align="left"'
-      + ' style="border-collapse:collapse;">'
-      + rowGm(iCelular,  celular)
-      + rowGm(iTelefone, telefone)
-      + rowGm(iEmail,    emailHtml)
-      + rowGm(iEndereco, endereco)
-      + '</table>'
-      + '</td>'
-      + '</tr>'
-      + '<tr><td colspan="2" height="4"'
-      + ' style="height:4px;font-size:0;line-height:0;"></td></tr>'
-      + '</table>'
-      + '</td>'
-      + '</tr>'
-      + '<tr>'
-      + '<td bgcolor="#EB7927" height="14"'
-      + ' style="background-color:#EB7927;height:14px;font-size:0;line-height:0;">&nbsp;</td>'
-      + '</tr>'
-      + '</table>';
-  }
+  // Largura ADAPTÁVEL: a tabela não tem width fixa, só max-width:470. Assim o card
+  // CRESCE PRA LARGURA conforme o conteúdo (email/endereço longos) em vez de empilhar
+  // pra baixo; ao atingir o teto de 470px, email/endereço quebram (válvula de segurança).
+  // A coluna do nome tem width:140 como mínimo suave (não encolhe demais em assinaturas curtas).
+  // O tile cinza-claro (CBG) vai em TODAS as células → card claro e travado contra o dark mode do OWA.
+  var html = '<table cellpadding="0" cellspacing="0" border="0"'
+    + ' style="border-collapse:collapse;' + CARD_BORDER + 'font-family:\'League Spartan\',Arial,Helvetica,sans-serif;max-width:470px;">'
+    + '<tr>'
+    + '<td bgcolor="' + CARD_HEX + '" background="' + CARD_TILE + '"'
+    + ' style="' + CBG +'padding:0;vertical-align:top;">'
+    + '<table cellpadding="0" cellspacing="0" border="0"'
+    + ' style="border-collapse:collapse;">'
+    + '<tr>'
+    + '<td width="140" rowspan="2" valign="bottom" bgcolor="' + CARD_HEX + '" background="' + CARD_TILE + '"'
+    + ' style="width:140px;padding:0 16px 15px 17px;vertical-align:bottom;' + CBG +'">'
+    + '<p style="margin:0;padding:0;font-size:14px;font-weight:900;color:#1a1a1a;'
+    + 'font-family:\'League Spartan\',Arial,Helvetica,sans-serif;line-height:1.25;word-break:break-word;">' + nomeHtml + '</p>'
+    + cargoHtml
+    + '</td>'
+    + '<td align="right" valign="top" bgcolor="' + CARD_HEX + '" background="' + CARD_TILE + '"'
+    + ' style="padding:8px 19px 0 0;vertical-align:top;text-align:right;' + CBG +'">'
+    + '<img src="' + logoUrl + '" alt="Bracel" width="149" height="43" border="0"'
+    + ' style="display:block;border:0;width:149px;height:43px;" align="right">'
+    + '</td>'
+    + '</tr>'
+    + '<tr>'
+    + '<td align="right" valign="bottom" bgcolor="' + CARD_HEX + '" background="' + CARD_TILE + '"'
+    + ' style="padding:25px 9px 14px 0;vertical-align:bottom;text-align:right;' + CBG +'">'
+    + '<table cellpadding="0" cellspacing="0" border="0" align="right"'
+    + ' style="border-collapse:collapse;">'
+    + contatos
+    + '</table>'
+    + '</td>'
+    + '</tr>'
+    + '<tr><td colspan="2" height="4" bgcolor="' + CARD_HEX + '" background="' + CARD_TILE + '"'
+    + ' style="height:4px;font-size:0;line-height:0;' + CBG +'"></td></tr>'
+    + '</table>'
+    + '</td>'
+    + '</tr>'
+    + '<tr>'
+    + '<td bgcolor="#EB7927" background="' + BG_ORANGE + '" height="14"'
+    + ' style="' + OBG + 'height:14px;font-size:0;line-height:0;">&nbsp;</td>'
+    + '</tr>'
+    + '</table>';
 
   try {
     await navigator.clipboard.write([
       new ClipboardItem({ 'text/html': new Blob([html], { type: 'text/html' }) })
     ]);
-    var msg = mode === 'desktop'
-      ? 'Copiado! Cole no Outlook Desktop: Arquivo > Opções > Email > Assinaturas.'
-      : mode === 'owa'
-      ? 'Copiado! Cole no Outlook Web: Configurações > Email > Assinatura de email.'
-      : 'Copiado! Cole no Gmail > Configurações > Assinatura.';
-    alert(msg);
+    var sub = mode === 'desktop'
+      ? 'Cole no Outlook Desktop: Arquivo > Opções > E-mail > Assinaturas.'
+      : 'Cole no Outlook Web: Configurações > E-mail > Assinatura.';
+    showToast('Sua assinatura Bracel está pronta!', sub);
   } catch(e) {
     // Fallback: contenteditable preserva HTML formatado no clipboard
     var div = document.createElement('div');
@@ -737,144 +581,10 @@ async function copyHTML(mode) {
     try { document.execCommand('copy'); } catch(e2) {}
     sel.removeAllRanges();
     document.body.removeChild(div);
-    alert('Assinatura copiada.');
+    showToast('Sua assinatura Bracel está pronta!', 'Cole no campo de assinatura do seu e-mail.');
   }
 }
 
-// Copia a assinatura como UMA IMAGEM PNG embutida via data URI dentro de <img>.
-// Útil para OWA quando se quer evitar qualquer sanitização de layout: o cliente
-// renderiza apenas a tag <img>. Aviso: alguns clientes podem converter data URIs
-// grandes em anexos; nesse caso, hospedar o PNG e usar src=URL é mais robusto.
-async function copyAsImageHTML() {
-  // Aguarda fontes (Inter / League Spartan) carregarem antes de rasterizar
-  try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch(e) {}
-  var sig = document.getElementById('signature');
-  if (!sig) return;
-
-  // Elementos que precisam soltar amarras para o email caber em uma linha
-  var wrapper  = document.getElementById('signature-wrapper');
-  var emailEl  = document.getElementById('s-email');
-  var enderEl  = document.getElementById('s-endereco');
-  var innerTbl = sig.querySelector('table');
-  // TD do topo direito (logo) e TD inferior direito (contatos)
-  var rightTds = innerTbl ? innerTbl.querySelectorAll('tr > td[width="360"], tr > td[valign="bottom"]') : [];
-
-  // Snapshot do estado original
-  var snap = [];
-  function save(el, attrs) {
-    if (!el) return;
-    var s = { el: el };
-    attrs.forEach(function(a){ s[a] = el.getAttribute(a); });
-    s.style = el.getAttribute('style') || '';
-    snap.push(s);
-  }
-  save(wrapper, []);
-  save(sig, ['width']);
-  save(innerTbl, ['width']);
-  save(emailEl, []);
-  save(enderEl, []);
-  // Guarda HTML original do endereco para envolver em wrapper com max-width
-  var origEnderHtml = enderEl ? enderEl.innerHTML : '';
-  rightTds.forEach(function(td){ save(td, ['width','height']); });
-
-  // Libera o wrapper para a tabela poder crescer alem do max-width:720
-  if (wrapper) {
-    wrapper.style.overflow = 'visible';
-    wrapper.style.maxWidth = 'none';
-    wrapper.style.width = 'auto';
-  }
-  // Solta o table-layout fixed e largura
-  sig.removeAttribute('width');
-  sig.style.tableLayout = 'auto';
-  sig.style.width = 'auto';
-  if (innerTbl) {
-    innerTbl.removeAttribute('width');
-    innerTbl.style.tableLayout = 'auto';
-    innerTbl.style.width = 'auto';
-  }
-  rightTds.forEach(function(td){
-    td.removeAttribute('width');
-    td.removeAttribute('height');
-    td.style.width = 'auto';
-  });
-  // Email: sem quebra de linha
-  if (emailEl) {
-    emailEl.style.whiteSpace = 'nowrap';
-    emailEl.style.wordBreak = 'normal';
-    emailEl.style.maxWidth = 'none';
-  }
-  // Endereco: garante quebra envolvendo em DIV com largura fixa
-  if (enderEl) {
-    enderEl.style.maxWidth = 'none';
-    enderEl.innerHTML = '<div style="display:block;width:280px;max-width:280px;word-break:break-word;white-space:normal;line-height:1.45;">'
-      + origEnderHtml + '</div>';
-  }
-
-  // Forca reflow e mede largura natural
-  void sig.offsetWidth;
-  var naturalW = sig.offsetWidth;
-  var baseW = parseInt(snap[1].width) || 600;
-  var finalW = Math.max(baseW, naturalW);
-  sig.style.width = finalW + 'px';
-  sig.setAttribute('width', finalW);
-  void sig.offsetWidth;
-
-  // Regenera diagonal do BG para acompanhar a nova largura
-  var sigH = sig.offsetHeight || 350;
-  var origBgImage = bgTd.style.backgroundImage;
-  var origBgSize  = bgTd.style.backgroundSize;
-  applyBG(finalW, sigH);
-  void sig.offsetWidth;
-
-  function restore() {
-    snap.forEach(function(s){
-      // Restaura atributos
-      Object.keys(s).forEach(function(k){
-        if (k === 'el' || k === 'style') return;
-        var v = s[k];
-        if (v === null || v === undefined) s.el.removeAttribute(k);
-        else s.el.setAttribute(k, v);
-      });
-      // Restaura style
-      if (s.style) s.el.setAttribute('style', s.style);
-      else s.el.removeAttribute('style');
-    });
-    if (enderEl) enderEl.innerHTML = origEnderHtml;
-    // Restaura BG original
-    bgTd.style.backgroundImage = origBgImage;
-    bgTd.style.backgroundSize  = origBgSize;
-  }
-
-  html2canvas(sig, { scale: 2, backgroundColor: null, useCORS: true, width: finalW, windowWidth: Math.max(window.innerWidth, finalW + 100) }).then(async function(canvas) {
-    restore();
-    var dataUrl = canvas.toDataURL('image/png');
-    var nome = (document.getElementById('f-nome').value || 'Assinatura').trim();
-    var dispW = Math.round(finalW * 0.45);
-    var html = '<img src="' + dataUrl + '" width="' + dispW + '" alt="'
-      + nome.replace(/"/g,'&quot;') + '" style="display:block;border:0;width:' + dispW + 'px;max-width:100%;height:auto;">';
-    try {
-      await navigator.clipboard.write([
-        new ClipboardItem({ 'text/html': new Blob([html], { type: 'text/html' }) })
-      ]);
-      alert('Imagem copiada como HTML! Cole no Outlook Web: Configurações > Email > Assinatura.');
-    } catch(e) {
-      var div = document.createElement('div');
-      div.contentEditable = 'true';
-      div.innerHTML = html;
-      div.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0;pointer-events:none;';
-      document.body.appendChild(div);
-      var sel = window.getSelection();
-      var range = document.createRange();
-      range.selectNodeContents(div);
-      sel.removeAllRanges();
-      sel.addRange(range);
-      try { document.execCommand('copy'); } catch(e2) {}
-      sel.removeAllRanges();
-      document.body.removeChild(div);
-      alert('Imagem copiada como HTML.');
-    }
-  }).catch(function(err){ restore(); throw err; });
-}
 </script>
 </body>
 </html>

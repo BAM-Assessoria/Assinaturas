@@ -213,6 +213,7 @@
   <div class="actions">
     <button class="btn" onclick="copyHTML('owa')">Copiar para Outlook Web</button>
     <button class="btn secondary" onclick="copyHTML('desktop')">Copiar para Outlook Desktop</button>
+    <button class="btn secondary" onclick="copyHTML('mac')">Copiar para Email do Mac</button>
   </div>
 </div>
 
@@ -416,7 +417,7 @@ function fmtPhone(v){
 // Ajusta o preview pra caber em telas estreitas (escala via CSS transform)
 function scaleSignature(){var wrap=document.getElementById('signature-wrapper');var sig=document.getElementById('signature');if(!sig||!wrap)return;var w=wrap.getBoundingClientRect().width;var sw=parseInt(sig.getAttribute('width'))||500;if(w<sw){var s=w/sw;sig.style.transform='scale('+s+')';sig.style.transformOrigin='top left';wrap.style.height=Math.ceil(sig.offsetHeight*s)+'px';}else{sig.style.transform='';sig.style.transformOrigin='';wrap.style.height='';}}window.addEventListener('resize',scaleSignature);
 
-// Copia HTML da assinatura — mode: undefined=Gmail | 'owa'=Outlook Web | 'desktop'=Outlook Desktop
+// Copia HTML da assinatura — mode: 'owa'=Outlook Web | 'desktop'=Outlook Desktop | 'mac'=Mail do Mac (saida igual ao OWA)
 async function copyHTML(mode) {
   var nome     = (document.getElementById('f-nome').value     || '').trim();
   var cargo    = (document.getElementById('f-cargo').value    || '').trim();
@@ -504,9 +505,10 @@ async function copyHTML(mode) {
     ? '<a href="' + liHref + '" style="color:#1a1a1a;text-decoration:none;">' + nome + '</a>'
     : nome;
 
-  // Fundo agora é sólido: OWA e Gmail ficam idênticos. A única diferença que vale
-  // manter é o estilo da linha de contato — no Outlook Desktop (engine do Word) o
-  // ícone inline desalinha, então usa rowOl (ícone em TD separada); o resto usa rowGm.
+  // Fundo sólido (tiles): a saída do OWA e do Mac é idêntica. A única diferença que
+  // vale manter é o estilo da linha de contato — no Outlook Desktop (engine do Word)
+  // o ícone inline desalinha, então usa rowOl (ícone em TD separada); OWA e Mac usam
+  // rowGm (ícone inline).
   var row = (mode === 'desktop') ? rowOl : rowGm;
   var contatos = row(iCelular, celHtml)
     + row(iTelefone, telHtml)
@@ -564,6 +566,8 @@ async function copyHTML(mode) {
     ]);
     var sub = mode === 'desktop'
       ? 'Cole no Outlook Desktop: Arquivo > Opções > E-mail > Assinaturas.'
+      : mode === 'mac'
+      ? 'Cole no Mail do Mac: Mail > Ajustes > Assinaturas. Deixe DESMARCADO "Sempre coincidir com a fonte padrão da mensagem".'
       : 'Cole no Outlook Web: Configurações > E-mail > Assinatura.';
     showToast('Sua assinatura Bracel está pronta!', sub);
   } catch(e) {

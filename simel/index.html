@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -6,10 +6,9 @@
 <title>Editor de Assinatura - Simel</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Josefin+Sans:wght@100;200;300&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root { --brand:#183215; --brand-hover:#0e1f0c; --brand-focus:rgba(24,50,21,.12); }
+  :root { --brand:#183215; --brand-hover:#0f1f0d; --brand-focus:rgba(24,50,21,.12); }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
@@ -204,10 +203,13 @@
     <label>Telefone <input type="text" id="f-telefone" value=""></label>
     <label class="full">E-mail <input type="text" id="f-email" value=""></label>
     <label class="full">Endereço <input type="text" id="f-endereco" value="Estrada Tenente Marques, 5.558"></label>
+    <label class="full">LinkedIn (opcional) <input type="text" id="f-linkedin" value="" placeholder="https://linkedin.com/in/usuario"></label>
+    <label class="full">Mensagem ao clicar no WhatsApp (opcional) <input type="text" id="f-wamsg" value="" placeholder="Ex.: Olá! Cheguei pela assinatura de e-mail."></label>
   </div>
   <div class="actions">
-    <button class="btn" onclick="downloadPNG()">Baixar como PNG</button>
-    <button class="btn secondary" onclick="copyHTML()">Copiar HTML</button>
+    <button class="btn" onclick="copyHTML('owa')">Copiar para Outlook Web</button>
+    <button class="btn secondary" onclick="copyHTML('desktop')">Copiar para Outlook Desktop</button>
+    <button class="btn secondary" onclick="copyHTML('mac')">Copiar para Email do Mac</button>
   </div>
 </div>
 
@@ -216,47 +218,45 @@
 <div id="signature-wrapper" style="max-width:720px;margin:0 auto;">
 <!-- ============================================================
      ASSINATURA SIMEL
-     Mesmas proporções do modelo Sembra
+     Mesmas proporções do modelo Solibem
      ============================================================ -->
-<table id="signature" cellpadding="0" cellspacing="0" border="0" width="600"
-  style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;background:#DBDBDB;table-layout:fixed;">
+<table id="signature" cellpadding="0" cellspacing="0" border="0"
+  style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;border:1px solid #E0E0E0;">
   <tr>
-    <td id="bg-td"
-        style="padding:0;background-repeat:no-repeat;background-position:top left;vertical-align:top;">
-      <table cellpadding="0" cellspacing="0" border="0" width="600"
-             style="border-collapse:collapse;table-layout:fixed;">
+    <td style="background:#FFFFFF;padding:0;vertical-align:top;">
+      <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
         <tr>
-          <td width="240" rowspan="2" valign="bottom"
-              style="width:240px;padding:0 0 24px 33px;vertical-align:bottom;">
+          <td width="140" rowspan="2" valign="bottom"
+              style="width:140px;padding:0 16px 18px 17px;vertical-align:bottom;background:#FFFFFF;">
             <div id="s-nome"
-                 style="font-size:17px;font-weight:900;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;line-height:1.25;white-space:nowrap;"></div>
-            <div id="s-cargo-wrap" style="display:none;margin-top:5px;">
+                 style="font-size:14px;font-weight:900;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;line-height:1.25;"></div>
+            <div id="s-cargo-wrap" style="display:none;margin-top:4px;">
               <span id="s-cargo"
-                    style="font-size:14px;font-weight:bold;color:#183215;font-family:Arial,Helvetica,sans-serif;"></span>
+                    style="font-size:11px;font-weight:bold;color:#183215;font-family:Arial,Helvetica,sans-serif;"></span>
             </div>
           </td>
-          <td width="360" align="right" valign="top" height="160"
-              style="width:360px;height:160px;padding:14px 20px 0 0;vertical-align:top;text-align:right;">
-            <div id="logo-simel" style="color:#183215;font-weight:300;font-size:44px;font-family:'Josefin Sans',Arial,sans-serif;line-height:1;letter-spacing:2px;font-synthesis:none;">Simel</div>
+          <td align="right" valign="top"
+              style="padding:20px 18px 0 0;vertical-align:top;text-align:right;background:#FFFFFF;">
+            <div id="logo-simel" style="color:#183215;font-weight:300;font-size:30px;font-family:Arial,Helvetica,sans-serif;line-height:1;letter-spacing:2px;white-space:nowrap;">Simel</div>
           </td>
         </tr>
         <tr>
-          <td valign="bottom" style="padding:0 20px 24px 0;vertical-align:bottom;">
-            <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin-left:115px;">
-              <tr><td style="padding:0 8px 8px 0;vertical-align:middle;line-height:0;"><img id="icon-celular" src="" width="13" height="13" alt="" style="display:block;border:0;"></td><td id="s-celular" style="font-size:12px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:10px;vertical-align:middle;white-space:nowrap;"></td></tr>
-              <tr><td style="padding:0 8px 8px 0;vertical-align:middle;line-height:0;"><img id="icon-telefone" src="" width="13" height="13" alt="" style="display:block;border:0;"></td><td id="s-telefone" style="font-size:12px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:8px;vertical-align:middle;"></td></tr>
-              <tr><td style="padding:0 8px 8px 0;vertical-align:top;padding-top:1px;line-height:0;"><img id="icon-email" src="" width="13" height="13" alt="" style="display:block;border:0;"></td><td id="s-email" style="font-size:12px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:8px;vertical-align:top;max-width:280px;word-break:break-word;line-height:1.45;"></td></tr>
-              <tr><td style="padding:0 8px 0 0;vertical-align:top;padding-top:2px;line-height:0;"><img id="icon-endereco" src="" width="13" height="13" alt="" style="display:block;border:0;"></td><td id="s-endereco" style="font-size:12px;color:#333333;font-family:Arial,Helvetica,sans-serif;vertical-align:top;max-width:280px;word-break:break-word;line-height:1.45;"></td></tr>
+          <td align="right" valign="bottom"
+              style="padding:28px 14px 18px 0;vertical-align:bottom;text-align:right;background:#FFFFFF;">
+            <table cellpadding="0" cellspacing="0" border="0" align="right" style="border-collapse:collapse;">
+              <tr><td style="padding:1px 5px 3px 0;vertical-align:top;line-height:0;"><img id="icon-celular" src="" width="11" height="11" alt="" style="display:block;border:0;"></td><td id="s-celular" style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:5px;vertical-align:top;line-height:16px;text-align:left;white-space:nowrap;"></td></tr>
+              <tr><td style="padding:1px 5px 3px 0;vertical-align:top;line-height:0;"><img id="icon-telefone" src="" width="11" height="11" alt="" style="display:block;border:0;"></td><td id="s-telefone" style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:5px;vertical-align:top;line-height:16px;text-align:left;white-space:nowrap;"></td></tr>
+              <tr><td style="padding:1px 5px 3px 0;vertical-align:top;line-height:0;"><img id="icon-email" src="" width="11" height="11" alt="" style="display:block;border:0;"></td><td id="s-email" style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:5px;vertical-align:top;line-height:16px;text-align:left;word-break:break-word;"></td></tr>
+              <tr><td style="padding:1px 5px 0 0;vertical-align:top;line-height:0;"><img id="icon-endereco" src="" width="11" height="11" alt="" style="display:block;border:0;"></td><td id="s-endereco" style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;vertical-align:top;line-height:14px;text-align:left;word-break:break-word;"></td></tr>
             </table>
           </td>
         </tr>
-        <tr><td colspan="2" height="1" style="height:1px;font-size:0;line-height:0;"></td></tr>
       </table>
     </td>
   </tr>
   <tr>
-    <td bgcolor="#183215" height="20"
-        style="background-color:#183215;height:20px;font-size:0;line-height:0;">&nbsp;</td>
+    <td bgcolor="#183215" height="16"
+        style="background-color:#183215;height:16px;font-size:0;line-height:0;">&nbsp;</td>
   </tr>
 </table>
 </div>
@@ -298,14 +298,6 @@ var ICONS = {
     '</svg>'
   )
 };
-
-var BG = mkIcon(
-  '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="350"><rect width="600" height="350" fill="#DBDBDB"/><polygon points="0,0 558,0 62,370 0,320" fill="#FFFFFF"/></svg>'
-);
-
-var bgTd = document.getElementById('bg-td');
-bgTd.style.backgroundImage = 'url(' + BG + ')';
-bgTd.style.backgroundSize  = '600px 350px';
 
 document.getElementById('icon-celular').src   = ICONS.celular;
 document.getElementById('icon-telefone').src  = ICONS.telefone;
@@ -389,68 +381,127 @@ function fmtPhone(v){
 
 function scaleSignature(){var wrap=document.getElementById('signature-wrapper');var sig=document.getElementById('signature');if(!sig||!wrap)return;var w=wrap.getBoundingClientRect().width;var sw=parseInt(sig.getAttribute('width'))||500;if(w<sw){var s=w/sw;sig.style.transform='scale('+s+')';sig.style.transformOrigin='top left';wrap.style.height=Math.ceil(sig.offsetHeight*s)+'px';}else{sig.style.transform='';sig.style.transformOrigin='';wrap.style.height='';}}window.addEventListener('resize',scaleSignature);
 
-function downloadPNG() {
-  html2canvas(document.getElementById('signature'), {scale:2, backgroundColor:null, useCORS:true}).then(function(canvas) {
-    var link = document.createElement('a');
-    var nome = document.getElementById('f-nome').value.replace(/[^a-z0-9]+/gi, '_').toLowerCase() || 'assinatura';
-    link.download = 'assinatura_' + nome + '.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-  });
-}
-
-async function copyHTML() {
+// Copia HTML da assinatura — mode: 'owa'=Outlook Web | 'desktop'=Outlook Desktop | 'mac'=Mail do Mac (saida igual ao OWA)
+async function copyHTML(mode) {
   var nome     = (document.getElementById('f-nome').value     || '').trim();
   var cargo    = (document.getElementById('f-cargo').value    || '').trim();
   var celular  = (document.getElementById('f-celular').value  || '').trim();
   var telefone = (document.getElementById('f-telefone').value || '').trim();
   var emailVal = (document.getElementById('f-email').value    || '').trim();
   var endereco = (document.getElementById('f-endereco').value || '').trim();
-  var BASE = 'https://bam-assessoria.github.io/Assinaturas/';
-  var iCelular  = BASE + 'icons/celular.svg';
-  var iTelefone = BASE + 'icons/telefone.svg';
-  var iEmail    = BASE + 'icons/email.svg';
-  var iEndereco = BASE + 'icons/endereco.svg';
-  function row(icon, content) {
+  var linkedin = (document.getElementById('f-linkedin').value || '').trim();
+  var wamsg    = (document.getElementById('f-wamsg').value    || '').trim();
+
+  var BASE      = 'https://bam-assessoria.github.io/Assinaturas/';
+  var iCelular  = BASE + 'icons/celular.png';
+  var iTelefone = BASE + 'icons/telefone.png';
+  var iEmail    = BASE + 'icons/email.png';
+  var iEndereco = BASE + 'icons/endereco.png';
+  // Tiles 1x1 hospedados (PNG opaco) em TODAS as células → trava a cor contra a inversão do dark mode (OWA).
+  var BG_WHITE  = BASE + 'bg/bg-white.png';
+  var BG_BAR    = BASE + 'bg/bg-simel.png';
+  var BRAND     = '#183215';
+  var WBG = 'background-color:#FFFFFF;background-image:url(\'' + BG_WHITE + '\');background-repeat:repeat;';
+  var BBG = 'background-color:' + BRAND + ';background-image:url(\'' + BG_BAR + '\');background-repeat:repeat;';
+
+  // Contatos clicáveis: celular abre WhatsApp, telefone disca, email compõe, endereço abre o mapa.
+  function onlyDigits(s){ return (s || '').replace(/\D/g, ''); }
+  function telHref(s){ var d = onlyDigits(s); if(!d) return ''; if(d.length <= 11) d = '55' + d; return 'tel:+' + d; }
+  function waHref(s, msg){ var d = onlyDigits(s); if(!d) return ''; if(d.length <= 11) d = '55' + d; var u = 'https://wa.me/' + d; if(msg) u += '?text=' + encodeURIComponent(msg); return u; }
+  function mapsHref(s){ return s ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(s) : ''; }
+  function urlHref(s){ s = (s || '').trim(); if(!s) return ''; return /^https?:\/\//i.test(s) ? s : 'https://' + s; }
+  function linkTxt(href, text){ return href ? '<a href="' + href + '" style="color:#333333;text-decoration:none;">' + text + '</a>' : text; }
+
+  // Desktop (Word): ícone em TD separada (inline desalinha). Texto à esquerda; valign:top uniforme.
+  function rowOl(icon, content, wrap) {
     if (!content) return '';
-    return '<tr><td style="font-size:12px;color:#333333;font-family:Arial,Helvetica,sans-serif;'
-      + 'padding-bottom:5px;vertical-align:middle;white-space:nowrap;text-align:right;">'
-      + '<img src="' + icon + '" width="13" height="13" alt="" style="display:inline;border:0;vertical-align:middle;margin-right:5px;">'
+    var wrapCss = wrap ? 'word-break:break-word;overflow-wrap:break-word;' : 'white-space:nowrap;';
+    return '<tr>'
+      + '<td width="18" valign="top" bgcolor="#FFFFFF" background="' + BG_WHITE + '" style="width:18px;padding:1px 5px 3px 0;vertical-align:top;line-height:0;' + WBG + '">'
+      + '<img src="' + icon + '" width="11" height="11" alt="" border="0" style="display:block;border:0;width:11px;height:11px;">'
+      + '</td>'
+      + '<td valign="top" bgcolor="#FFFFFF" background="' + BG_WHITE + '" style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding:0 0 5px 0;vertical-align:top;text-align:left;line-height:16px;' + WBG + wrapCss + '">'
       + content + '</td></tr>';
   }
-  var cargoHtml = cargo ? '<p style="margin:4px 0 0 0;padding:0;font-size:13px;font-weight:bold;color:#183215;font-family:Arial,Helvetica,sans-serif;">' + cargo + '</p>' : '';
-  var emailHtml = emailVal ? '<a href="mailto:' + emailVal + '" style="color:#333333;text-decoration:none;">' + emailVal + '</a>' : '';
-  var html =
-    '<table cellpadding="0" cellspacing="0" border="0" width="520"'
-    + ' style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;width:520px;">'
-    + '<tr><td bgcolor="#DBDBDB" style="padding:0;background-color:#DBDBDB;'
-    + 'background-image:url(' + BASE + 'bg/saltum.svg);'
-    + 'background-size:520px 300px;background-repeat:no-repeat;background-position:top left;">'
-    + '<table cellpadding="0" cellspacing="0" border="0" width="520" style="border-collapse:collapse;width:520px;">'
+  // OWA / Gmail: ícone inline na mesma célula do texto.
+  function rowGm(icon, content, wrap) {
+    if (!content) return '';
+    var wrapCss = wrap ? 'word-break:break-word;overflow-wrap:break-word;' : 'white-space:nowrap;';
+    return '<tr>'
+      + '<td bgcolor="#FFFFFF" background="' + BG_WHITE + '" style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding:0 0 5px 0;vertical-align:top;text-align:left;line-height:16px;' + WBG + wrapCss + '">'
+      + '<img src="' + icon + '" width="11" height="11" alt="" border="0" style="display:inline;border:0;vertical-align:middle;margin-right:5px;">'
+      + content + '</td></tr>';
+  }
+
+  var cargoHtml = cargo
+    ? '<p style="margin:4px 0 0 0;padding:0;font-size:11px;font-weight:700;color:' + BRAND + ';font-family:Arial,Helvetica,sans-serif;word-break:break-word;">' + cargo + '</p>'
+    : '';
+  var celHtml   = celular  ? linkTxt(waHref(celular, wamsg), celular) : '';
+  var telHtml   = telefone ? linkTxt(telHref(telefone), telefone)    : '';
+  var emailHtml = emailVal ? linkTxt('mailto:' + emailVal, emailVal) : '';
+  var endHtml   = endereco ? linkTxt(mapsHref(endereco), endereco)   : '';
+  // Nome vira link clicável pro LinkedIn quando o campo está preenchido.
+  var liHref    = urlHref(linkedin);
+  var nomeHtml  = liHref
+    ? '<a href="' + liHref + '" style="color:#1a1a1a;text-decoration:none;">' + nome + '</a>'
+    : nome;
+
+  var row = (mode === 'desktop') ? rowOl : rowGm;
+  var contatos = row(iCelular, celHtml) + row(iTelefone, telHtml) + row(iEmail, emailHtml, true) + row(iEndereco, endHtml, true);
+
+  // Card BRANCO com borda fina cinza (destaca no fundo branco do e-mail). Largura adaptável (max 470px).
+  // Logo = texto "Simel" (Arial, cor da marca). Tile branco em todas as células trava o dark mode no OWA.
+  var html = '<table cellpadding="0" cellspacing="0" border="0"'
+    + ' style="border-collapse:collapse;border:1px solid #E0E0E0;font-family:Arial,Helvetica,sans-serif;max-width:470px;">'
     + '<tr>'
-    + '<td width="200" rowspan="2" valign="bottom" style="width:200px;padding:0 0 20px 26px;vertical-align:bottom;">'
-    + '<p style="margin:0;padding:0;font-size:16px;font-weight:900;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;line-height:1.25;">' + nome + '</p>'
+    + '<td bgcolor="#FFFFFF" background="' + BG_WHITE + '" style="' + WBG + 'padding:0;vertical-align:top;">'
+    + '<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">'
+    + '<tr>'
+    + '<td width="140" rowspan="2" valign="bottom" bgcolor="#FFFFFF" background="' + BG_WHITE + '" style="width:140px;padding:0 16px 18px 17px;vertical-align:bottom;' + WBG + '">'
+    + '<p style="margin:0;padding:0;font-size:14px;font-weight:900;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;line-height:1.25;word-break:break-word;">' + nomeHtml + '</p>'
     + cargoHtml + '</td>'
-    + '<td width="320" align="right" valign="top" height="120" style="width:320px;height:120px;padding:12px 16px 0 0;vertical-align:top;text-align:right;">'
-    + '<p style="margin:0;padding:0;font-size:30px;font-weight:300;color:#183215;font-family:Arial,Helvetica,sans-serif;line-height:1;letter-spacing:2px;">Simel</p>'
-    + '</td></tr>'
-    + '<tr><td valign="bottom" style="padding:0 16px 20px 0;vertical-align:bottom;text-align:right;">'
+    + '<td align="right" valign="top" bgcolor="#FFFFFF" background="' + BG_WHITE + '" style="padding:20px 18px 0 0;vertical-align:top;text-align:right;' + WBG + '">'
+    + '<p style="margin:0;padding:0;font-size:30px;font-weight:300;color:' + BRAND + ';font-family:Arial,Helvetica,sans-serif;line-height:1;letter-spacing:2px;white-space:nowrap;">Simel</p>'
+    + '</td>'
+    + '</tr>'
+    + '<tr>'
+    + '<td align="right" valign="bottom" bgcolor="#FFFFFF" background="' + BG_WHITE + '" style="padding:28px 14px 18px 0;vertical-align:bottom;text-align:right;' + WBG + '">'
     + '<table cellpadding="0" cellspacing="0" border="0" align="right" style="border-collapse:collapse;">'
-    + row(iCelular, celular) + row(iTelefone, telefone) + row(iEmail, emailHtml) + row(iEndereco, endereco)
-    + '</table></td></tr>'
+    + contatos
     + '</table>'
-    + '</td></tr>'
-    + '<tr><td bgcolor="#183215" height="20" style="background-color:#183215;height:20px;font-size:0;line-height:0;">&nbsp;</td></tr>'
+    + '</td>'
+    + '</tr>'
+    + '<tr><td colspan="2" height="4" bgcolor="#FFFFFF" background="' + BG_WHITE + '" style="height:4px;font-size:0;line-height:0;' + WBG + '"></td></tr>'
+    + '</table>'
+    + '</td>'
+    + '</tr>'
+    + '<tr>'
+    + '<td bgcolor="' + BRAND + '" background="' + BG_BAR + '" height="16" style="' + BBG + 'height:16px;font-size:0;line-height:0;">&nbsp;</td>'
+    + '</tr>'
     + '</table>';
+
   try {
-    await navigator.clipboard.write([new ClipboardItem({ 'text/html': new Blob([html], { type: 'text/html' }) })]);
-    alert('Assinatura copiada! Cole no Gmail > Configuracoes > Assinatura.');
+    await navigator.clipboard.write([ new ClipboardItem({ 'text/html': new Blob([html], { type: 'text/html' }) }) ]);
+    var msg = mode === 'desktop'
+      ? 'Copiado! Cole no Outlook Desktop: Arquivo > Opções > Email > Assinaturas.'
+      : mode === 'mac'
+      ? 'Copiado! No Mail do Mac: Mail > Ajustes > Assinaturas. Deixe DESMARCADO "Sempre coincidir com a fonte padrão da mensagem".'
+      : 'Copiado! Cole no Outlook Web: Configurações > Email > Assinatura de email.';
+    alert(msg);
   } catch(e) {
-    try { await navigator.clipboard.writeText(html); } catch(e2) {
-      var ta = document.createElement('textarea');
-      ta.value = html; document.body.appendChild(ta); ta.select();
-      document.execCommand('copy'); document.body.removeChild(ta);
-    }
+    var div = document.createElement('div');
+    div.contentEditable = 'true';
+    div.innerHTML = html;
+    div.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0;pointer-events:none;';
+    document.body.appendChild(div);
+    var sel = window.getSelection();
+    var range = document.createRange();
+    range.selectNodeContents(div);
+    sel.removeAllRanges();
+    sel.addRange(range);
+    try { document.execCommand('copy'); } catch(e2) {}
+    sel.removeAllRanges();
+    document.body.removeChild(div);
     alert('Assinatura copiada.');
   }
 }

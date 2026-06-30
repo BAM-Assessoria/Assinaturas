@@ -209,6 +209,7 @@
   <div class="actions">
     <button class="btn" onclick="copyHTML('owa')">Copiar para Outlook Web</button>
     <button class="btn secondary" onclick="copyHTML('desktop')">Copiar para Outlook Desktop</button>
+    <button class="btn secondary" onclick="copyHTML('mac')">Copiar para Email do Mac</button>
   </div>
 </div>
 
@@ -380,7 +381,7 @@ function fmtPhone(v){
 
 function scaleSignature(){var wrap=document.getElementById('signature-wrapper');var sig=document.getElementById('signature');if(!sig||!wrap)return;var w=wrap.getBoundingClientRect().width;var sw=parseInt(sig.getAttribute('width'))||500;if(w<sw){var s=w/sw;sig.style.transform='scale('+s+')';sig.style.transformOrigin='top left';wrap.style.height=Math.ceil(sig.offsetHeight*s)+'px';}else{sig.style.transform='';sig.style.transformOrigin='';wrap.style.height='';}}window.addEventListener('resize',scaleSignature);
 
-// Copia HTML da assinatura — mode: 'owa'=Outlook Web | 'desktop'=Outlook Desktop
+// Copia HTML da assinatura — mode: 'owa'=Outlook Web | 'desktop'=Outlook Desktop | 'mac'=Mail do Mac (saida igual ao OWA)
 async function copyHTML(mode) {
   var nome     = (document.getElementById('f-nome').value     || '').trim();
   var cargo    = (document.getElementById('f-cargo').value    || '').trim();
@@ -483,6 +484,8 @@ async function copyHTML(mode) {
     await navigator.clipboard.write([ new ClipboardItem({ 'text/html': new Blob([html], { type: 'text/html' }) }) ]);
     var msg = mode === 'desktop'
       ? 'Copiado! Cole no Outlook Desktop: Arquivo > Opções > Email > Assinaturas.'
+      : mode === 'mac'
+      ? 'Copiado! No Mail do Mac: Mail > Ajustes > Assinaturas. Deixe DESMARCADO "Sempre coincidir com a fonte padrão da mensagem".'
       : 'Copiado! Cole no Outlook Web: Configurações > Email > Assinatura de email.';
     alert(msg);
   } catch(e) {

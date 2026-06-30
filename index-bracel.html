@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -7,7 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
   :root { --brand:#E8621A; --brand-hover:#c85218; --brand-focus:rgba(232,98,26,.15); }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -206,10 +205,9 @@
     <label class="full">Endereço <input type="text" id="f-endereco" value="Estrada Tenente Marques, 5.558"></label>
   </div>
   <div class="actions">
-    <button class="btn" onclick="downloadPNG()">Baixar como PNG</button>
-    <button class="btn secondary" onclick="copyHTML()">Copiar para Gmail</button>
     <button class="btn secondary" onclick="copyHTML('owa')">Copiar para Outlook Web</button>
     <button class="btn secondary" onclick="copyHTML('desktop')">Copiar para Outlook Desktop</button>
+    <button class="btn secondary" onclick="copyHTML('mac')">Copiar para Email do Mac</button>
   </div>
 </div>
 
@@ -397,20 +395,11 @@ function fmtPhone(v){
   window.addEventListener('resize',function(){if(box.style.display!=='none')pos();});
 })();
 
-// Exporta PNG (somente a assinatura)
+// Ajusta a escala do preview ao redimensionar a janela
 function scaleSignature(){var wrap=document.getElementById('signature-wrapper');var sig=document.getElementById('signature');if(!sig||!wrap)return;var w=wrap.getBoundingClientRect().width;var sw=parseInt(sig.getAttribute('width'))||500;if(w<sw){var s=w/sw;sig.style.transform='scale('+s+')';sig.style.transformOrigin='top left';wrap.style.height=Math.ceil(sig.offsetHeight*s)+'px';}else{sig.style.transform='';sig.style.transformOrigin='';wrap.style.height='';}}window.addEventListener('resize',scaleSignature);
 
-function downloadPNG() {
-  html2canvas(document.getElementById('signature'), {scale:2, backgroundColor:null, useCORS:true}).then(function(canvas) {
-    var link = document.createElement('a');
-    var nome = document.getElementById('f-nome').value.replace(/[^a-z0-9]+/gi, '_').toLowerCase() || 'assinatura';
-    link.download = 'assinatura_' + nome + '.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-  });
-}
-
-// Copia HTML da assinatura — mode: undefined=Gmail | 'owa'=Outlook Web | 'desktop'=Outlook Desktop
+// Copia HTML da assinatura — todas as versoes usam o MESMO layout fatiado (buildSliced).
+// mode: 'owa'=Outlook Web | 'desktop'=Outlook Desktop | 'mac'=Mail do Mac
 async function copyHTML(mode) {
   var nome     = (document.getElementById('f-nome').value     || '').trim();
   var cargo    = (document.getElementById('f-cargo').value    || '').trim();
@@ -420,43 +409,32 @@ async function copyHTML(mode) {
   var endereco = (document.getElementById('f-endereco').value || '').trim();
 
   var BASE      = 'https://bam-assessoria.github.io/Assinaturas/';
-  var bgUrl     = BASE + 'bg/bracel.svg';
-  var bgPngUrl  = BASE + 'bg/bracel.png';
   var bgTopUrl  = BASE + 'bg/LogoBracel-top.png';
   var bgMidUrl  = BASE + 'bg/LogoBracel-middle.png';
-  var logoUrl   = BASE + 'LogoBracel.png';
   var iCelular  = BASE + 'icons/celular.png';
   var iTelefone = BASE + 'icons/telefone.png';
   var iEmail    = BASE + 'icons/email.png';
   var iEndereco = BASE + 'icons/endereco.png';
 
-  // Outlook: duas colunas separadas por linha — icone | texto
-  function rowOl(icon, content) {
+  // Linha de contato: celula do icone | celula do texto (fonte/icones compactos).
+  function rowSig(icon, content) {
     if (!content) return '';
     return '<tr>'
-      + '<td width="18" valign="middle" style="width:18px;padding:0 5px 6px 0;vertical-align:middle;">'
-      + '<img src="' + icon + '" width="13" height="13" alt="" border="0"'
-      + ' style="display:block;border:0;width:13px;height:13px;">'
+      + '<td width="15" valign="middle" style="width:15px;padding:0 4px 3px 0;vertical-align:middle;">'
+      + '<img src="' + icon + '" width="11" height="11" alt="" border="0"'
+      + ' style="display:block;border:0;width:11px;height:11px;">'
       + '</td>'
-      + '<td valign="middle" style="font-size:12px;color:#333333;font-family:Arial,Helvetica,sans-serif;'
-      + 'padding-bottom:6px;vertical-align:middle;white-space:nowrap;">'
+      + '<td valign="middle" style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;'
+      + 'padding-bottom:3px;vertical-align:middle;white-space:nowrap;line-height:1.2;">'
       + content
       + '</td>'
       + '</tr>';
   }
 
-  // Gmail: icone inline na mesma celula do texto (comportamento original)
-  function rowGm(icon, content) {
-    if (!content) return '';
-    return '<tr>'
-      + '<td style="font-size:12px;color:#333333;font-family:Arial,Helvetica,sans-serif;'
-      + 'padding-bottom:6px;vertical-align:middle;white-space:nowrap;">'
-      + '<img src="' + icon + '" width="13" height="13" alt="" border="0"'
-      + ' style="display:inline;border:0;vertical-align:middle;margin-right:5px;">'
-      + content
-      + '</td>'
-      + '</tr>';
-  }
+  // GIF 1x1 transparente: trava as larguras das colunas via linha-fantasma.
+  // So Outlook Web e Mail do Mac renderizam imagens data: URI; o Outlook Desktop
+  // nao renderiza, por isso essa versao vai SEM a linha-fantasma.
+  var SPACER = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
 
   var cargoHtml = cargo
     ? '<p style="margin:4px 0 0 0;padding:0;font-size:13px;font-weight:bold;'
@@ -467,102 +445,28 @@ async function copyHTML(mode) {
       + emailVal + '</a>'
     : '';
 
-  var html;
-
-  if (mode === 'desktop') {
-    // === VERSÃO OUTLOOK DESKTOP ===
-    // background HTML attribute: suportado pelo Outlook Desktop (Word engine)
-    // Celulas internas sem bgcolor — transparentes, mostram a diagonal do PNG
-    html = '<table cellpadding="0" cellspacing="0" border="0" width="520"'
-      + ' style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;width:520px;">'
-      + '<tr>'
-      + '<td width="520" background="' + bgPngUrl + '" bgcolor="#F4F4F4"'
-      + ' style="width:520px;background-color:#F4F4F4;">'
-      + '<table cellpadding="0" cellspacing="0" border="0" width="520"'
-      + ' style="border-collapse:collapse;width:520px;">'
-      + '<tr>'
-      + '<td width="200" rowspan="2" valign="bottom"'
-      + ' style="width:200px;padding:0 0 22px 26px;vertical-align:bottom;">'
-      + '<p style="margin:0;padding:0;font-size:16px;font-weight:900;color:#1a1a1a;'
-      + 'font-family:Arial,Helvetica,sans-serif;line-height:1.25;">' + nome + '</p>'
-      + cargoHtml
-      + '</td>'
-      + '<td width="320" align="right" valign="top"'
-      + ' style="width:320px;padding:18px 14px 12px 0;vertical-align:top;text-align:right;">'
-      + '<img src="' + logoUrl + '" alt="Bracel" width="230" height="173" border="0"'
-      + ' style="display:block;border:0;width:230px;height:173px;" align="right">'
-      + '</td>'
-      + '</tr>'
-      + '<tr>'
-      + '<td width="320" align="right" valign="bottom"'
-      + ' style="width:320px;padding:8px 14px 22px 0;vertical-align:bottom;">'
-      + '<table cellpadding="0" cellspacing="0" border="0" align="right"'
-      + ' style="border-collapse:collapse;">'
-      + rowOl(iCelular,  celular)
-      + rowOl(iTelefone, telefone)
-      + rowOl(iEmail,    emailHtml)
-      + rowOl(iEndereco, endereco)
-      + '</table>'
-      + '</td>'
-      + '</tr>'
-      + '<tr><td colspan="2" height="4" style="height:4px;font-size:0;line-height:0;"></td></tr>'
-      + '</table>'
-      + '</td>'
-      + '</tr>'
-      + '<tr><td bgcolor="#EB7927" height="14"'
-      + ' style="background-color:#EB7927;height:14px;font-size:0;line-height:0;">&nbsp;</td></tr>'
-      + '</table>';
-
-  } else if (mode === 'owa') {
-    // === VERSÃO OUTLOOK WEB (OWA) — Opção A: 2 imagens com diagonal contínua ===
-    // Top 520x180 fixa, ancorada à direita. col3=180 e middle=110x110 (slope -1).
-    // Col1=auto, total mínimo=480.
-    // Contatos compactos (fonte/ícones menores) para afastar o bloco da diagonal.
-    var rowOwa = function(icon, content) {
-      if (!content) return '';
-      return '<tr>'
-        + '<td width="15" valign="middle" style="width:15px;padding:0 4px 3px 0;vertical-align:middle;">'
-        + '<img src="' + icon + '" width="11" height="11" alt="" border="0"'
-        + ' style="display:block;border:0;width:11px;height:11px;">'
-        + '</td>'
-        + '<td valign="middle" style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;'
-        + 'padding-bottom:3px;vertical-align:middle;white-space:nowrap;line-height:1.2;">'
-        + content
-        + '</td>'
-        + '</tr>';
-    };
-    // ============================================================
-    // OWA — 3 colunas planas (sem tabela aninhada), spacers IMG.
-    //   col1 = AUTO  (nome; mínimo 180px via spacer GIF)
-    //   col2 = 160px (imagem do meio com diagonal — FIXA 160x160)
-    //   col3 = 180px (contatos)
-    //
-    // Imagem do topo: 520x180 em colspan=3, ancorada à direita.
-    //   table_width = col1 + 340 (col1 ≥ 180 → table ≥ 520)
-    //   top_image_left = table_width − 520 = col1 − 180
-    //   diagonal do topo em y=180 ≈ col1 (alinha com início da col2)
-    //
-    // IMPORTANTE: a imagem do meio NÃO usa height:100% (causa loop de
-    // crescimento no OWA). Tamanho fixo 160x160 evita propagar variação
-    // de altura para a largura.
-    // ============================================================
-    var SPACER = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
-    html = '<table cellpadding="0" cellspacing="0" border="0"'
+  // Monta a assinatura no layout FATIADO (identico ao Outlook Web).
+  // ghost=true  -> inclui a linha-fantasma com spacers (Outlook Web e Mail do Mac).
+  // ghost=false -> sem spacers; larguras vem dos atributos width (Outlook Desktop).
+  function buildSliced(ghost) {
+    var ghostRow = ghost
+      ? '<tr style="line-height:0;font-size:0;mso-line-height-rule:exactly;">'
+        + '<td width="180" height="1" style="width:180px;height:1px;padding:0;line-height:0;font-size:0;">'
+        + '<img src="' + SPACER + '" width="180" height="1" alt="" border="0"'
+        + ' style="display:block;border:0;width:180px;height:1px;"></td>'
+        + '<td width="160" height="1" style="width:160px;height:1px;padding:0;line-height:0;font-size:0;">'
+        + '<img src="' + SPACER + '" width="160" height="1" alt="" border="0"'
+        + ' style="display:block;border:0;width:160px;height:1px;"></td>'
+        + '<td width="180" height="1" style="width:180px;height:1px;padding:0;line-height:0;font-size:0;">'
+        + '<img src="' + SPACER + '" width="180" height="1" alt="" border="0"'
+        + ' style="display:block;border:0;width:180px;height:1px;"></td>'
+        + '</tr>'
+      : '';
+    return '<table cellpadding="0" cellspacing="0" border="0"'
       + ' style="border-collapse:collapse;border-spacing:0;font-family:Arial,Helvetica,sans-serif;'
       + 'mso-table-lspace:0pt;mso-table-rspace:0pt;">'
-      // Linha 0: spacers IMG por coluna — travam as larguras no OWA
-      + '<tr style="line-height:0;font-size:0;mso-line-height-rule:exactly;">'
-      + '<td width="180" height="1" style="width:180px;height:1px;padding:0;line-height:0;font-size:0;">'
-      + '<img src="' + SPACER + '" width="180" height="1" alt="" border="0"'
-      + ' style="display:block;border:0;width:180px;height:1px;"></td>'
-      + '<td width="160" height="1" style="width:160px;height:1px;padding:0;line-height:0;font-size:0;">'
-      + '<img src="' + SPACER + '" width="160" height="1" alt="" border="0"'
-      + ' style="display:block;border:0;width:160px;height:1px;"></td>'
-      + '<td width="180" height="1" style="width:180px;height:1px;padding:0;line-height:0;font-size:0;">'
-      + '<img src="' + SPACER + '" width="180" height="1" alt="" border="0"'
-      + ' style="display:block;border:0;width:180px;height:1px;"></td>'
-      + '</tr>'
-      // Linha 1: imagem superior 520x180 — colspan=3, ancorada à direita
+      + ghostRow
+      // Linha 1: imagem superior 520x180 (colspan=3, ancorada a direita)
       + '<tr>'
       + '<td colspan="3" height="180" bgcolor="#F4F4F4" align="right"'
       + ' style="height:180px;padding:0;line-height:0;font-size:0;'
@@ -571,12 +475,11 @@ async function copyHTML(mode) {
       + ' style="display:inline-block;border:0;width:520px;height:180px;vertical-align:top;">'
       + '</td>'
       + '</tr>'
-      // Linha 2: corpo — 3 cels, TODAS com height=160 e valign=top
+      // Linha 2: col1 nome (auto, min 180) | col2 diagonal 160 | col3 contatos 180
       + '<tr>'
       + '<td height="160" bgcolor="#F4F4F4" valign="top"'
       + ' style="height:160px;padding:0 0 0 10px;vertical-align:top;'
       + 'background-color:#F4F4F4;white-space:nowrap;">'
-      // Wrap interno para centralizar verticalmente o nome dentro dos 160px
       + '<table cellpadding="0" cellspacing="0" border="0" height="160"'
       + ' style="border-collapse:collapse;height:160px;">'
       + '<tr><td valign="middle" style="vertical-align:middle;padding:0;">'
@@ -593,16 +496,15 @@ async function copyHTML(mode) {
       + '</td>'
       + '<td width="180" height="160" bgcolor="#DBDBDB" valign="top" align="right"'
       + ' style="width:180px;height:160px;padding:0;vertical-align:top;background-color:#DBDBDB;">'
-      // Sub-tabela 180x160 para centralizar verticalmente os contatos
       + '<table cellpadding="0" cellspacing="0" border="0" width="180" height="160" align="right"'
       + ' style="border-collapse:collapse;width:180px;height:160px;">'
       + '<tr><td valign="middle" align="right" style="vertical-align:middle;padding:6px 10px 6px 0;text-align:right;">'
       + '<table cellpadding="0" cellspacing="0" border="0" align="right"'
       + ' style="border-collapse:collapse;">'
-      + rowOwa(iCelular,  celular)
-      + rowOwa(iTelefone, telefone)
-      + rowOwa(iEmail,    emailHtml)
-      + rowOwa(iEndereco, endereco)
+      + rowSig(iCelular,  celular)
+      + rowSig(iTelefone, telefone)
+      + rowSig(iEmail,    emailHtml)
+      + rowSig(iEndereco, endereco)
       + '</table>'
       + '</td></tr></table>'
       + '</td>'
@@ -611,104 +513,9 @@ async function copyHTML(mode) {
       + '<tr><td colspan="3" bgcolor="#EB7927" height="14"'
       + ' style="background-color:#EB7927;height:14px;font-size:0;line-height:0;">&nbsp;</td></tr>'
       + '</table>';
-      // Linha 1: imagem superior 520x180, colspan=2, ancorada à direita
-      + '<tr>'
-      + '<td colspan="2" height="180" bgcolor="#F4F4F4" align="right"'
-      + ' style="height:180px;padding:0;line-height:0;font-size:0;'
-      + 'background-color:#F4F4F4;text-align:right;">'
-      + '<img src="' + bgTopUrl + '" width="520" height="180" alt="Bracel" border="0"'
-      + ' style="display:inline-block;border:0;width:520px;height:180px;vertical-align:top;">'
-      + '</td>'
-      + '</tr>'
-      // Linha 2: col1 (nome, AUTO) | col2 (340 fixo = diagonal 160 + contatos 180)
-      + '<tr>'
-      + '<td height="160" bgcolor="#F4F4F4" valign="middle"'
-      + ' style="height:160px;padding:0 0 0 10px;vertical-align:middle;'
-      + 'background-color:#F4F4F4;white-space:nowrap;">'
-      + '<p style="margin:0;padding:0;font-size:16px;font-weight:900;color:#1a1a1a;'
-      + 'font-family:Arial,Helvetica,sans-serif;line-height:1.25;white-space:nowrap;">' + nome + '</p>'
-      + cargoHtml
-      + '</td>'
-      + '<td width="340" height="160" bgcolor="#DBDBDB"'
-      + ' style="width:340px;height:160px;padding:0;background-color:#DBDBDB;vertical-align:top;">'
-      // Sub-tabela travada em 340 com table-layout:fixed para col2/col3 não cederem
-      + '<table cellpadding="0" cellspacing="0" border="0" width="340"'
-      + ' style="border-collapse:collapse;border-spacing:0;width:340px;table-layout:fixed;'
-      + 'mso-table-lspace:0pt;mso-table-rspace:0pt;">'
-      + '<tr>'
-      + '<td width="160" height="160" bgcolor="#DBDBDB" valign="top"'
-      + ' style="width:160px;height:160px;padding:0;line-height:0;font-size:0;'
-      + 'vertical-align:top;background-color:#DBDBDB;overflow:hidden;">'
-      + '<img src="' + bgMidUrl + '" width="160" height="160" alt="" border="0"'
-      + ' style="display:block;border:0;width:auto;height:100%;vertical-align:top;">'
-      + '</td>'
-      + '<td width="180" height="160" bgcolor="#DBDBDB" valign="middle" align="right"'
-      + ' style="width:180px;height:160px;padding:6px 10px 6px 0;vertical-align:middle;'
-      + 'background-color:#DBDBDB;">'
-      + '<table cellpadding="0" cellspacing="0" border="0" align="right"'
-      + ' style="border-collapse:collapse;">'
-      + rowOwa(iCelular,  celular)
-      + rowOwa(iTelefone, telefone)
-      + rowOwa(iEmail,    emailHtml)
-      + rowOwa(iEndereco, endereco)
-      + '</table>'
-      + '</td>'
-      + '</tr>'
-      + '</table>'
-      + '</td>'
-      + '</tr>'
-      // Linha 3: barra laranja inferior
-      + '<tr><td colspan="2" bgcolor="#EB7927" height="14"'
-      + ' style="background-color:#EB7927;height:14px;font-size:0;line-height:0;">&nbsp;</td></tr>'
-      + '</table>';
-
-  } else {
-    // === VERSÃO GMAIL ===
-    var bgTdStyle = 'padding:0;background-color:#F4F4F4;vertical-align:top;'
-      + 'background-image:url(' + bgUrl + ');background-repeat:no-repeat;background-position:top left;';
-
-    html = '<table cellpadding="0" cellspacing="0" border="0" width="520"'
-      + ' style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;width:520px;">'
-      + '<tr>'
-      + '<td bgcolor="#F4F4F4" style="' + bgTdStyle + '">'
-      + '<table cellpadding="0" cellspacing="0" border="0" width="520"'
-      + ' style="border-collapse:collapse;width:520px;">'
-      + '<tr>'
-      + '<td width="200" rowspan="2" valign="bottom"'
-      + ' style="width:200px;padding:0 0 22px 26px;vertical-align:bottom;">'
-      + '<p style="margin:0;padding:0;font-size:16px;font-weight:900;color:#1a1a1a;'
-      + 'font-family:Arial,Helvetica,sans-serif;line-height:1.25;">' + nome + '</p>'
-      + cargoHtml
-      + '</td>'
-      + '<td width="320" align="right" valign="top"'
-      + ' style="width:320px;padding:18px 14px 0 0;vertical-align:top;text-align:right;">'
-      + '<img src="' + logoUrl + '" alt="Bracel" width="230" height="173" border="0"'
-      + ' style="display:block;border:0;" align="right">'
-      + '</td>'
-      + '</tr>'
-      + '<tr>'
-      + '<td valign="bottom" align="right"'
-      + ' style="padding:0 14px 22px 0;vertical-align:bottom;text-align:right;">'
-      + '<table cellpadding="0" cellspacing="0" border="0" align="right"'
-      + ' style="border-collapse:collapse;">'
-      + rowGm(iCelular,  celular)
-      + rowGm(iTelefone, telefone)
-      + rowGm(iEmail,    emailHtml)
-      + rowGm(iEndereco, endereco)
-      + '</table>'
-      + '</td>'
-      + '</tr>'
-      + '<tr><td colspan="2" height="4"'
-      + ' style="height:4px;font-size:0;line-height:0;"></td></tr>'
-      + '</table>'
-      + '</td>'
-      + '</tr>'
-      + '<tr>'
-      + '<td bgcolor="#EB7927" height="14"'
-      + ' style="background-color:#EB7927;height:14px;font-size:0;line-height:0;">&nbsp;</td>'
-      + '</tr>'
-      + '</table>';
   }
+
+  var html = buildSliced(mode === 'owa' || mode === 'mac');
 
   try {
     await navigator.clipboard.write([
@@ -716,9 +523,9 @@ async function copyHTML(mode) {
     ]);
     var msg = mode === 'desktop'
       ? 'Copiado! Cole no Outlook Desktop: Arquivo > Opções > Email > Assinaturas.'
-      : mode === 'owa'
-      ? 'Copiado! Cole no Outlook Web: Configurações > Email > Assinatura de email.'
-      : 'Copiado! Cole no Gmail > Configurações > Assinatura.';
+      : mode === 'mac'
+      ? 'Copiado! No Mail do Mac: Mail > Ajustes > Assinaturas, selecione a assinatura e cole (Cmd+V). Deixe DESMARCADO "Sempre coincidir com a fonte padrão da mensagem".'
+      : 'Copiado! Cole no Outlook Web: Configurações > Email > Assinatura de email.';
     alert(msg);
   } catch(e) {
     // Fallback: contenteditable preserva HTML formatado no clipboard

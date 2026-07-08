@@ -221,17 +221,19 @@
   <div class="preview-label">Pré-visualização</div>
 <div id="signature-wrapper" style="margin:18px auto 0;text-align:center;">
 <!-- Pré-visualização = mesma estrutura do export. IDs s-* atualizados por update(); fundo/borda por applyFundo(). -->
+<!-- Fonte Arial no card (igual ao export): e-mail não carrega webfont, então quem recebe
+     sempre vê Arial — o preview usa a mesma pra não mentir sobre o resultado. -->
 <table id="signature" cellpadding="0" cellspacing="0" border="0"
-  style="border-collapse:collapse;font-family:'League Spartan',Arial,Helvetica,sans-serif;display:inline-block;text-align:left;">
+  style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;display:inline-block;text-align:left;">
   <tr>
     <td id="s-card" style="background:#F4F4F4;padding:0;vertical-align:top;">
       <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
         <tr>
           <td width="140" rowspan="2" valign="bottom"
               style="width:140px;padding:0 16px 15px 17px;vertical-align:bottom;">
-            <div id="s-nome" style="font-size:14px;font-weight:900;color:#1a1a1a;font-family:'League Spartan',Arial,Helvetica,sans-serif;line-height:1.25;"></div>
+            <div id="s-nome" style="font-size:14px;font-weight:900;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;line-height:1.25;"></div>
             <div id="s-cargo-wrap" style="display:none;margin-top:4px;">
-              <span id="s-cargo" style="font-size:11px;font-weight:700;color:#E8621A;font-family:'Inter',Arial,Helvetica,sans-serif;"></span>
+              <span id="s-cargo" style="font-size:11px;font-weight:700;color:#E8621A;font-family:Arial,Helvetica,sans-serif;"></span>
             </div>
           </td>
           <td align="right" valign="top"
@@ -243,10 +245,11 @@
           <td align="right" valign="bottom"
               style="padding:25px 9px 14px 0;vertical-align:bottom;text-align:right;">
             <table cellpadding="0" cellspacing="0" border="0" align="right" style="border-collapse:collapse;">
-              <tr id="r-celular"><td style="padding:1px 5px 3px 0;vertical-align:top;line-height:0;"><img id="icon-celular" src="" width="11" height="11" alt="" style="display:block;border:0;"></td><td id="s-celular" style="font-size:11px;color:#333333;font-family:'League Spartan',Arial,Helvetica,sans-serif;padding-bottom:3px;vertical-align:top;line-height:14px;text-align:left;white-space:nowrap;"></td></tr>
-              <tr id="r-telefone"><td style="padding:1px 5px 3px 0;vertical-align:top;line-height:0;"><img id="icon-telefone" src="" width="11" height="11" alt="" style="display:block;border:0;"></td><td id="s-telefone" style="font-size:11px;color:#333333;font-family:'League Spartan',Arial,Helvetica,sans-serif;padding-bottom:3px;vertical-align:top;line-height:14px;text-align:left;white-space:nowrap;"></td></tr>
-              <tr id="r-email"><td style="padding:1px 5px 3px 0;vertical-align:top;line-height:0;"><img id="icon-email" src="" width="11" height="11" alt="" style="display:block;border:0;"></td><td id="s-email" style="font-size:11px;color:#333333;font-family:'League Spartan',Arial,Helvetica,sans-serif;padding-bottom:3px;vertical-align:top;line-height:14px;text-align:left;word-break:break-word;"></td></tr>
-              <tr id="r-endereco"><td style="padding:1px 5px 0 0;vertical-align:top;line-height:0;"><img id="icon-endereco" src="" width="11" height="11" alt="" style="display:block;border:0;"></td><td id="s-endereco" style="font-size:11px;color:#333333;font-family:'League Spartan',Arial,Helvetica,sans-serif;vertical-align:top;line-height:14px;text-align:left;word-break:break-word;"></td></tr>
+              <!-- E-mail em nowrap (nunca parte no meio, ex.: "...com.b|r"); endereço quebra SÓ em espaço. -->
+              <tr id="r-celular"><td style="padding:1px 5px 3px 0;vertical-align:top;line-height:0;"><img id="icon-celular" src="" width="11" height="11" alt="" style="display:block;border:0;"></td><td id="s-celular" style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:3px;vertical-align:top;line-height:14px;text-align:left;white-space:nowrap;"></td></tr>
+              <tr id="r-telefone"><td style="padding:1px 5px 3px 0;vertical-align:top;line-height:0;"><img id="icon-telefone" src="" width="11" height="11" alt="" style="display:block;border:0;"></td><td id="s-telefone" style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:3px;vertical-align:top;line-height:14px;text-align:left;white-space:nowrap;"></td></tr>
+              <tr id="r-email"><td style="padding:1px 5px 3px 0;vertical-align:top;line-height:0;"><img id="icon-email" src="" width="11" height="11" alt="" style="display:block;border:0;"></td><td id="s-email" style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:3px;vertical-align:top;line-height:14px;text-align:left;white-space:nowrap;"></td></tr>
+              <tr id="r-endereco"><td style="padding:1px 5px 0 0;vertical-align:top;line-height:0;"><img id="icon-endereco" src="" width="11" height="11" alt="" style="display:block;border:0;"></td><td id="s-endereco" style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;vertical-align:top;line-height:14px;text-align:left;overflow-wrap:break-word;"></td></tr>
             </table>
           </td>
         </tr>
@@ -456,19 +459,26 @@ async function copyHTML(mode) {
   function urlHref(s){ s = (s || '').trim(); if(!s) return ''; return /^https?:\/\//i.test(s) ? s : 'https://' + s; }
   function linkTxt(href, text){ return href ? '<a href="' + href + '" style="color:#333333;text-decoration:none;">' + text + '</a>' : text; }
 
-  // Outlook Desktop (engine do Word): ícone em TD separada do texto (inline desalinha).
-  // Texto à esquerda → ícones formam coluna e o texto cola no ícone (como na pré-visualização).
+  // Linha de contato ÚNICA pros 3 botões (Desktop/OWA/Mac): ícone em TD separada do texto
+  // (inline desalinha no engine do Word) — mesma estrutura da pré-visualização. Estrutura
+  // idêntica em todo botão = mesma renderização em todo cliente (era a maior fonte de
+  // diferença celular × PC × web).
   // Todas as linhas usam valign:top + espaçamento igual (sem mistura middle/top que abria gap no OWA).
-  function rowOl(icon, content, wrap) {
+  // wrap=false → nowrap: a célula NUNCA quebra (celular, telefone e E-MAIL ficam em 1 linha;
+  // a coluna alarga pro conteúdo). wrap=true → quebra SÓ em espaço (endereço). Sem
+  // word-break:break-word, que deixava OWA/celular esmagar a coluna e partir o e-mail no
+  // meio ("...com.b" + "r" na linha de baixo). O atributo nowrap reforça no Word.
+  function row(icon, content, wrap) {
     if (!content) return '';
-    var wrapCss = wrap ? 'word-break:break-word;overflow-wrap:break-word;' : 'white-space:nowrap;';
+    var wrapCss    = wrap ? 'overflow-wrap:break-word;' : 'white-space:nowrap;';
+    var nowrapAttr = wrap ? '' : ' nowrap';
     return '<tr>'
       + '<td width="18" valign="top" bgcolor="' + CARD_HEX + '" background="' + CARD_TILE + '"'
       + ' style="width:18px;padding:1px 5px 3px 0;vertical-align:top;line-height:0;' + CBG +'">'
       + '<img src="' + icon + '" width="11" height="11" alt="" border="0"'
       + ' style="display:block;border:0;width:11px;height:11px;">'
       + '</td>'
-      + '<td valign="top" bgcolor="' + CARD_HEX + '" background="' + CARD_TILE + '"'
+      + '<td valign="top"' + nowrapAttr + ' bgcolor="' + CARD_HEX + '" background="' + CARD_TILE + '"'
       + ' style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;'
       + 'padding:0 0 3px 0;vertical-align:top;text-align:left;line-height:14px;' + CBG +wrapCss + '">'
       + content
@@ -476,24 +486,13 @@ async function copyHTML(mode) {
       + '</tr>';
   }
 
-  // OWA / Gmail: ícone inline na mesma célula do texto. valign:top uniforme + espaçamento enxuto.
-  function rowGm(icon, content, wrap) {
-    if (!content) return '';
-    var wrapCss = wrap ? 'word-break:break-word;overflow-wrap:break-word;' : 'white-space:nowrap;';
-    return '<tr>'
-      + '<td bgcolor="' + CARD_HEX + '" background="' + CARD_TILE + '"'
-      + ' style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;'
-      + 'padding:0 0 3px 0;vertical-align:top;text-align:left;line-height:14px;' + CBG +wrapCss + '">'
-      + '<img src="' + icon + '" width="11" height="11" alt="" border="0"'
-      + ' style="display:inline;border:0;vertical-align:middle;margin-right:5px;">'
-      + content
-      + '</td>'
-      + '</tr>';
-  }
-
+  // Fontes do export SÓ Arial: e-mail não carrega webfont, então League Spartan/Inter só
+  // existiam em máquinas que as tivessem instaladas — mais uma fonte de diferença entre PCs.
+  // Nome/cargo com overflow-wrap (quebra em espaço), NUNCA word-break — senão a coluna do
+  // nome pode ser esmagada em tela estreita e partir o nome no meio, como acontecia com o e-mail.
   var cargoHtml = cargo
     ? '<p style="margin:4px 0 0 0;padding:0;font-size:11px;font-weight:700;'
-      + 'color:#E8621A;font-family:\'Inter\',Arial,Helvetica,sans-serif;word-break:break-word;">' + cargo + '</p>'
+      + 'color:#E8621A;font-family:Arial,Helvetica,sans-serif;overflow-wrap:break-word;">' + cargo + '</p>'
     : '';
   var celHtml   = celular  ? linkTxt(waHref(celular, wamsg), celular) : '';
   var telHtml   = telefone ? linkTxt(telHref(telefone), telefone)    : '';
@@ -505,23 +504,20 @@ async function copyHTML(mode) {
     ? '<a href="' + liHref + '" style="color:#1a1a1a;text-decoration:none;">' + nome + '</a>'
     : nome;
 
-  // Fundo sólido (tiles): a saída do OWA e do Mac é idêntica. A única diferença que
-  // vale manter é o estilo da linha de contato — no Outlook Desktop (engine do Word)
-  // o ícone inline desalinha, então usa rowOl (ícone em TD separada); OWA e Mac usam
-  // rowGm (ícone inline).
-  var row = (mode === 'desktop') ? rowOl : rowGm;
+  // Saída IDÊNTICA nos 3 botões — só as instruções de onde colar mudam no aviso.
+  // E-mail SEM wrap (fica sempre em 1 linha); endereço quebra apenas em espaços.
   var contatos = row(iCelular, celHtml)
     + row(iTelefone, telHtml)
-    + row(iEmail, emailHtml, true)
+    + row(iEmail, emailHtml)
     + row(iEndereco, endHtml, true);
 
   // Largura ADAPTÁVEL: a tabela não tem width fixa, só max-width:470. Assim o card
   // CRESCE PRA LARGURA conforme o conteúdo (email/endereço longos) em vez de empilhar
-  // pra baixo; ao atingir o teto de 470px, email/endereço quebram (válvula de segurança).
+  // pra baixo; ao atingir o teto de 470px, o endereço quebra em espaço (válvula de segurança).
   // A coluna do nome tem width:140 como mínimo suave (não encolhe demais em assinaturas curtas).
   // O tile cinza-claro (CBG) vai em TODAS as células → card claro e travado contra o dark mode do OWA.
   var html = '<table cellpadding="0" cellspacing="0" border="0"'
-    + ' style="border-collapse:collapse;' + CARD_BORDER + 'font-family:\'League Spartan\',Arial,Helvetica,sans-serif;max-width:470px;">'
+    + ' style="border-collapse:collapse;' + CARD_BORDER + 'font-family:Arial,Helvetica,sans-serif;max-width:470px;">'
     + '<tr>'
     + '<td bgcolor="' + CARD_HEX + '" background="' + CARD_TILE + '"'
     + ' style="' + CBG +'padding:0;vertical-align:top;">'
@@ -531,7 +527,7 @@ async function copyHTML(mode) {
     + '<td width="140" rowspan="2" valign="bottom" bgcolor="' + CARD_HEX + '" background="' + CARD_TILE + '"'
     + ' style="width:140px;padding:0 16px 15px 17px;vertical-align:bottom;' + CBG +'">'
     + '<p style="margin:0;padding:0;font-size:14px;font-weight:900;color:#1a1a1a;'
-    + 'font-family:\'League Spartan\',Arial,Helvetica,sans-serif;line-height:1.25;word-break:break-word;">' + nomeHtml + '</p>'
+    + 'font-family:Arial,Helvetica,sans-serif;line-height:1.25;overflow-wrap:break-word;">' + nomeHtml + '</p>'
     + cargoHtml
     + '</td>'
     + '<td align="right" valign="top" bgcolor="' + CARD_HEX + '" background="' + CARD_TILE + '"'

@@ -246,8 +246,8 @@
             <table cellpadding="0" cellspacing="0" border="0" align="right" style="border-collapse:collapse;">
               <tr><td style="padding:1px 5px 3px 0;vertical-align:top;line-height:0;"><img id="icon-celular" src="" width="11" height="11" alt="" style="display:block;border:0;"></td><td id="s-celular" style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:5px;vertical-align:top;line-height:16px;text-align:left;white-space:nowrap;"></td></tr>
               <tr><td style="padding:1px 5px 3px 0;vertical-align:top;line-height:0;"><img id="icon-telefone" src="" width="11" height="11" alt="" style="display:block;border:0;"></td><td id="s-telefone" style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:5px;vertical-align:top;line-height:16px;text-align:left;white-space:nowrap;"></td></tr>
-              <tr><td style="padding:1px 5px 3px 0;vertical-align:top;line-height:0;"><img id="icon-email" src="" width="11" height="11" alt="" style="display:block;border:0;"></td><td id="s-email" style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:5px;vertical-align:top;line-height:16px;text-align:left;word-break:break-word;"></td></tr>
-              <tr><td style="padding:1px 5px 0 0;vertical-align:top;line-height:0;"><img id="icon-endereco" src="" width="11" height="11" alt="" style="display:block;border:0;"></td><td id="s-endereco" style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;vertical-align:top;line-height:14px;text-align:left;word-break:break-word;"></td></tr>
+              <tr><td style="padding:1px 5px 3px 0;vertical-align:top;line-height:0;"><img id="icon-email" src="" width="11" height="11" alt="" style="display:block;border:0;"></td><td id="s-email" style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding-bottom:5px;vertical-align:top;line-height:16px;text-align:left;white-space:nowrap;"></td></tr>
+              <tr><td style="padding:1px 5px 0 0;vertical-align:top;line-height:0;"><img id="icon-endereco" src="" width="11" height="11" alt="" style="display:block;border:0;"></td><td id="s-endereco" style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;vertical-align:top;line-height:14px;text-align:left;overflow-wrap:break-word;"></td></tr>
             </table>
           </td>
         </tr>
@@ -412,29 +412,28 @@ async function copyHTML(mode) {
   function urlHref(s){ s = (s || '').trim(); if(!s) return ''; return /^https?:\/\//i.test(s) ? s : 'https://' + s; }
   function linkTxt(href, text){ return href ? '<a href="' + href + '" style="color:#333333;text-decoration:none;">' + text + '</a>' : text; }
 
-  // Desktop (Word): ícone em TD separada (inline desalinha). Texto à esquerda; valign:top uniforme.
-  function rowOl(icon, content, wrap) {
+  // Linha de contato ÚNICA pros 3 botões (Desktop/OWA/Mac): ícone em TD separada do texto —
+  // inline desalinha no engine do Word do DESTINATÁRIO (o botão só escolhe onde COLAR; quem
+  // recebe renderiza com o cliente que tiver). Mesma estrutura da pré-visualização.
+  // wrap=false → nowrap (celular/telefone/E-MAIL nunca quebram; a coluna alarga pro conteúdo);
+  // wrap=true → quebra SÓ em espaço (endereço). Sem word-break:break-word, que deixava
+  // OWA/celular esmagar a coluna e partir o e-mail no meio ("...com.b" + "r" na linha de baixo).
+  function row(icon, content, wrap) {
     if (!content) return '';
-    var wrapCss = wrap ? 'word-break:break-word;overflow-wrap:break-word;' : 'white-space:nowrap;';
+    var wrapCss    = wrap ? 'overflow-wrap:break-word;' : 'white-space:nowrap;';
+    var nowrapAttr = wrap ? '' : ' nowrap';
     return '<tr>'
       + '<td width="18" valign="top" bgcolor="#FFFFFF" background="' + BG_WHITE + '" style="width:18px;padding:1px 5px 3px 0;vertical-align:top;line-height:0;' + WBG + '">'
       + '<img src="' + icon + '" width="11" height="11" alt="" border="0" style="display:block;border:0;width:11px;height:11px;">'
       + '</td>'
-      + '<td valign="top" bgcolor="#FFFFFF" background="' + BG_WHITE + '" style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding:0 0 5px 0;vertical-align:top;text-align:left;line-height:16px;' + WBG + wrapCss + '">'
-      + content + '</td></tr>';
-  }
-  // OWA / Gmail: ícone inline na mesma célula do texto.
-  function rowGm(icon, content, wrap) {
-    if (!content) return '';
-    var wrapCss = wrap ? 'word-break:break-word;overflow-wrap:break-word;' : 'white-space:nowrap;';
-    return '<tr>'
-      + '<td bgcolor="#FFFFFF" background="' + BG_WHITE + '" style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding:0 0 5px 0;vertical-align:top;text-align:left;line-height:16px;' + WBG + wrapCss + '">'
-      + '<img src="' + icon + '" width="11" height="11" alt="" border="0" style="display:inline;border:0;vertical-align:middle;margin-right:5px;">'
+      + '<td valign="top"' + nowrapAttr + ' bgcolor="#FFFFFF" background="' + BG_WHITE + '" style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding:0 0 5px 0;vertical-align:top;text-align:left;line-height:16px;' + WBG + wrapCss + '">'
       + content + '</td></tr>';
   }
 
+  // Nome/cargo com overflow-wrap (quebra em espaço), NUNCA word-break — senão a coluna do
+  // nome pode ser esmagada em tela estreita e partir o nome no meio, como acontecia com o e-mail.
   var cargoHtml = cargo
-    ? '<p style="margin:4px 0 0 0;padding:0;font-size:11px;font-weight:700;color:' + BRAND + ';font-family:Arial,Helvetica,sans-serif;word-break:break-word;">' + cargo + '</p>'
+    ? '<p style="margin:4px 0 0 0;padding:0;font-size:11px;font-weight:700;color:' + BRAND + ';font-family:Arial,Helvetica,sans-serif;overflow-wrap:break-word;">' + cargo + '</p>'
     : '';
   var celHtml   = celular  ? linkTxt(waHref(celular, wamsg), celular) : '';
   var telHtml   = telefone ? linkTxt(telHref(telefone), telefone)    : '';
@@ -446,8 +445,9 @@ async function copyHTML(mode) {
     ? '<a href="' + liHref + '" style="color:#1a1a1a;text-decoration:none;">' + nome + '</a>'
     : nome;
 
-  var row = (mode === 'desktop') ? rowOl : rowGm;
-  var contatos = row(iCelular, celHtml) + row(iTelefone, telHtml) + row(iEmail, emailHtml, true) + row(iEndereco, endHtml, true);
+  // Saída IDÊNTICA nos 3 botões — só as instruções de onde colar mudam no aviso.
+  // E-mail SEM wrap (fica sempre em 1 linha); endereço quebra apenas em espaços.
+  var contatos = row(iCelular, celHtml) + row(iTelefone, telHtml) + row(iEmail, emailHtml) + row(iEndereco, endHtml, true);
 
   // Card BRANCO com borda fina cinza (destaca no fundo branco do e-mail). Largura adaptável (max 470px).
   // Logo = texto "Saltum" (Arial, cor da marca). Tile branco em todas as células trava o dark mode no OWA.
@@ -458,7 +458,7 @@ async function copyHTML(mode) {
     + '<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">'
     + '<tr>'
     + '<td width="140" rowspan="2" valign="bottom" bgcolor="#FFFFFF" background="' + BG_WHITE + '" style="width:140px;padding:0 16px 18px 17px;vertical-align:bottom;' + WBG + '">'
-    + '<p style="margin:0;padding:0;font-size:14px;font-weight:900;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;line-height:1.25;word-break:break-word;">' + nomeHtml + '</p>'
+    + '<p style="margin:0;padding:0;font-size:14px;font-weight:900;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;line-height:1.25;overflow-wrap:break-word;">' + nomeHtml + '</p>'
     + cargoHtml + '</td>'
     + '<td align="right" valign="top" bgcolor="#FFFFFF" background="' + BG_WHITE + '" style="padding:20px 18px 0 0;vertical-align:top;text-align:right;' + WBG + '">'
     + '<p style="margin:0;padding:0;font-size:28px;font-weight:800;color:' + BRAND + ';font-family:Arial,Helvetica,sans-serif;line-height:1;white-space:nowrap;">Saltum</p>'

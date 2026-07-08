@@ -224,7 +224,7 @@
   style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;border:1px solid #E0E0E0;">
   <tr>
     <td style="background:#FFFFFF;padding:0;vertical-align:top;">
-      <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+      <table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;width:100%;">
         <tr>
           <td width="140" rowspan="2" valign="bottom"
               style="width:140px;padding:0 16px 18px 17px;vertical-align:bottom;background:#FFFFFF;">
@@ -393,10 +393,13 @@ async function copyHTML(mode) {
   var wamsg    = (document.getElementById('f-wamsg').value    || '').trim();
 
   var BASE      = 'https://bam-assessoria.github.io/Assinaturas/';
-  var iCelular  = BASE + 'icons/celular.png';
-  var iTelefone = BASE + 'icons/telefone.png';
-  var iEmail    = BASE + 'icons/email.png';
-  var iEndereco = BASE + 'icons/endereco.png';
+  // Ícones OPACOS com o branco do card já no fundo (SEM transparência): o Outlook clássico
+  // (engine do Word antigo) achatava o alfa dos PNGs transparentes e mostrava só um
+  // quadrado branco. 22x22 exibido a 11px = redução 2:1 exata (nítida no Word).
+  var iCelular  = BASE + 'icons/celular-branco.png';
+  var iTelefone = BASE + 'icons/telefone-branco.png';
+  var iEmail    = BASE + 'icons/email-branco.png';
+  var iEndereco = BASE + 'icons/endereco-branco.png';
   // Tiles 1x1 hospedados (PNG opaco) em TODAS as células → trava a cor contra a inversão do dark mode (OWA).
   var BG_WHITE  = BASE + 'bg/bg-white.png';
   var BG_BAR    = BASE + 'bg/bg-simel.png';
@@ -455,7 +458,9 @@ async function copyHTML(mode) {
     + ' style="border-collapse:collapse;border:1px solid #E0E0E0;font-family:Arial,Helvetica,sans-serif;max-width:470px;">'
     + '<tr>'
     + '<td bgcolor="#FFFFFF" background="' + BG_WHITE + '" style="' + WBG + 'padding:0;vertical-align:top;">'
-    + '<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">'
+    // width=100% na tabela interna: se algum cliente (Outlook clássico) alargar o card
+    // além do conteúdo, o miolo estica junto e nome/logo/contatos mantêm o alinhamento.
+    + '<table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;width:100%;">'
     + '<tr>'
     + '<td width="140" rowspan="2" valign="bottom" bgcolor="#FFFFFF" background="' + BG_WHITE + '" style="width:140px;padding:0 16px 18px 17px;vertical-align:bottom;' + WBG + '">'
     + '<p style="margin:0;padding:0;font-size:14px;font-weight:900;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;line-height:1.25;overflow-wrap:break-word;">' + nomeHtml + '</p>'

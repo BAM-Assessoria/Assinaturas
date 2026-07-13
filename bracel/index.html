@@ -432,7 +432,6 @@ async function copyHTML(mode) {
   var wamsg    = (document.getElementById('f-wamsg').value    || '').trim();
 
   var BASE      = 'https://bam-assessoria.github.io/Assinaturas/';
-  var logoUrl   = BASE + 'bracel_logo.png';
   // Fundo do card: 'cinza' (#F4F4F4, padrão aprovado) ou 'branco' (#FFFFFF + borda fina cinza),
   // escolhido no seletor do formulário — pra mostrar as duas versões pra cliente.
   // Tile 1x1 HOSPEDADO aplicado via bgcolor + background="url" + background-image em TODAS as
@@ -453,6 +452,11 @@ async function copyHTML(mode) {
   var iTelefone = BASE + 'icons/telefone' + ICON_SUF + '.png';
   var iEmail    = BASE + 'icons/email'    + ICON_SUF + '.png';
   var iEndereco = BASE + 'icons/endereco' + ICON_SUF + '.png';
+  // Logo pela MESMA receita dos ícones: opaco, com a cor do card no fundo. O original era
+  // 1078x300 com alfa (150 KB) exibido a 149x43 — o Word achatava o alfa (retângulo branco
+  // atrás do logo no card cinza) e ainda reduzia 7:1 com o scaler ruim dele. Agora 298x86 =
+  // 2x exato da caixa, sem alfa, 21 KB.
+  var logoUrl   = BASE + 'bracel_logo' + ICON_SUF + '.png';
   var CBG = 'background-color:' + CARD_HEX + ';background-image:url(\'' + CARD_TILE + '\');background-repeat:repeat;';
   var OBG = 'background-color:#EB7927;background-image:url(\'' + BG_ORANGE + '\');background-repeat:repeat;';
 

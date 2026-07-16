@@ -503,7 +503,15 @@ async function copyHTML(mode) {
   function waHref(s, msg){ var d = onlyDigits(s); if(!d) return ''; if(d.length <= 11) d = '55' + d; var u = 'https://wa.me/' + d; if(msg) u += '?text=' + encodeURIComponent(msg); return u; }
   function mapsHref(s){ return s ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(s) : ''; }
   function urlHref(s){ s = (s || '').trim(); if(!s) return ''; return /^https?:\/\//i.test(s) ? s : 'https://' + s; }
-  function linkTxt(href, text){ return href ? '<a href="' + href + '" style="color:#333333;text-decoration:none;">' + text + '</a>' : text; }
+  // O Word (Outlook clássico) REAPLICA azul+sublinhado de hyperlink no ENVIO, descartando
+  // o style da <a> (print da cliente 16/07). Formatação direta num <span> INTERNO vira
+  // "direct formatting" no Word e vence o estilo Hyperlink — por isso o embrulho duplo.
+  function linkTxt(href, text){
+    return href
+      ? '<a href="' + href + '" style="color:#333333;text-decoration:none;">'
+        + '<span style="color:#333333;text-decoration:none;">' + text + '</span></a>'
+      : text;
+  }
 
   // Linha de contato ÚNICA pros 3 botões (Desktop/OWA/Mac): ícone em TD separada do texto
   // (inline desalinha no engine do Word) — mesma estrutura da pré-visualização. Estrutura
@@ -552,7 +560,8 @@ async function copyHTML(mode) {
   // Nome vira link clicável pro LinkedIn quando o campo está preenchido (mantém a mesma cor/peso).
   var liHref    = urlHref(linkedin);
   var nomeHtml  = liHref
-    ? '<a href="' + liHref + '" style="color:#1a1a1a;text-decoration:none;">' + nome + '</a>'
+    ? '<a href="' + liHref + '" style="color:#1a1a1a;text-decoration:none;">'
+      + '<span style="color:#1a1a1a;text-decoration:none;">' + nome + '</span></a>'
     : nome;
 
   // Saída IDÊNTICA nos 3 botões — só as instruções de onde colar mudam no aviso.

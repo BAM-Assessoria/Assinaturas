@@ -229,9 +229,9 @@
     <td id="s-card" style="background:#F4F4F4;padding:0;vertical-align:top;">
       <table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;width:100%;">
         <tr>
-          <td width="140" rowspan="2" valign="bottom" nowrap
-              style="width:140px;padding:0 16px 15px 17px;vertical-align:bottom;white-space:nowrap;">
-            <div id="s-nome" style="font-size:14px;font-weight:900;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;line-height:1.25;white-space:nowrap;"></div>
+          <td width="140" rowspan="2" valign="bottom"
+              style="width:140px;padding:0 16px 15px 17px;vertical-align:bottom;">
+            <div id="s-nome" style="font-size:14px;font-weight:900;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;line-height:1.25;overflow-wrap:break-word;"></div>
             <div id="s-cargo-wrap" style="display:none;margin-top:4px;">
               <span id="s-cargo" style="font-size:11px;font-weight:700;color:#E8621A;font-family:Arial,Helvetica,sans-serif;"></span>
             </div>
@@ -523,7 +523,7 @@ async function copyHTML(mode) {
   // Largura ADAPTÁVEL: a tabela não tem width fixa, só max-width:470. Assim o card
   // CRESCE PRA LARGURA conforme o conteúdo (email/endereço longos) em vez de empilhar
   // pra baixo; ao atingir o teto de 470px, o endereço quebra em espaço (válvula de segurança).
-  // A coluna do nome tem width:140 como mínimo suave (não encolhe demais em assinaturas curtas).
+  // A coluna do nome tem width:140 como TETO: nome maior que isso quebra em espaço (2 linhas).
   // O tile cinza-claro (CBG) vai em TODAS as células → card claro e travado contra o dark mode do OWA.
   var html = '<table cellpadding="0" cellspacing="0" border="0"'
     + ' style="border-collapse:collapse;' + CARD_BORDER + 'font-family:Arial,Helvetica,sans-serif;max-width:470px;">'
@@ -536,13 +536,13 @@ async function copyHTML(mode) {
     + '<table cellpadding="0" cellspacing="0" border="0" width="100%"'
     + ' style="border-collapse:collapse;width:100%;">'
     + '<tr>'
-    // NOME SEMPRE EM 1 LINHA (pedido da cliente): white-space:nowrap no <p> + o atributo
-    // nowrap na TD (o Word ignora o CSS aqui, só obedece o atributo). O width:140 vira PISO,
-    // não teto: a coluna cresce pro tamanho do nome e o card se ajusta sozinho.
-    + '<td width="140" rowspan="2" valign="bottom" nowrap bgcolor="' + CARD_HEX + '" background="' + CARD_TILE + '"'
-    + ' style="width:140px;padding:0 16px 15px 17px;vertical-align:bottom;white-space:nowrap;' + CBG +'">'
+    // NOME EM 2 LINHAS (pedido da cliente, 16/07/2026 — reverte o nowrap de 13/07): a coluna
+    // de 140px é teto e o nome quebra SÓ EM ESPAÇO (overflow-wrap, nunca word-break), ex.:
+    // "Maria Julia" / "Gaudencio" — visual aprovado no print. Sem nowrap na TD nem no <p>.
+    + '<td width="140" rowspan="2" valign="bottom" bgcolor="' + CARD_HEX + '" background="' + CARD_TILE + '"'
+    + ' style="width:140px;padding:0 16px 15px 17px;vertical-align:bottom;' + CBG +'">'
     + '<p style="margin:0;padding:0;font-size:14px;font-weight:900;color:#1a1a1a;'
-    + 'font-family:Arial,Helvetica,sans-serif;line-height:1.25;white-space:nowrap;">' + nomeHtml + '</p>'
+    + 'font-family:Arial,Helvetica,sans-serif;line-height:1.25;overflow-wrap:break-word;">' + nomeHtml + '</p>'
     + cargoHtml
     + '</td>'
     + '<td align="right" valign="top" bgcolor="' + CARD_HEX + '" background="' + CARD_TILE + '"'

@@ -201,6 +201,7 @@
     <label>Cargo (opcional) <input type="text" id="f-cargo" value=""></label>
     <label>Celular / WhatsApp <input type="text" id="f-celular" value=""></label>
     <label>Telefone <input type="text" id="f-telefone" value=""></label>
+    <label>Ramal (opcional) <input type="text" id="f-ramal" value="" placeholder="Ex.: 205"></label>
     <label class="full">E-mail <input type="text" id="f-email" value=""></label>
     <label class="full">Endereço <input type="text" id="f-endereco" value="Estrada Tenente Marques, 5.558"></label>
     <label class="full">LinkedIn (opcional) <input type="text" id="f-linkedin" value="" placeholder="https://linkedin.com/in/usuario"></label>
@@ -312,11 +313,14 @@ function update() {
   document.getElementById('s-cargo').textContent    = cargo;
   document.getElementById('s-cargo-wrap').style.display = cargo ? '' : 'none';
   document.getElementById('s-celular').textContent  = document.getElementById('f-celular').value;
-  document.getElementById('s-telefone').textContent = document.getElementById('f-telefone').value;
+  // Ramal ao lado do telefone, igual ao export
+  var tel = document.getElementById('f-telefone').value;
+  var ram = (document.getElementById('f-ramal').value || '').trim();
+  document.getElementById('s-telefone').textContent = tel + (tel.trim() && ram ? ' - Ramal ' + ram : '');
   document.getElementById('s-email').textContent    = document.getElementById('f-email').value;
   document.getElementById('s-endereco').textContent = document.getElementById('f-endereco').value;
 }
-['f-nome','f-cargo','f-celular','f-telefone','f-email','f-endereco'].forEach(function(id) {
+['f-nome','f-cargo','f-celular','f-telefone','f-ramal','f-email','f-endereco'].forEach(function(id) {
   document.getElementById(id).addEventListener('input', update);
 });
 
@@ -387,6 +391,7 @@ async function copyHTML(mode) {
   var cargo    = (document.getElementById('f-cargo').value    || '').trim();
   var celular  = (document.getElementById('f-celular').value  || '').trim();
   var telefone = (document.getElementById('f-telefone').value || '').trim();
+  var ramal    = (document.getElementById('f-ramal').value    || '').trim();
   var emailVal = (document.getElementById('f-email').value    || '').trim();
   var endereco = (document.getElementById('f-endereco').value || '').trim();
   var linkedin = (document.getElementById('f-linkedin').value || '').trim();
@@ -439,7 +444,9 @@ async function copyHTML(mode) {
     ? '<p style="margin:4px 0 0 0;padding:0;font-size:11px;font-weight:700;color:' + BRAND + ';font-family:Arial,Helvetica,sans-serif;overflow-wrap:break-word;">' + cargo + '</p>'
     : '';
   var celHtml   = celular  ? linkTxt(waHref(celular, wamsg), celular) : '';
-  var telHtml   = telefone ? linkTxt(telHref(telefone), telefone)    : '';
+  // Ramal é só texto ao lado do telefone (o link tel: disca o número base)
+  var telTxt    = telefone + (ramal ? ' - Ramal ' + ramal : '');
+  var telHtml   = telefone ? linkTxt(telHref(telefone), telTxt)      : '';
   var emailHtml = emailVal ? linkTxt('mailto:' + emailVal, emailVal) : '';
   var endHtml   = endereco ? linkTxt(mapsHref(endereco), endereco)   : '';
   // Nome vira link clicável pro LinkedIn quando o campo está preenchido.

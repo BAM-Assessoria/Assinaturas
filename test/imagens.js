@@ -26,11 +26,15 @@ const ASSETS = [
   ...['celular', 'telefone', 'email', 'endereco'].flatMap((i) => [
     { arq: `icons/${i}-cinza.png`,  fundo: CINZA,  caixa: [11, 11] },
     { arq: `icons/${i}-branco.png`, fundo: BRANCO, caixa: [11, 11] },
-    // "-44" (16/07): 44x44 exibidos a 11px (4:1 exato). Filtro AV/proxy na máquina da
-    // cliente Bracel bloqueava PNGs pequenos (22x22 nunca baixava; logo 298x86 sim);
-    // arquivo maior passa e a URL nova fura cache envenenado do Word. Bracel usa estes.
+    // "-44" (16/07): 44x44 exibidos a 11px (4:1 exato) — 1ª tentativa contra o filtro
+    // AV/proxy da máquina da cliente Bracel, que bloqueava os 22x22 (o logo 298x86
+    // baixava). NÃO bastou: assinaturas coladas ~15:50 de 16/07 ainda referenciam, manter.
     { arq: `icons/${i}-cinza-44.png`,  fundo: CINZA,  caixa: [11, 11], escala: 4 },
     { arq: `icons/${i}-branco-44.png`, fundo: BRANCO, caixa: [11, 11], escala: 4 },
+    // bracel_*.png na RAIZ (16/07, 2ª tentativa — atual): 176x176 a 11px (16:1), imitando
+    // o perfil do logo que sempre passou no filtro (raiz, prefixo bracel_, ~2-3KB).
+    { arq: `bracel_${i}-cinza.png`,  fundo: CINZA,  caixa: [11, 11], escala: 16 },
+    { arq: `bracel_${i}-branco.png`, fundo: BRANCO, caixa: [11, 11], escala: 16 },
     // LEGADO: assinaturas instaladas antes de 13/07/2026 continuam baixando estes URLs
     // sem sufixo pra sempre. Desde 16/07 servem uma cópia opaca dos -cinza (decisão do
     // usuário: conserta os quadrados brancos da Bracel sem recopiar; assinaturas
@@ -46,7 +50,7 @@ const ASSETS = [
 
 // cada marca tem que referenciar os assets certos pro fundo de card que ela usa
 const MARCAS = [
-  { dir: 'bracel',  espera: ["icons/celular'  + ICON_SUF + '-44.png'", "bracel_logo' + ICON_SUF"] },
+  { dir: 'bracel',  espera: ["bracel_celular'  + ICON_SUF + '.png'", "bracel_logo' + ICON_SUF"] },
   { dir: 'solibem', espera: ['icons/celular-branco.png', 'icons/endereco-branco.png'] },
   { dir: 'saltum',  espera: ['icons/celular-branco.png', 'icons/endereco-branco.png'] },
   { dir: 'simel',   espera: ['icons/celular-branco.png', 'icons/endereco-branco.png'] },

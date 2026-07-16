@@ -479,15 +479,16 @@ async function copyHTML(mode) {
   // Ícones OPACOS com a cor do card já no fundo (SEM transparência): o Outlook clássico
   // (engine do Word antigo) achatava o alfa dos PNGs transparentes e mostrava só um
   // quadrado branco. Sufixo acompanha a cor do card escolhida no seletor.
-  // "-44" = 44x44 exibido a 11px (4:1 exato, nítido no Word) em URL NOVA: na máquina da
-  // cliente Bracel um filtro (AV/proxy anti-tracking) bloqueava os PNGs pequenos de 22x22
-  // (o logo de 298x86 baixava normal) — arquivo maior passa e URL nova fura qualquer
-  // cache envenenado do Word. Não voltar pra 22x22.
+  // bracel_*.png na RAIZ, 176x176 exibido a 11px (16:1 exato): a máquina da cliente tem
+  // filtro (AV/proxy anti-tracking) que bloqueou os ícones de 22x22 E de 44x44 da pasta
+  // /icons/, enquanto o logo (298x86, raiz) sempre baixou. Estes imitam o perfil do logo:
+  // raiz do site, prefixo bracel_, ~2-3KB. URL nova também fura cache envenenado do Word.
+  // Não voltar pra /icons/ pequenos no export da Bracel.
   var ICON_SUF  = fundoBranco ? '-branco' : '-cinza';
-  var iCelular  = BASE + 'icons/celular'  + ICON_SUF + '-44.png';
-  var iTelefone = BASE + 'icons/telefone' + ICON_SUF + '-44.png';
-  var iEmail    = BASE + 'icons/email'    + ICON_SUF + '-44.png';
-  var iEndereco = BASE + 'icons/endereco' + ICON_SUF + '-44.png';
+  var iCelular  = BASE + 'bracel_celular'  + ICON_SUF + '.png';
+  var iTelefone = BASE + 'bracel_telefone' + ICON_SUF + '.png';
+  var iEmail    = BASE + 'bracel_email'    + ICON_SUF + '.png';
+  var iEndereco = BASE + 'bracel_endereco' + ICON_SUF + '.png';
   // Logo pela MESMA receita dos ícones: opaco, com a cor do card no fundo. O original era
   // 1078x300 com alfa (150 KB) exibido a 149x43 — o Word achatava o alfa (retângulo branco
   // atrás do logo no card cinza) e ainda reduzia 7:1 com o scaler ruim dele. Agora 298x86 =

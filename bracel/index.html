@@ -229,9 +229,9 @@
     <td id="s-card" style="background:#F4F4F4;padding:0;vertical-align:top;">
       <table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;width:100%;">
         <tr>
-          <td width="140" rowspan="2" valign="bottom"
-              style="width:140px;padding:0 16px 15px 17px;vertical-align:bottom;">
-            <div id="s-nome" style="font-size:14px;font-weight:900;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;line-height:1.25;overflow-wrap:break-word;"></div>
+          <td width="140" rowspan="2" valign="bottom" nowrap
+              style="width:140px;padding:0 16px 15px 17px;vertical-align:bottom;white-space:nowrap;">
+            <div id="s-nome" style="font-size:14px;font-weight:900;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;line-height:1.25;white-space:nowrap;"></div>
             <div id="s-cargo-wrap" style="display:none;margin-top:4px;">
               <span id="s-cargo" style="font-size:11px;font-weight:700;color:#E8621A;font-family:Arial,Helvetica,sans-serif;"></span>
             </div>
@@ -318,6 +318,24 @@ document.getElementById('icon-email').src     = ICONS.email;
 document.getElementById('icon-endereco').src  = ICONS.endereco;
 update();
 
+// Endereço em NO MÁXIMO 2 linhas com quebra escolhida POR NÓS: o Word ignora max-width,
+// então sem quebra explícita o Outlook clássico estica o card pra caber o endereço
+// inteiro em 1 linha. Curto (<= 40 chars) fica em 1 linha; longo parte no " - " mais
+// perto do meio (metades equilibradas; o separador da quebra some). Fallback: espaço
+// mais perto do meio. Mesmo resultado em todo cliente (Word, OWA, Apple Mail).
+// Usada no EXPORT (copyHTML) e no PREVIEW (update) — sempre os dois juntos.
+function splitEndereco(s) {
+  s = (s || '').trim();
+  if (s.length <= 40) return { l1: s, l2: '' };
+  var meio = s.length / 2, pos = -1, melhor = Infinity, re = / - /g, m, d;
+  while ((m = re.exec(s))) { d = Math.abs(m.index - meio); if (d < melhor) { melhor = d; pos = m.index; } }
+  if (pos >= 0) return { l1: s.slice(0, pos), l2: s.slice(pos + 3) };
+  melhor = Infinity; re = / /g;
+  while ((m = re.exec(s))) { d = Math.abs(m.index - meio); if (d < melhor) { melhor = d; pos = m.index; } }
+  if (pos >= 0) return { l1: s.slice(0, pos), l2: s.slice(pos + 1) };
+  return { l1: s, l2: '' };
+}
+
 // Atualiza preview em tempo real
 function update() {
   document.getElementById('s-nome').textContent = document.getElementById('f-nome').value;
@@ -327,7 +345,16 @@ function update() {
   // Contato vazio: esconde a linha no preview (igual ao export, que omite contato vazio)
   ['celular','telefone','email','endereco'].forEach(function(k){
     var v = document.getElementById('f-' + k).value;
-    document.getElementById('s-' + k).textContent = v;
+    var el = document.getElementById('s-' + k);
+    if (k === 'endereco') {
+      // Mesma quebra em 2 linhas do export (splitEndereco), como nó <br> real
+      var p = splitEndereco(v);
+      el.textContent = '';
+      el.appendChild(document.createTextNode(p.l1));
+      if (p.l2) { el.appendChild(document.createElement('br')); el.appendChild(document.createTextNode(p.l2)); }
+    } else {
+      el.textContent = v;
+    }
     var r = document.getElementById('r-' + k);
     if (r) r.style.display = v.trim() ? '' : 'none';
   });
@@ -474,7 +501,8 @@ async function copyHTML(mode) {
   // diferença celular × PC × web).
   // Todas as linhas usam valign:top + espaçamento igual (sem mistura middle/top que abria gap no OWA).
   // wrap=false → nowrap: a célula NUNCA quebra (celular, telefone e E-MAIL ficam em 1 linha;
-  // a coluna alarga pro conteúdo). wrap=true → quebra SÓ em espaço (endereço). Sem
+  // a coluna alarga pro conteúdo). wrap=true (endereço): a quebra REAL vem do <br> explícito
+  // do splitEndereco(); o overflow-wrap é só válvula de segurança e quebra SÓ em espaço. Sem
   // word-break:break-word, que deixava OWA/celular esmagar a coluna e partir o e-mail no
   // meio ("...com.b" + "r" na linha de baixo). O atributo nowrap reforça no Word.
   function row(icon, content, wrap) {
@@ -497,8 +525,8 @@ async function copyHTML(mode) {
 
   // Fontes do export SÓ Arial: e-mail não carrega webfont, então League Spartan/Inter só
   // existiam em máquinas que as tivessem instaladas — mais uma fonte de diferença entre PCs.
-  // Nome/cargo com overflow-wrap (quebra em espaço), NUNCA word-break — senão a coluna do
-  // nome pode ser esmagada em tela estreita e partir o nome no meio, como acontecia com o e-mail.
+  // Cargo com overflow-wrap (quebra em espaço), NUNCA word-break — senão a coluna pode
+  // ser esmagada em tela estreita e partir a palavra no meio, como acontecia com o e-mail.
   var cargoHtml = cargo
     ? '<p style="margin:4px 0 0 0;padding:0;font-size:11px;font-weight:700;'
       + 'color:#E8621A;font-family:Arial,Helvetica,sans-serif;overflow-wrap:break-word;">' + cargo + '</p>'
@@ -506,7 +534,9 @@ async function copyHTML(mode) {
   var celHtml   = celular  ? linkTxt(waHref(celular, wamsg), celular) : '';
   var telHtml   = telefone ? linkTxt(telHref(telefone), telefone)    : '';
   var emailHtml = emailVal ? linkTxt('mailto:' + emailVal, emailVal) : '';
-  var endHtml   = endereco ? linkTxt(mapsHref(endereco), endereco)   : '';
+  var endParts  = splitEndereco(endereco);
+  var endTxt    = endParts.l2 ? endParts.l1 + '<br>' + endParts.l2 : endParts.l1;
+  var endHtml   = endereco ? linkTxt(mapsHref(endereco), endTxt)    : '';
   // Nome vira link clicável pro LinkedIn quando o campo está preenchido (mantém a mesma cor/peso).
   var liHref    = urlHref(linkedin);
   var nomeHtml  = liHref
@@ -523,7 +553,8 @@ async function copyHTML(mode) {
   // Largura ADAPTÁVEL: a tabela não tem width fixa, só max-width:470. Assim o card
   // CRESCE PRA LARGURA conforme o conteúdo (email/endereço longos) em vez de empilhar
   // pra baixo; ao atingir o teto de 470px, o endereço quebra em espaço (válvula de segurança).
-  // A coluna do nome tem width:140 como TETO: nome maior que isso quebra em espaço (2 linhas).
+  // A coluna do nome tem width:140 como PISO (nowrap: cresce pro nome inteiro em 1 linha);
+  // quem limita a largura total é o endereço já partido em 2 linhas pelo splitEndereco().
   // O tile cinza-claro (CBG) vai em TODAS as células → card claro e travado contra o dark mode do OWA.
   var html = '<table cellpadding="0" cellspacing="0" border="0"'
     + ' style="border-collapse:collapse;' + CARD_BORDER + 'font-family:Arial,Helvetica,sans-serif;max-width:470px;">'
@@ -536,13 +567,14 @@ async function copyHTML(mode) {
     + '<table cellpadding="0" cellspacing="0" border="0" width="100%"'
     + ' style="border-collapse:collapse;width:100%;">'
     + '<tr>'
-    // NOME EM 2 LINHAS (pedido da cliente, 16/07/2026 — reverte o nowrap de 13/07): a coluna
-    // de 140px é teto e o nome quebra SÓ EM ESPAÇO (overflow-wrap, nunca word-break), ex.:
-    // "Maria Julia" / "Gaudencio" — visual aprovado no print. Sem nowrap na TD nem no <p>.
-    + '<td width="140" rowspan="2" valign="bottom" bgcolor="' + CARD_HEX + '" background="' + CARD_TILE + '"'
-    + ' style="width:140px;padding:0 16px 15px 17px;vertical-align:bottom;' + CBG +'">'
+    // NOME SEMPRE EM 1 LINHA (decisão final da cliente, 16/07/2026): white-space:nowrap no
+    // <p> + atributo nowrap na TD (o Word ignora o CSS aqui, só obedece o atributo). O
+    // width:140 é PISO: a coluna cresce pro tamanho do nome. Quem segura a largura do card
+    // é o ENDEREÇO, partido em 2 linhas por splitEndereco().
+    + '<td width="140" rowspan="2" valign="bottom" nowrap bgcolor="' + CARD_HEX + '" background="' + CARD_TILE + '"'
+    + ' style="width:140px;padding:0 16px 15px 17px;vertical-align:bottom;white-space:nowrap;' + CBG +'">'
     + '<p style="margin:0;padding:0;font-size:14px;font-weight:900;color:#1a1a1a;'
-    + 'font-family:Arial,Helvetica,sans-serif;line-height:1.25;overflow-wrap:break-word;">' + nomeHtml + '</p>'
+    + 'font-family:Arial,Helvetica,sans-serif;line-height:1.25;white-space:nowrap;">' + nomeHtml + '</p>'
     + cargoHtml
     + '</td>'
     + '<td align="right" valign="top" bgcolor="' + CARD_HEX + '" background="' + CARD_TILE + '"'

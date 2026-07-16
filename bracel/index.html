@@ -201,6 +201,7 @@
     <label>Cargo (opcional) <input type="text" id="f-cargo" value=""></label>
     <label>Celular / WhatsApp <input type="text" id="f-celular" value=""></label>
     <label>Telefone <input type="text" id="f-telefone" value=""></label>
+    <label>Ramal (opcional) <input type="text" id="f-ramal" value="" placeholder="Ex.: 205"></label>
     <label class="full">E-mail <input type="text" id="f-email" value=""></label>
     <label class="full">Endereço <input type="text" id="f-endereco" value="Estrada Tenente Marques, 5.558"></label>
     <label class="full">LinkedIn (opcional) <input type="text" id="f-linkedin" value="" placeholder="https://linkedin.com/in/usuario"></label>
@@ -227,10 +228,10 @@
   style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;display:inline-block;text-align:left;">
   <tr>
     <td id="s-card" style="background:#F4F4F4;padding:0;vertical-align:top;">
-      <table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;width:100%;">
+      <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
         <tr>
-          <td width="140" rowspan="2" valign="bottom" nowrap
-              style="width:140px;padding:0 16px 15px 17px;vertical-align:bottom;white-space:nowrap;">
+          <td rowspan="2" valign="bottom" nowrap
+              style="padding:0 16px 15px 17px;vertical-align:bottom;white-space:nowrap;">
             <div id="s-nome" style="font-size:14px;font-weight:900;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;line-height:1.25;white-space:nowrap;"></div>
             <div id="s-cargo-wrap" style="display:none;margin-top:4px;">
               <span id="s-cargo" style="font-size:11px;font-weight:700;color:#E8621A;font-family:Arial,Helvetica,sans-serif;"></span>
@@ -352,6 +353,10 @@ function update() {
       el.textContent = '';
       el.appendChild(document.createTextNode(p.l1));
       if (p.l2) { el.appendChild(document.createElement('br')); el.appendChild(document.createTextNode(p.l2)); }
+    } else if (k === 'telefone') {
+      // Ramal ao lado do telefone, igual ao export
+      var ram = (document.getElementById('f-ramal').value || '').trim();
+      el.textContent = v + (v.trim() && ram ? ' - Ramal ' + ram : '');
     } else {
       el.textContent = v;
     }
@@ -359,7 +364,7 @@ function update() {
     if (r) r.style.display = v.trim() ? '' : 'none';
   });
 }
-['f-nome','f-cargo','f-celular','f-telefone','f-email','f-endereco'].forEach(function(id) {
+['f-nome','f-cargo','f-celular','f-telefone','f-ramal','f-email','f-endereco'].forEach(function(id) {
   document.getElementById(id).addEventListener('input', update);
 });
 
@@ -453,6 +458,7 @@ async function copyHTML(mode) {
   var cargo    = (document.getElementById('f-cargo').value    || '').trim();
   var celular  = (document.getElementById('f-celular').value  || '').trim();
   var telefone = (document.getElementById('f-telefone').value || '').trim();
+  var ramal    = (document.getElementById('f-ramal').value    || '').trim();
   var emailVal = (document.getElementById('f-email').value    || '').trim();
   var endereco = (document.getElementById('f-endereco').value || '').trim();
   var linkedin = (document.getElementById('f-linkedin').value || '').trim();
@@ -472,13 +478,16 @@ async function copyHTML(mode) {
   var CARD_BORDER = fundoBranco ? 'border:1px solid #E0E0E0;' : '';
   // Ícones OPACOS com a cor do card já no fundo (SEM transparência): o Outlook clássico
   // (engine do Word antigo) achatava o alfa dos PNGs transparentes e mostrava só um
-  // quadrado branco. 22x22 exibido a 11px = redução 2:1 exata (nítida no Word).
-  // Sufixo acompanha a cor do card escolhida no seletor.
+  // quadrado branco. Sufixo acompanha a cor do card escolhida no seletor.
+  // "-44" = 44x44 exibido a 11px (4:1 exato, nítido no Word) em URL NOVA: na máquina da
+  // cliente Bracel um filtro (AV/proxy anti-tracking) bloqueava os PNGs pequenos de 22x22
+  // (o logo de 298x86 baixava normal) — arquivo maior passa e URL nova fura qualquer
+  // cache envenenado do Word. Não voltar pra 22x22.
   var ICON_SUF  = fundoBranco ? '-branco' : '-cinza';
-  var iCelular  = BASE + 'icons/celular'  + ICON_SUF + '.png';
-  var iTelefone = BASE + 'icons/telefone' + ICON_SUF + '.png';
-  var iEmail    = BASE + 'icons/email'    + ICON_SUF + '.png';
-  var iEndereco = BASE + 'icons/endereco' + ICON_SUF + '.png';
+  var iCelular  = BASE + 'icons/celular'  + ICON_SUF + '-44.png';
+  var iTelefone = BASE + 'icons/telefone' + ICON_SUF + '-44.png';
+  var iEmail    = BASE + 'icons/email'    + ICON_SUF + '-44.png';
+  var iEndereco = BASE + 'icons/endereco' + ICON_SUF + '-44.png';
   // Logo pela MESMA receita dos ícones: opaco, com a cor do card no fundo. O original era
   // 1078x300 com alfa (150 KB) exibido a 149x43 — o Word achatava o alfa (retângulo branco
   // atrás do logo no card cinza) e ainda reduzia 7:1 com o scaler ruim dele. Agora 298x86 =
@@ -532,7 +541,9 @@ async function copyHTML(mode) {
       + 'color:#E8621A;font-family:Arial,Helvetica,sans-serif;overflow-wrap:break-word;">' + cargo + '</p>'
     : '';
   var celHtml   = celular  ? linkTxt(waHref(celular, wamsg), celular) : '';
-  var telHtml   = telefone ? linkTxt(telHref(telefone), telefone)    : '';
+  // Ramal é só texto ao lado do telefone (o link tel: disca o número base)
+  var telTxt    = telefone + (ramal ? ' - Ramal ' + ramal : '');
+  var telHtml   = telefone ? linkTxt(telHref(telefone), telTxt)      : '';
   var emailHtml = emailVal ? linkTxt('mailto:' + emailVal, emailVal) : '';
   var endParts  = splitEndereco(endereco);
   var endTxt    = endParts.l2 ? endParts.l1 + '<br>' + endParts.l2 : endParts.l1;
@@ -550,29 +561,27 @@ async function copyHTML(mode) {
     + row(iEmail, emailHtml)
     + row(iEndereco, endHtml, true);
 
-  // Largura ADAPTÁVEL: a tabela não tem width fixa, só max-width:470. Assim o card
-  // CRESCE PRA LARGURA conforme o conteúdo (email/endereço longos) em vez de empilhar
-  // pra baixo; ao atingir o teto de 470px, o endereço quebra em espaço (válvula de segurança).
-  // A coluna do nome tem width:140 como PISO (nowrap: cresce pro nome inteiro em 1 linha);
-  // quem limita a largura total é o endereço já partido em 2 linhas pelo splitEndereco().
+  // Largura = SOMA DO CONTEÚDO, sem width nem max-width: o Word (Outlook clássico)
+  // transforma max-width:470 em width FIXA de 470 — comprovado no print da cliente
+  // (16/07): card largo com um vão enorme no meio. Quem segura a largura é o endereço
+  // partido em 2 pelo splitEndereco(); e-mail/telefones em nowrap alargam se precisarem.
   // O tile cinza-claro (CBG) vai em TODAS as células → card claro e travado contra o dark mode do OWA.
   var html = '<table cellpadding="0" cellspacing="0" border="0"'
-    + ' style="border-collapse:collapse;' + CARD_BORDER + 'font-family:Arial,Helvetica,sans-serif;max-width:470px;">'
+    + ' style="border-collapse:collapse;' + CARD_BORDER + 'font-family:Arial,Helvetica,sans-serif;">'
     + '<tr>'
     + '<td bgcolor="' + CARD_HEX + '" background="' + CARD_TILE + '"'
     + ' style="' + CBG +'padding:0;vertical-align:top;">'
-    // width=100% na tabela interna: se algum cliente (Outlook clássico) alargar o card
-    // além do conteúdo, o miolo estica junto e nome/logo/contatos mantêm o alinhamento
-    // nas bordas — sem isso o miolo ficava solto à esquerda dentro do card alargado.
-    + '<table cellpadding="0" cellspacing="0" border="0" width="100%"'
-    + ' style="border-collapse:collapse;width:100%;">'
+    // Tabela interna SEM width: o card é content-sized (sem max-width), então não há
+    // sobra pra esticar — e width:100% dentro de tabela auto ajudava o Word a inflar o card.
+    + '<table cellpadding="0" cellspacing="0" border="0"'
+    + ' style="border-collapse:collapse;">'
     + '<tr>'
     // NOME SEMPRE EM 1 LINHA (decisão final da cliente, 16/07/2026): white-space:nowrap no
-    // <p> + atributo nowrap na TD (o Word ignora o CSS aqui, só obedece o atributo). O
-    // width:140 é PISO: a coluna cresce pro tamanho do nome. Quem segura a largura do card
-    // é o ENDEREÇO, partido em 2 linhas por splitEndereco().
-    + '<td width="140" rowspan="2" valign="bottom" nowrap bgcolor="' + CARD_HEX + '" background="' + CARD_TILE + '"'
-    + ' style="width:140px;padding:0 16px 15px 17px;vertical-align:bottom;white-space:nowrap;' + CBG +'">'
+    // <p> + atributo nowrap na TD (o Word ignora o CSS, só obedece o atributo) e SEM width
+    // na coluna — no Word, width explícita VENCE o nowrap e quebrava o nome em 2 linhas
+    // (print da cliente 16/07). Sem width, a coluna dimensiona pro nome inteiro.
+    + '<td rowspan="2" valign="bottom" nowrap bgcolor="' + CARD_HEX + '" background="' + CARD_TILE + '"'
+    + ' style="padding:0 16px 15px 17px;vertical-align:bottom;white-space:nowrap;' + CBG +'">'
     + '<p style="margin:0;padding:0;font-size:14px;font-weight:900;color:#1a1a1a;'
     + 'font-family:Arial,Helvetica,sans-serif;line-height:1.25;white-space:nowrap;">' + nomeHtml + '</p>'
     + cargoHtml

@@ -26,6 +26,11 @@ const ASSETS = [
   ...['celular', 'telefone', 'email', 'endereco'].flatMap((i) => [
     { arq: `icons/${i}-cinza.png`,  fundo: CINZA,  caixa: [11, 11] },
     { arq: `icons/${i}-branco.png`, fundo: BRANCO, caixa: [11, 11] },
+    // "-44" (16/07): 44x44 exibidos a 11px (4:1 exato). Filtro AV/proxy na máquina da
+    // cliente Bracel bloqueava PNGs pequenos (22x22 nunca baixava; logo 298x86 sim);
+    // arquivo maior passa e a URL nova fura cache envenenado do Word. Bracel usa estes.
+    { arq: `icons/${i}-cinza-44.png`,  fundo: CINZA,  caixa: [11, 11], escala: 4 },
+    { arq: `icons/${i}-branco-44.png`, fundo: BRANCO, caixa: [11, 11], escala: 4 },
     // LEGADO: assinaturas instaladas antes de 13/07/2026 continuam baixando estes URLs
     // sem sufixo pra sempre. Desde 16/07 servem uma cópia opaca dos -cinza (decisão do
     // usuário: conserta os quadrados brancos da Bracel sem recopiar; assinaturas
@@ -41,7 +46,7 @@ const ASSETS = [
 
 // cada marca tem que referenciar os assets certos pro fundo de card que ela usa
 const MARCAS = [
-  { dir: 'bracel',  espera: ["icons/celular'  + ICON_SUF", "bracel_logo' + ICON_SUF"] },
+  { dir: 'bracel',  espera: ["icons/celular'  + ICON_SUF + '-44.png'", "bracel_logo' + ICON_SUF"] },
   { dir: 'solibem', espera: ['icons/celular-branco.png', 'icons/endereco-branco.png'] },
   { dir: 'saltum',  espera: ['icons/celular-branco.png', 'icons/endereco-branco.png'] },
   { dir: 'simel',   espera: ['icons/celular-branco.png', 'icons/endereco-branco.png'] },
@@ -55,7 +60,7 @@ const hex = (b) => '#' + [...b].slice(0, 3).map((v) => v.toString(16).padStart(2
 
 (async () => {
   console.log('\nAssets da assinatura (opacos, cor do card cravada, 2x exato):');
-  for (const { arq, fundo, caixa } of ASSETS) {
+  for (const { arq, fundo, caixa, escala } of ASSETS) {
     const p = path.join(RAIZ, arq);
     if (!fs.existsSync(p)) { erro(`${arq} — arquivo não existe`); continue; }
 
@@ -70,12 +75,14 @@ const hex = (b) => '#' + [...b].slice(0, 3).map((v) => v.toString(16).padStart(2
     if (canto !== fundo) erro(`${arq} — fundo ${canto}, mas o card é ${fundo}; vai aparecer um quadrado fantasma`);
     else ok(`${arq} — fundo ${canto} = card`);
 
-    // 3. exatamente 2x a caixa do HTML: redução 2:1 sobrevive ao scaler sem suavização do Word
+    // 3. múltiplo INTEIRO exato da caixa do HTML (2x ou 4x): a redução em razão inteira
+    //    sobrevive ao scaler sem suavização do Word
     if (caixa) {
       const [cw, ch] = caixa;
-      if (meta.width !== cw * 2 || meta.height !== ch * 2) {
-        erro(`${arq} — ${meta.width}x${meta.height}; esperado ${cw * 2}x${ch * 2} (2x de ${cw}x${ch})`);
-      } else ok(`${arq} — ${meta.width}x${meta.height} = 2x da caixa ${cw}x${ch}`);
+      const esc = escala || 2;
+      if (meta.width !== cw * esc || meta.height !== ch * esc) {
+        erro(`${arq} — ${meta.width}x${meta.height}; esperado ${cw * esc}x${ch * esc} (${esc}x de ${cw}x${ch})`);
+      } else ok(`${arq} — ${meta.width}x${meta.height} = ${esc}x da caixa ${cw}x${ch}`);
     }
   }
 

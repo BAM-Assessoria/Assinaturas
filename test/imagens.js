@@ -26,6 +26,12 @@ const ASSETS = [
   ...['celular', 'telefone', 'email', 'endereco'].flatMap((i) => [
     { arq: `icons/${i}-cinza.png`,  fundo: CINZA,  caixa: [11, 11] },
     { arq: `icons/${i}-branco.png`, fundo: BRANCO, caixa: [11, 11] },
+    // LEGADO: assinaturas instaladas antes de 13/07/2026 continuam baixando estes URLs
+    // sem sufixo pra sempre. Desde 16/07 servem uma cópia opaca dos -cinza (decisão do
+    // usuário: conserta os quadrados brancos da Bracel sem recopiar; assinaturas
+    // Solibem/Saltum/Simel instaladas entre 30/06 e 13/07 podem mostrar um chip cinza
+    // sutil no card branco — o fix definitivo pra elas é recopiar do editor).
+    { arq: `icons/${i}.png`,        fundo: CINZA,  caixa: [11, 11] },
   ]),
   { arq: 'bracel_logo-cinza.png',  fundo: CINZA,  caixa: [149, 43] },
   { arq: 'bracel_logo-branco.png', fundo: BRANCO, caixa: [149, 43] },
@@ -86,10 +92,12 @@ const hex = (b) => '#' + [...b].slice(0, 3).map((v) => v.toString(16).padStart(2
       if (exportado.includes(ref)) ok(`${dir} → ${ref}`);
       else erro(`${dir} — não referencia ${ref}`);
     }
-    // ninguém pode voltar a usar os PNGs transparentes antigos NA ASSINATURA
+    // exports novos usam SÓ os assets com sufixo de cor (-cinza/-branco); os paths sem
+    // sufixo são reservados às assinaturas legadas já instaladas (e bracel_logo.png
+    // segue transparente, usado pela UI do editor — nunca em e-mail)
     const legado = exportado.match(/icons\/(celular|telefone|email|endereco)\.png|bracel_logo\.png/g);
-    if (legado) erro(`${dir} — exporta asset legado COM ALFA: ${[...new Set(legado)].join(', ')}`);
-    else ok(`${dir} — nenhum asset legado transparente na assinatura`);
+    if (legado) erro(`${dir} — exporta asset legado sem sufixo de cor: ${[...new Set(legado)].join(', ')}`);
+    else ok(`${dir} — nenhum asset legado na assinatura`);
   }
 
   console.log(falhas ? `\n${falhas} falha(s).\n` : '\nTudo certo.\n');

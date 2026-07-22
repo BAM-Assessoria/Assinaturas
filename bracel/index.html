@@ -515,17 +515,19 @@ async function copyHTML(mode) {
   function urlHref(s){ s = (s || '').trim(); if(!s) return ''; return /^https?:\/\//i.test(s) ? s : 'https://' + s; }
   // O Word (Outlook clássico) REAPLICA azul+sublinhado de hyperlink no ENVIO se a
   // formatação direta não sobreviver (prints da cliente 16 e 22/07). Defesas por modo:
-  // - desktop: link com TRIPLA camada a+font+span — o <font color> é atributo legado que
-  //   o Word trata como formatação direta; é a maior chance de link sem azul. ATENÇÃO:
-  //   se a máquina redigir em Rich Text (Arquivo > Opções > Email > "Redigir mensagens
-  //   neste formato"), NENHUM truque de HTML segura o azul — tem que estar em HTML.
-  // - classic: SEM <a> nenhum (texto puro) — azul impossível; é o modo à prova de tudo.
+  // - desktop/classic (passam pelo Word): link com TRIPLA camada a+font+span — o
+  //   <font color> é atributo legado que o Word trata como formatação direta; é a maior
+  //   chance de link sem azul. Decisão do usuário 22/07: classic TAMBÉM sai com link.
+  //   ATENÇÃO: se a máquina redigir em Rich Text (Arquivo > Opções > Email > "Redigir
+  //   mensagens neste formato"), NENHUM truque de HTML segura o azul — tem que estar em
+  //   HTML (teste com a cliente marcado pra 23/07). Se o azul persistir MESMO em HTML,
+  //   o caminho de volta é: classic sem <a> (linkTxt devolve só text quando classic).
   // - owa/mac: embrulho duplo a+span de sempre (esses preservam o style, não mexer).
-  var noLinks = classic;
+  var wordMode = mode === 'desktop' || classic;
   function linkTxt(href, text){
-    if (!href || noLinks) return text;
+    if (!href) return text;
     var core = '<span style="color:#333333;text-decoration:none;">' + text + '</span>';
-    if (mode === 'desktop') core = '<font color="#333333">' + core + '</font>';
+    if (wordMode) core = '<font color="#333333">' + core + '</font>';
     return '<a href="' + href + '" style="color:#333333;text-decoration:none;">' + core + '</a>';
   }
 
@@ -588,8 +590,8 @@ async function copyHTML(mode) {
   // cor/peso) — com as mesmas defesas anti-azul por modo do linkTxt.
   var liHref    = urlHref(linkedin);
   var nomeCore  = '<span style="color:#1a1a1a;text-decoration:none;">' + nome + '</span>';
-  if (mode === 'desktop') nomeCore = '<font color="#1a1a1a">' + nomeCore + '</font>';
-  var nomeHtml  = (liHref && !noLinks)
+  if (wordMode) nomeCore = '<font color="#1a1a1a">' + nomeCore + '</font>';
+  var nomeHtml  = liHref
     ? '<a href="' + liHref + '" style="color:#1a1a1a;text-decoration:none;">' + nomeCore + '</a>'
     : nome;
 

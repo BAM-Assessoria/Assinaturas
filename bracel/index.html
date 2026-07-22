@@ -513,18 +513,20 @@ async function copyHTML(mode) {
   function waHref(s, msg){ var d = onlyDigits(s); if(!d) return ''; if(d.length <= 11) d = '55' + d; var u = 'https://wa.me/' + d; if(msg) u += '?text=' + encodeURIComponent(msg); return u; }
   function mapsHref(s){ return s ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(s) : ''; }
   function urlHref(s){ s = (s || '').trim(); if(!s) return ''; return /^https?:\/\//i.test(s) ? s : 'https://' + s; }
-  // O Word (Outlook clássico) REAPLICA azul+sublinhado de hyperlink no ENVIO, descartando
-  // o style da <a> (print da cliente 16/07). O embrulho duplo <a><span> era a defesa, mas
-  // o teste de campo da reunião de 22/07 provou que NÃO sobrevive ao envio real: o Word
-  // reescreve o hyperlink e joga fora a formatação direta. Nos botões que passam pelo
-  // Word (desktop e classic), link SAI — texto puro não tem como ficar azul. OWA e Mac
-  // preservam o style inline e continuam clicáveis.
-  var noLinks = mode === 'desktop' || classic;
+  // O Word (Outlook clássico) REAPLICA azul+sublinhado de hyperlink no ENVIO se a
+  // formatação direta não sobreviver (prints da cliente 16 e 22/07). Defesas por modo:
+  // - desktop: link com TRIPLA camada a+font+span — o <font color> é atributo legado que
+  //   o Word trata como formatação direta; é a maior chance de link sem azul. ATENÇÃO:
+  //   se a máquina redigir em Rich Text (Arquivo > Opções > Email > "Redigir mensagens
+  //   neste formato"), NENHUM truque de HTML segura o azul — tem que estar em HTML.
+  // - classic: SEM <a> nenhum (texto puro) — azul impossível; é o modo à prova de tudo.
+  // - owa/mac: embrulho duplo a+span de sempre (esses preservam o style, não mexer).
+  var noLinks = classic;
   function linkTxt(href, text){
-    return (href && !noLinks)
-      ? '<a href="' + href + '" style="color:#333333;text-decoration:none;">'
-        + '<span style="color:#333333;text-decoration:none;">' + text + '</span></a>'
-      : text;
+    if (!href || noLinks) return text;
+    var core = '<span style="color:#333333;text-decoration:none;">' + text + '</span>';
+    if (mode === 'desktop') core = '<font color="#333333">' + core + '</font>';
+    return '<a href="' + href + '" style="color:#333333;text-decoration:none;">' + core + '</a>';
   }
 
   // Linha de contato ÚNICA pros 4 botões (Desktop/OWA/Mac/Antigo — no Antigo a 1ª TD
@@ -583,11 +585,12 @@ async function copyHTML(mode) {
   var endTxt    = endParts.l2 ? endParts.l1 + '<br>' + endParts.l2 : endParts.l1;
   var endHtml   = endereco ? linkTxt(mapsHref(endereco), endTxt)    : '';
   // Nome vira link clicável pro LinkedIn quando o campo está preenchido (mantém a mesma
-  // cor/peso) — exceto nos modos sem link (desktop/classic), pelo mesmo azul do Word.
+  // cor/peso) — com as mesmas defesas anti-azul por modo do linkTxt.
   var liHref    = urlHref(linkedin);
+  var nomeCore  = '<span style="color:#1a1a1a;text-decoration:none;">' + nome + '</span>';
+  if (mode === 'desktop') nomeCore = '<font color="#1a1a1a">' + nomeCore + '</font>';
   var nomeHtml  = (liHref && !noLinks)
-    ? '<a href="' + liHref + '" style="color:#1a1a1a;text-decoration:none;">'
-      + '<span style="color:#1a1a1a;text-decoration:none;">' + nome + '</span></a>'
+    ? '<a href="' + liHref + '" style="color:#1a1a1a;text-decoration:none;">' + nomeCore + '</a>'
     : nome;
 
   // Saída IDÊNTICA em owa/desktop/mac — só as instruções de onde colar mudam no aviso.

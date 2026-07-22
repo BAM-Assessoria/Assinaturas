@@ -54,11 +54,11 @@ const ASSETS = [
 const MARCAS = [
   // O modo 'classic' (Outlook antigo, máquina com filtro de imagens) troca ícone por
   // rótulo de texto — se alguém remover o branch, a assinatura da cliente volta a quebrar.
-  // noLinks: nos modos que passam pelo Word (desktop/classic) os contatos saem SEM <a> —
-  // o Word reaplica azul+sublinhado no envio (comprovado na reunião de 22/07).
+  // Anti-azul do Word: classic sai SEM <a> (garantido); desktop mantém link com tripla
+  // camada a+font+span (maior chance de sobreviver ao envio do Outlook clássico).
   { dir: 'bracel',  espera: ["bracel_celular'  + ICON_SUF + '.png'", "bracel_logo' + ICON_SUF",
                              "var classic = mode === 'classic'", "celular: 'Cel.'",
-                             "var noLinks = mode === 'desktop' || classic"] },
+                             "var noLinks = classic", "<font color="] },
   { dir: 'solibem', espera: ['icons/celular-branco.png', 'icons/endereco-branco.png'] },
   { dir: 'saltum',  espera: ['icons/celular-branco.png', 'icons/endereco-branco.png'] },
   { dir: 'simel',   espera: ['icons/celular-branco.png', 'icons/endereco-branco.png'] },

@@ -203,7 +203,8 @@
     <label>Telefone <input type="text" id="f-telefone" value=""></label>
     <label>Ramal (opcional) <input type="text" id="f-ramal" value="" placeholder="Ex.: 205"></label>
     <label class="full">E-mail <input type="text" id="f-email" value=""></label>
-    <label class="full">Endereço <input type="text" id="f-endereco" value="Estrada Tenente Marques, 5.558"></label>
+    <label class="full">Endereço — linha 1 (rua, número, andar) <input type="text" id="f-endereco" value="Estrada Tenente Marques, 5.558" placeholder="Ex.: Rua Tabapuã, 145 - 8° andar"></label>
+    <label class="full">Endereço — linha 2 (opcional: bairro, cidade) <input type="text" id="f-endereco2" value="" placeholder="Ex.: Itaim Bibi, São Paulo-SP"></label>
     <label class="full">LinkedIn (opcional) <input type="text" id="f-linkedin" value="" placeholder="https://linkedin.com/in/usuario"></label>
     <label class="full">Mensagem ao clicar no WhatsApp (opcional) <input type="text" id="f-wamsg" value="" placeholder="Ex.: Olá! Cheguei pela assinatura de e-mail."></label>
     <label class="full">Fundo do card <select id="f-fundo" style="padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:13.5px;font-family:inherit;color:#0f172a;background:#fff;outline:none;cursor:pointer;">
@@ -325,7 +326,8 @@ update();
 // inteiro em 1 linha. Curto (<= 40 chars) fica em 1 linha; longo parte no " - " mais
 // perto do meio (metades equilibradas; o separador da quebra some). Fallback: espaço
 // mais perto do meio. Mesmo resultado em todo cliente (Word, OWA, Apple Mail).
-// Usada no EXPORT (copyHTML) e no PREVIEW (update) — sempre os dois juntos.
+// Desde 22/07 é o FALLBACK: com o campo "linha 2" preenchido, a quebra é a que o
+// usuário escolheu (getEndereco); vazio, a automática de sempre continua valendo.
 function splitEndereco(s) {
   s = (s || '').trim();
   if (s.length <= 40) return { l1: s, l2: '' };
@@ -338,6 +340,19 @@ function splitEndereco(s) {
   return { l1: s, l2: '' };
 }
 
+// Endereço em 2 linhas com quebra ESCOLHIDA PELO USUÁRIO (pedido 22/07: "Rua Tabapuã,
+// 145 - 8° andar" / "Itaim Bibi, São Paulo-SP"): linha 2 preenchida manda; vazia, cai
+// no splitEndereco automático. `full` é o endereço inteiro pro link do Google Maps.
+// Usada no EXPORT (copyHTML) e no PREVIEW (update) — sempre os dois juntos.
+function getEndereco() {
+  var l1 = (document.getElementById('f-endereco').value  || '').trim();
+  var l2 = (document.getElementById('f-endereco2').value || '').trim();
+  if (!l1 && l2) { l1 = l2; l2 = ''; }
+  if (l2) return { l1: l1, l2: l2, full: l1 + ', ' + l2 };
+  var p = splitEndereco(l1);
+  return { l1: p.l1, l2: p.l2, full: l1 };
+}
+
 // Atualiza preview em tempo real
 function update() {
   document.getElementById('s-nome').textContent = document.getElementById('f-nome').value;
@@ -347,10 +362,12 @@ function update() {
   // Contato vazio: esconde a linha no preview (igual ao export, que omite contato vazio)
   ['celular','telefone','email','endereco'].forEach(function(k){
     var v = document.getElementById('f-' + k).value;
+    var visivel = !!v.trim();
     var el = document.getElementById('s-' + k);
     if (k === 'endereco') {
-      // Mesma quebra em 2 linhas do export (splitEndereco), como nó <br> real
-      var p = splitEndereco(v);
+      // Mesma quebra em 2 linhas do export (getEndereco), como nó <br> real
+      var p = getEndereco();
+      visivel = !!(p.l1 || p.l2);
       el.textContent = '';
       el.appendChild(document.createTextNode(p.l1));
       if (p.l2) { el.appendChild(document.createElement('br')); el.appendChild(document.createTextNode(p.l2)); }
@@ -362,10 +379,10 @@ function update() {
       el.textContent = v;
     }
     var r = document.getElementById('r-' + k);
-    if (r) r.style.display = v.trim() ? '' : 'none';
+    if (r) r.style.display = visivel ? '' : 'none';
   });
 }
-['f-nome','f-cargo','f-celular','f-telefone','f-ramal','f-email','f-endereco'].forEach(function(id) {
+['f-nome','f-cargo','f-celular','f-telefone','f-ramal','f-email','f-endereco','f-endereco2'].forEach(function(id) {
   document.getElementById(id).addEventListener('input', update);
 });
 
@@ -462,7 +479,6 @@ async function copyHTML(mode) {
   var telefone = (document.getElementById('f-telefone').value || '').trim();
   var ramal    = (document.getElementById('f-ramal').value    || '').trim();
   var emailVal = (document.getElementById('f-email').value    || '').trim();
-  var endereco = (document.getElementById('f-endereco').value || '').trim();
   var linkedin = (document.getElementById('f-linkedin').value || '').trim();
   var wamsg    = (document.getElementById('f-wamsg').value    || '').trim();
 
@@ -583,9 +599,11 @@ async function copyHTML(mode) {
   var telTxt    = telefone + (ramal ? ' - Ramal ' + ramal : '');
   var telHtml   = telefone ? linkTxt(telHref(telefone), telTxt)      : '';
   var emailHtml = emailVal ? linkTxt('mailto:' + emailVal, emailVal) : '';
-  var endParts  = splitEndereco(endereco);
+  // Endereço: 2 campos (linha 1 / linha 2) com quebra manual; fallback automático
+  // quando a linha 2 está vazia. O link do Maps recebe o endereço INTEIRO (full).
+  var endParts  = getEndereco();
   var endTxt    = endParts.l2 ? endParts.l1 + '<br>' + endParts.l2 : endParts.l1;
-  var endHtml   = endereco ? linkTxt(mapsHref(endereco), endTxt)    : '';
+  var endHtml   = (endParts.l1 || endParts.l2) ? linkTxt(mapsHref(endParts.full), endTxt) : '';
   // Nome vira link clicável pro LinkedIn quando o campo está preenchido (mantém a mesma
   // cor/peso) — com as mesmas defesas anti-azul por modo do linkTxt.
   var liHref    = urlHref(linkedin);

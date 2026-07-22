@@ -214,6 +214,7 @@
   <div class="actions">
     <button class="btn" onclick="copyHTML('owa')">Copiar para Outlook Web</button>
     <button class="btn secondary" onclick="copyHTML('desktop')">Copiar para Outlook Desktop</button>
+    <button class="btn secondary" onclick="copyHTML('classic')">Copiar para Outlook Antigo</button>
     <button class="btn secondary" onclick="copyHTML('mac')">Copiar para Email do Mac</button>
   </div>
 </div>
@@ -452,7 +453,8 @@ function fmtPhone(v){
 // Ajusta o preview pra caber em telas estreitas (escala via CSS transform)
 function scaleSignature(){var wrap=document.getElementById('signature-wrapper');var sig=document.getElementById('signature');if(!sig||!wrap)return;var w=wrap.getBoundingClientRect().width;var sw=parseInt(sig.getAttribute('width'))||500;if(w<sw){var s=w/sw;sig.style.transform='scale('+s+')';sig.style.transformOrigin='top left';wrap.style.height=Math.ceil(sig.offsetHeight*s)+'px';}else{sig.style.transform='';sig.style.transformOrigin='';wrap.style.height='';}}window.addEventListener('resize',scaleSignature);
 
-// Copia HTML da assinatura — mode: 'owa'=Outlook Web | 'desktop'=Outlook Desktop | 'mac'=Mail do Mac (saida igual ao OWA)
+// Copia HTML da assinatura — mode: 'owa'=Outlook Web | 'desktop'=Outlook Desktop |
+// 'classic'=Outlook ANTIGO (rotulos de texto no lugar dos icones) | 'mac'=Mail do Mac (saida igual ao OWA)
 async function copyHTML(mode) {
   var nome     = (document.getElementById('f-nome').value     || '').trim();
   var cargo    = (document.getElementById('f-cargo').value    || '').trim();
@@ -494,6 +496,14 @@ async function copyHTML(mode) {
   // atrás do logo no card cinza) e ainda reduzia 7:1 com o scaler ruim dele. Agora 298x86 =
   // 2x exato da caixa, sem alfa, 21 KB.
   var logoUrl   = BASE + 'bracel_logo' + ICON_SUF + '.png';
+  // 'classic' = Outlook ANTIGO na máquina COM filtro de imagens: depois de 3 rodadas
+  // (opacos sem alfa, 44x44, 176x176 na raiz imitando o perfil do logo) os ícones de
+  // contato seguem bloqueados pelo AV/proxy da máquina da cliente — só o logo baixa.
+  // Ícone vira RÓTULO DE TEXTO (sugestão da própria cliente, 17/07): texto não depende
+  // de download, chega sempre, em qualquer máquina e qualquer destinatário. O logo
+  // continua imagem (comprovadamente baixa lá). Os outros 3 botões seguem com ícones.
+  var classic = mode === 'classic';
+  var LABELS = { celular: 'Cel.', telefone: 'Tel.', email: 'E-mail', endereco: 'End.' };
   var CBG = 'background-color:' + CARD_HEX + ';background-image:url(\'' + CARD_TILE + '\');background-repeat:repeat;';
   var OBG = 'background-color:#EB7927;background-image:url(\'' + BG_ORANGE + '\');background-repeat:repeat;';
 
@@ -513,7 +523,8 @@ async function copyHTML(mode) {
       : text;
   }
 
-  // Linha de contato ÚNICA pros 3 botões (Desktop/OWA/Mac): ícone em TD separada do texto
+  // Linha de contato ÚNICA pros 4 botões (Desktop/OWA/Mac/Antigo — no Antigo a 1ª TD
+  // leva rótulo de texto em vez de ícone, resto idêntico): ícone em TD separada do texto
   // (inline desalinha no engine do Word) — mesma estrutura da pré-visualização. Estrutura
   // idêntica em todo botão = mesma renderização em todo cliente (era a maior fonte de
   // diferença celular × PC × web).
@@ -523,16 +534,26 @@ async function copyHTML(mode) {
   // do splitEndereco(); o overflow-wrap é só válvula de segurança e quebra SÓ em espaço. Sem
   // word-break:break-word, que deixava OWA/celular esmagar a coluna e partir o e-mail no
   // meio ("...com.b" + "r" na linha de baixo). O atributo nowrap reforça no Word.
-  function row(icon, content, wrap) {
+  function row(icon, label, content, wrap) {
     if (!content) return '';
     var wrapCss    = wrap ? 'overflow-wrap:break-word;' : 'white-space:nowrap;';
     var nowrapAttr = wrap ? '' : ' nowrap';
+    // 1ª coluna: no classic é o rótulo em texto (nada pra baixar; alinhado à direita pra
+    // coluna encostar nos valores — a coluna dimensiona pelo rótulo mais largo, "E-mail");
+    // nos demais modos, o ícone em TD separada (inline desalinha no engine do Word).
+    var col1 = classic
+      ? '<td valign="top" nowrap align="right" bgcolor="' + CARD_HEX + '" background="' + CARD_TILE + '"'
+        + ' style="padding:0 5px 3px 0;vertical-align:top;text-align:right;white-space:nowrap;'
+        + 'font-size:11px;font-weight:bold;color:#777777;font-family:Arial,Helvetica,sans-serif;line-height:14px;' + CBG + '">'
+        + label
+        + '</td>'
+      : '<td width="18" valign="top" bgcolor="' + CARD_HEX + '" background="' + CARD_TILE + '"'
+        + ' style="width:18px;padding:1px 5px 3px 0;vertical-align:top;line-height:0;' + CBG +'">'
+        + '<img src="' + icon + '" width="11" height="11" alt="" border="0"'
+        + ' style="display:block;border:0;width:11px;height:11px;">'
+        + '</td>';
     return '<tr>'
-      + '<td width="18" valign="top" bgcolor="' + CARD_HEX + '" background="' + CARD_TILE + '"'
-      + ' style="width:18px;padding:1px 5px 3px 0;vertical-align:top;line-height:0;' + CBG +'">'
-      + '<img src="' + icon + '" width="11" height="11" alt="" border="0"'
-      + ' style="display:block;border:0;width:11px;height:11px;">'
-      + '</td>'
+      + col1
       + '<td valign="top"' + nowrapAttr + ' bgcolor="' + CARD_HEX + '" background="' + CARD_TILE + '"'
       + ' style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;'
       + 'padding:0 0 3px 0;vertical-align:top;text-align:left;line-height:14px;' + CBG +wrapCss + '">'
@@ -564,12 +585,13 @@ async function copyHTML(mode) {
       + '<span style="color:#1a1a1a;text-decoration:none;">' + nome + '</span></a>'
     : nome;
 
-  // Saída IDÊNTICA nos 3 botões — só as instruções de onde colar mudam no aviso.
+  // Saída IDÊNTICA em owa/desktop/mac — só as instruções de onde colar mudam no aviso.
+  // No 'classic' a única diferença é a 1ª TD de cada linha: rótulo de texto no lugar do ícone.
   // E-mail SEM wrap (fica sempre em 1 linha); endereço quebra apenas em espaços.
-  var contatos = row(iCelular, celHtml)
-    + row(iTelefone, telHtml)
-    + row(iEmail, emailHtml)
-    + row(iEndereco, endHtml, true);
+  var contatos = row(iCelular, LABELS.celular, celHtml)
+    + row(iTelefone, LABELS.telefone, telHtml)
+    + row(iEmail, LABELS.email, emailHtml)
+    + row(iEndereco, LABELS.endereco, endHtml, true);
 
   // Largura = SOMA DO CONTEÚDO, sem width nem max-width: o Word (Outlook clássico)
   // transforma max-width:470 em width FIXA de 470 — comprovado no print da cliente
@@ -628,6 +650,8 @@ async function copyHTML(mode) {
     ]);
     var sub = mode === 'desktop'
       ? 'Cole no Outlook Desktop: Arquivo > Opções > E-mail > Assinaturas.'
+      : mode === 'classic'
+      ? 'Versão sem ícones (rótulos de texto, à prova de bloqueio). Cole no Outlook antigo: Arquivo > Opções > E-mail > Assinaturas.'
       : mode === 'mac'
       ? 'Cole no Mail do Mac: Mail > Ajustes > Assinaturas. Deixe DESMARCADO "Sempre coincidir com a fonte padrão da mensagem".'
       : 'Cole no Outlook Web: Configurações > E-mail > Assinatura.';

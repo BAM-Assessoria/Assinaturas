@@ -50,7 +50,10 @@ const ASSETS = [
 
 // cada marca tem que referenciar os assets certos pro fundo de card que ela usa
 const MARCAS = [
-  { dir: 'bracel',  espera: ["bracel_celular'  + ICON_SUF + '.png'", "bracel_logo' + ICON_SUF"] },
+  // O modo 'classic' (Outlook antigo, máquina com filtro de imagens) troca ícone por
+  // rótulo de texto — se alguém remover o branch, a assinatura da cliente volta a quebrar.
+  { dir: 'bracel',  espera: ["bracel_celular'  + ICON_SUF + '.png'", "bracel_logo' + ICON_SUF",
+                             "var classic = mode === 'classic'", "celular: 'Cel.'"] },
   { dir: 'solibem', espera: ['icons/celular-branco.png', 'icons/endereco-branco.png'] },
   { dir: 'saltum',  espera: ['icons/celular-branco.png', 'icons/endereco-branco.png'] },
   { dir: 'simel',   espera: ['icons/celular-branco.png', 'icons/endereco-branco.png'] },

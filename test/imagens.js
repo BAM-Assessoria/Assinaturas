@@ -42,8 +42,10 @@ const ASSETS = [
     // sutil no card branco — o fix definitivo pra elas é recopiar do editor).
     { arq: `icons/${i}.png`,        fundo: CINZA,  caixa: [11, 11] },
   ]),
-  { arq: 'bracel_logo-cinza.png',  fundo: CINZA,  caixa: [149, 43] },
-  { arq: 'bracel_logo-branco.png', fundo: BRANCO, caixa: [149, 43] },
+  // Logo em 4x desde 22/07 (cliente reclamou de pixelação — telas com escala 125/150%
+  // pedem mais resolução; 596/149 = 4:1 inteiro continua sobrevivendo ao scaler do Word)
+  { arq: 'bracel_logo-cinza.png',  fundo: CINZA,  caixa: [149, 43], escala: 4 },
+  { arq: 'bracel_logo-branco.png', fundo: BRANCO, caixa: [149, 43], escala: 4 },
   { arq: 'bg/bg-light.png',        fundo: CINZA,  caixa: null },
   { arq: 'bg/bg-white.png',        fundo: BRANCO, caixa: null },
 ];
@@ -52,8 +54,11 @@ const ASSETS = [
 const MARCAS = [
   // O modo 'classic' (Outlook antigo, máquina com filtro de imagens) troca ícone por
   // rótulo de texto — se alguém remover o branch, a assinatura da cliente volta a quebrar.
+  // noLinks: nos modos que passam pelo Word (desktop/classic) os contatos saem SEM <a> —
+  // o Word reaplica azul+sublinhado no envio (comprovado na reunião de 22/07).
   { dir: 'bracel',  espera: ["bracel_celular'  + ICON_SUF + '.png'", "bracel_logo' + ICON_SUF",
-                             "var classic = mode === 'classic'", "celular: 'Cel.'"] },
+                             "var classic = mode === 'classic'", "celular: 'Cel.'",
+                             "var noLinks = mode === 'desktop' || classic"] },
   { dir: 'solibem', espera: ['icons/celular-branco.png', 'icons/endereco-branco.png'] },
   { dir: 'saltum',  espera: ['icons/celular-branco.png', 'icons/endereco-branco.png'] },
   { dir: 'simel',   espera: ['icons/celular-branco.png', 'icons/endereco-branco.png'] },

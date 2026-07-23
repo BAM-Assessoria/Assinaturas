@@ -203,13 +203,15 @@
     <label>Telefone <input type="text" id="f-telefone" value=""></label>
     <label>Ramal (opcional) <input type="text" id="f-ramal" value="" placeholder="Ex.: 205"></label>
     <label class="full">E-mail <input type="text" id="f-email" value=""></label>
-    <label class="full">Endereço <input type="text" id="f-endereco" value="Estrada Tenente Marques, 5.558"></label>
+    <label class="full">Endereço — linha 1 (rua, número, andar) <input type="text" id="f-endereco" value="Estrada Tenente Marques, 5.558" placeholder="Ex.: Rua Tabapuã, 145 - 8° andar"></label>
+    <label class="full">Endereço — linha 2 (opcional: bairro, cidade) <input type="text" id="f-endereco2" value="" placeholder="Ex.: Itaim Bibi, São Paulo-SP"></label>
     <label class="full">LinkedIn (opcional) <input type="text" id="f-linkedin" value="" placeholder="https://linkedin.com/in/usuario"></label>
     <label class="full">Mensagem ao clicar no WhatsApp (opcional) <input type="text" id="f-wamsg" value="" placeholder="Ex.: Olá! Cheguei pela assinatura de e-mail."></label>
   </div>
   <div class="actions">
     <button class="btn" onclick="copyHTML('owa')">Copiar para Outlook Web</button>
     <button class="btn secondary" onclick="copyHTML('desktop')">Copiar para Outlook Desktop</button>
+    <button class="btn secondary" onclick="copyHTML('classic')">Copiar para Outlook Antigo</button>
     <button class="btn secondary" onclick="copyHTML('mac')">Copiar para Email do Mac</button>
   </div>
 </div>
@@ -225,10 +227,10 @@
   style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;border:1px solid #E0E0E0;">
   <tr>
     <td style="background:#FFFFFF;padding:0;vertical-align:top;">
-      <table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;width:100%;">
+      <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
         <tr>
-          <td width="140" rowspan="2" valign="bottom" nowrap
-              style="width:140px;padding:0 16px 18px 17px;vertical-align:bottom;background:#FFFFFF;white-space:nowrap;">
+          <td rowspan="2" valign="bottom" nowrap
+              style="padding:0 16px 18px 17px;vertical-align:bottom;background:#FFFFFF;white-space:nowrap;">
             <div id="s-nome"
                  style="font-size:14px;font-weight:900;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;line-height:1.25;white-space:nowrap;"></div>
             <div id="s-cargo-wrap" style="display:none;margin-top:4px;">
@@ -307,6 +309,34 @@ document.getElementById('icon-endereco').src  = ICONS.endereco;
 update();
 scaleSignature();
 
+// Endereço em NO MÁXIMO 2 linhas com quebra escolhida POR NÓS: o Word ignora max-width, então
+// sem quebra explícita o Outlook clássico estica o card pra caber o endereço inteiro em 1 linha.
+// Curto (<= 40 chars) fica em 1 linha; longo parte no " - " mais perto do meio (fallback: espaço).
+// Desde 23/07 é o FALLBACK: com o campo "linha 2" preenchido, a quebra é a que o usuário escolheu.
+function splitEndereco(s) {
+  s = (s || '').trim();
+  if (s.length <= 40) return { l1: s, l2: '' };
+  var meio = s.length / 2, pos = -1, melhor = Infinity, re = / - /g, m, d;
+  while ((m = re.exec(s))) { d = Math.abs(m.index - meio); if (d < melhor) { melhor = d; pos = m.index; } }
+  if (pos >= 0) return { l1: s.slice(0, pos), l2: s.slice(pos + 3) };
+  melhor = Infinity; re = / /g;
+  while ((m = re.exec(s))) { d = Math.abs(m.index - meio); if (d < melhor) { melhor = d; pos = m.index; } }
+  if (pos >= 0) return { l1: s.slice(0, pos), l2: s.slice(pos + 1) };
+  return { l1: s, l2: '' };
+}
+
+// Endereço em 2 linhas com quebra ESCOLHIDA PELO USUÁRIO: linha 2 preenchida manda; vazia, cai no
+// splitEndereco automático. `full` é o endereço inteiro pro link do Google Maps. Usada no EXPORT
+// (copyHTML) e no PREVIEW (update) — sempre os dois juntos, pra o preview não mentir sobre o resultado.
+function getEndereco() {
+  var l1 = (document.getElementById('f-endereco').value  || '').trim();
+  var l2 = (document.getElementById('f-endereco2').value || '').trim();
+  if (!l1 && l2) { l1 = l2; l2 = ''; }
+  if (l2) return { l1: l1, l2: l2, full: l1 + ', ' + l2 };
+  var p = splitEndereco(l1);
+  return { l1: p.l1, l2: p.l2, full: l1 };
+}
+
 function update() {
   document.getElementById('s-nome').textContent     = document.getElementById('f-nome').value;
   var cargo = document.getElementById('f-cargo').value.trim();
@@ -318,9 +348,14 @@ function update() {
   var ram = (document.getElementById('f-ramal').value || '').trim();
   document.getElementById('s-telefone').textContent = tel + (tel.trim() && ram ? ' - Ramal ' + ram : '');
   document.getElementById('s-email').textContent    = document.getElementById('f-email').value;
-  document.getElementById('s-endereco').textContent = document.getElementById('f-endereco').value;
+  // Endereço em 2 linhas (getEndereco): linha 2 preenchida manda; vazia, cai no auto (splitEndereco)
+  var p = getEndereco();
+  var el = document.getElementById('s-endereco');
+  el.textContent = '';
+  el.appendChild(document.createTextNode(p.l1));
+  if (p.l2) { el.appendChild(document.createElement('br')); el.appendChild(document.createTextNode(p.l2)); }
 }
-['f-nome','f-cargo','f-celular','f-telefone','f-ramal','f-email','f-endereco'].forEach(function(id) {
+['f-nome','f-cargo','f-celular','f-telefone','f-ramal','f-email','f-endereco','f-endereco2'].forEach(function(id) {
   document.getElementById(id).addEventListener('input', update);
 });
 
@@ -385,7 +420,7 @@ function fmtPhone(v){
 
 function scaleSignature(){var wrap=document.getElementById('signature-wrapper');var sig=document.getElementById('signature');if(!sig||!wrap)return;var w=wrap.getBoundingClientRect().width;var sw=parseInt(sig.getAttribute('width'))||500;if(w<sw){var s=w/sw;sig.style.transform='scale('+s+')';sig.style.transformOrigin='top left';wrap.style.height=Math.ceil(sig.offsetHeight*s)+'px';}else{sig.style.transform='';sig.style.transformOrigin='';wrap.style.height='';}}window.addEventListener('resize',scaleSignature);
 
-// Copia HTML da assinatura — mode: 'owa'=Outlook Web | 'desktop'=Outlook Desktop | 'mac'=Mail do Mac (saida igual ao OWA)
+// Copia HTML — mode: 'owa'=Outlook Web | 'desktop'=Outlook Desktop | 'classic'=Outlook ANTIGO (rótulos de texto no lugar dos ícones) | 'mac'=Mail do Mac (saída igual ao OWA)
 async function copyHTML(mode) {
   var nome     = (document.getElementById('f-nome').value     || '').trim();
   var cargo    = (document.getElementById('f-cargo').value    || '').trim();
@@ -393,7 +428,6 @@ async function copyHTML(mode) {
   var telefone = (document.getElementById('f-telefone').value || '').trim();
   var ramal    = (document.getElementById('f-ramal').value    || '').trim();
   var emailVal = (document.getElementById('f-email').value    || '').trim();
-  var endereco = (document.getElementById('f-endereco').value || '').trim();
   var linkedin = (document.getElementById('f-linkedin').value || '').trim();
   var wamsg    = (document.getElementById('f-wamsg').value    || '').trim();
 
@@ -418,22 +452,44 @@ async function copyHTML(mode) {
   function waHref(s, msg){ var d = onlyDigits(s); if(!d) return ''; if(d.length <= 11) d = '55' + d; var u = 'https://wa.me/' + d; if(msg) u += '?text=' + encodeURIComponent(msg); return u; }
   function mapsHref(s){ return s ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(s) : ''; }
   function urlHref(s){ s = (s || '').trim(); if(!s) return ''; return /^https?:\/\//i.test(s) ? s : 'https://' + s; }
-  function linkTxt(href, text){ return href ? '<a href="' + href + '" style="color:#333333;text-decoration:none;">' + text + '</a>' : text; }
+  // 'classic' = Outlook ANTIGO: rótulo de texto no lugar do ícone (imagem pode ser bloqueada por
+  // AV/proxy em qualquer máquina; texto sempre chega). wordMode (desktop/classic) passa pelo motor
+  // do Word, que reaplica azul+sublinhado no link se a formatação direta não sobreviver — defesa
+  // com tripla camada a+font+span (o <font color> é atributo legado tratado como formatação direta).
+  var classic  = mode === 'classic';
+  var wordMode = mode === 'desktop' || classic;
+  var LABELS   = { celular: 'Cel.', telefone: 'Tel.', email: 'E-mail', endereco: 'End.' };
+  function linkTxt(href, text){
+    if (!href) return text;
+    var core = '<span style="color:#333333;text-decoration:none;">' + text + '</span>';
+    if (wordMode) core = '<font color="#333333">' + core + '</font>';
+    return '<a href="' + href + '" style="color:#333333;text-decoration:none;">' + core + '</a>';
+  }
 
-  // Linha de contato ÚNICA pros 3 botões (Desktop/OWA/Mac): ícone em TD separada do texto —
+  // Linha de contato ÚNICA pros 4 botões (Desktop/OWA/Mac/Antigo — no Antigo a 1ª TD leva rótulo
+  // de texto em vez de ícone, resto idêntico): ícone em TD separada do texto —
   // inline desalinha no engine do Word do DESTINATÁRIO (o botão só escolhe onde COLAR; quem
   // recebe renderiza com o cliente que tiver). Mesma estrutura da pré-visualização.
   // wrap=false → nowrap (celular/telefone/E-MAIL nunca quebram; a coluna alarga pro conteúdo);
   // wrap=true → quebra SÓ em espaço (endereço). Sem word-break:break-word, que deixava
   // OWA/celular esmagar a coluna e partir o e-mail no meio ("...com.b" + "r" na linha de baixo).
-  function row(icon, content, wrap) {
+  function row(icon, label, content, wrap) {
     if (!content) return '';
     var wrapCss    = wrap ? 'overflow-wrap:break-word;' : 'white-space:nowrap;';
     var nowrapAttr = wrap ? '' : ' nowrap';
+    // 1ª coluna: no classic é o rótulo em texto (nada pra baixar; alinhado à direita pra a coluna
+    // encostar nos valores — dimensiona pelo rótulo mais largo, "E-mail"); nos demais modos, o
+    // ícone em TD separada (inline desalinha no engine do Word do destinatário).
+    var col1 = classic
+      ? '<td valign="top" nowrap align="right" bgcolor="#FFFFFF" background="' + BG_WHITE + '"'
+        + ' style="padding:0 5px 5px 0;vertical-align:top;text-align:right;white-space:nowrap;'
+        + 'font-size:11px;font-weight:bold;color:#777777;font-family:Arial,Helvetica,sans-serif;line-height:16px;' + WBG + '">'
+        + label + '</td>'
+      : '<td width="18" valign="top" bgcolor="#FFFFFF" background="' + BG_WHITE + '" style="width:18px;padding:1px 5px 3px 0;vertical-align:top;line-height:0;' + WBG + '">'
+        + '<img src="' + icon + '" width="11" height="11" alt="" border="0" style="display:block;border:0;width:11px;height:11px;">'
+        + '</td>';
     return '<tr>'
-      + '<td width="18" valign="top" bgcolor="#FFFFFF" background="' + BG_WHITE + '" style="width:18px;padding:1px 5px 3px 0;vertical-align:top;line-height:0;' + WBG + '">'
-      + '<img src="' + icon + '" width="11" height="11" alt="" border="0" style="display:block;border:0;width:11px;height:11px;">'
-      + '</td>'
+      + col1
       + '<td valign="top"' + nowrapAttr + ' bgcolor="#FFFFFF" background="' + BG_WHITE + '" style="font-size:11px;color:#333333;font-family:Arial,Helvetica,sans-serif;padding:0 0 5px 0;vertical-align:top;text-align:left;line-height:16px;' + WBG + wrapCss + '">'
       + content + '</td></tr>';
   }
@@ -448,31 +504,42 @@ async function copyHTML(mode) {
   var telTxt    = telefone + (ramal ? ' - Ramal ' + ramal : '');
   var telHtml   = telefone ? linkTxt(telHref(telefone), telTxt)      : '';
   var emailHtml = emailVal ? linkTxt('mailto:' + emailVal, emailVal) : '';
-  var endHtml   = endereco ? linkTxt(mapsHref(endereco), endereco)   : '';
-  // Nome vira link clicável pro LinkedIn quando o campo está preenchido.
+  // Endereço: 2 campos (linha 1 / linha 2) com quebra manual; fallback automático (splitEndereco)
+  // quando a linha 2 está vazia. O link do Maps recebe o endereço INTEIRO (full).
+  var endParts  = getEndereco();
+  var endTxt    = endParts.l2 ? endParts.l1 + '<br>' + endParts.l2 : endParts.l1;
+  var endHtml   = (endParts.l1 || endParts.l2) ? linkTxt(mapsHref(endParts.full), endTxt) : '';
+  // Nome vira link clicável pro LinkedIn quando o campo está preenchido (mesmas defesas anti-azul).
   var liHref    = urlHref(linkedin);
+  var nomeCore  = '<span style="color:#1a1a1a;text-decoration:none;">' + nome + '</span>';
+  if (wordMode) nomeCore = '<font color="#1a1a1a">' + nomeCore + '</font>';
   var nomeHtml  = liHref
-    ? '<a href="' + liHref + '" style="color:#1a1a1a;text-decoration:none;">' + nome + '</a>'
+    ? '<a href="' + liHref + '" style="color:#1a1a1a;text-decoration:none;">' + nomeCore + '</a>'
     : nome;
 
-  // Saída IDÊNTICA nos 3 botões — só as instruções de onde colar mudam no aviso.
-  // E-mail SEM wrap (fica sempre em 1 linha); endereço quebra apenas em espaços.
-  var contatos = row(iCelular, celHtml) + row(iTelefone, telHtml) + row(iEmail, emailHtml) + row(iEndereco, endHtml, true);
+  // Saída IDÊNTICA em owa/desktop/mac; no 'classic' a 1ª TD leva rótulo de texto no lugar do ícone.
+  // E-mail SEM wrap (fica sempre em 1 linha); endereço quebra onde o usuário escolheu (linha 2).
+  var contatos = row(iCelular, LABELS.celular, celHtml)
+    + row(iTelefone, LABELS.telefone, telHtml)
+    + row(iEmail, LABELS.email, emailHtml)
+    + row(iEndereco, LABELS.endereco, endHtml, true);
 
-  // Card BRANCO com borda fina cinza (destaca no fundo branco do e-mail). Largura adaptável (max 470px).
+  // Card BRANCO com borda fina cinza (destaca no fundo branco do e-mail). Largura = SOMA DO
+  // CONTEÚDO, sem width nem max-width: o Word (Outlook clássico) vira max-width em width FIXA e
+  // width:100% infla o card com um vão no meio. Quem segura a largura é o endereço em 2 linhas.
   // Logo = texto "Solibem" (Arial, cor da marca). Tile branco em todas as células trava o dark mode no OWA.
   var html = '<table cellpadding="0" cellspacing="0" border="0"'
-    + ' style="border-collapse:collapse;border:1px solid #E0E0E0;font-family:Arial,Helvetica,sans-serif;max-width:470px;">'
+    + ' style="border-collapse:collapse;border:1px solid #E0E0E0;font-family:Arial,Helvetica,sans-serif;">'
     + '<tr>'
     + '<td bgcolor="#FFFFFF" background="' + BG_WHITE + '" style="' + WBG + 'padding:0;vertical-align:top;">'
-    // width=100% na tabela interna: se algum cliente (Outlook clássico) alargar o card
-    // além do conteúdo, o miolo estica junto e nome/logo/contatos mantêm o alinhamento.
-    + '<table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;width:100%;">'
+    // Tabela interna SEM width: o card é content-sized (sem max-width), então não há sobra pra
+    // esticar — e width:100% dentro de tabela auto ajudava o Word a inflar o card com um vão no meio.
+    + '<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">'
     + '<tr>'
-    // NOME SEMPRE EM 1 LINHA: white-space:nowrap no <p> + o atributo nowrap na TD (o Word
-    // ignora o CSS aqui, só obedece o atributo). O width:140 vira PISO, não teto: a coluna
-    // cresce pro tamanho do nome e o card se ajusta sozinho.
-    + '<td width="140" rowspan="2" valign="bottom" nowrap bgcolor="#FFFFFF" background="' + BG_WHITE + '" style="width:140px;padding:0 16px 18px 17px;vertical-align:bottom;white-space:nowrap;' + WBG + '">'
+    // NOME SEMPRE EM 1 LINHA: white-space:nowrap no <p> + o atributo nowrap na TD (o Word ignora o
+    // CSS, só obedece o atributo) e SEM width na coluna — no Word, width explícita VENCE o nowrap e
+    // quebrava o nome em 2 linhas. Sem width, a coluna dimensiona pro nome inteiro.
+    + '<td rowspan="2" valign="bottom" nowrap bgcolor="#FFFFFF" background="' + BG_WHITE + '" style="padding:0 16px 18px 17px;vertical-align:bottom;white-space:nowrap;' + WBG + '">'
     + '<p style="margin:0;padding:0;font-size:14px;font-weight:900;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;line-height:1.25;white-space:nowrap;">' + nomeHtml + '</p>'
     + cargoHtml + '</td>'
     + '<td align="right" valign="top" bgcolor="#FFFFFF" background="' + BG_WHITE + '" style="padding:20px 18px 0 0;vertical-align:top;text-align:right;' + WBG + '">'
@@ -499,6 +566,8 @@ async function copyHTML(mode) {
     await navigator.clipboard.write([ new ClipboardItem({ 'text/html': new Blob([html], { type: 'text/html' }) }) ]);
     var msg = mode === 'desktop'
       ? 'Copiado! Cole no Outlook Desktop: Arquivo > Opções > Email > Assinaturas.'
+      : mode === 'classic'
+      ? 'Copiado! Versão sem ícones (rótulos de texto, à prova de bloqueio). Cole no Outlook antigo: Arquivo > Opções > Email > Assinaturas.'
       : mode === 'mac'
       ? 'Copiado! No Mail do Mac: Mail > Ajustes > Assinaturas. Deixe DESMARCADO "Sempre coincidir com a fonte padrão da mensagem".'
       : 'Copiado! Cole no Outlook Web: Configurações > Email > Assinatura de email.';
